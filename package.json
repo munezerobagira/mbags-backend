@@ -1,0 +1,25 @@
+{
+  "name": "mybrand-backend",
+  "author": "Sostene Munezero Bagira",
+  "version": "1.0.0",
+  "description": "A backend api made for sostene protofolio",
+  "main": "index.js",
+  "scripts": {
+    "start": "bable src && node dist/index.js",
+    "dev": "nodemon --exec babel-node src/index.js"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "mongoose": "^6.2.10"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.9",
+    "@babel/node": "^7.16.8",
+    "@babel/preset-env": "^7.16.11",
+    "nodemon": "^2.0.15"
+  }
+}
