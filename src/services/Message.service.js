@@ -20,6 +20,7 @@ export default class MessageServive {
       const messages = await Message.find(filter)
         .limit(count)
         .skip(count * skip);
+      if (!messages) return { success: false, error: "Messages not found" };
       return { success: true, messages };
     } catch (error) {
       return { success: false, error: error.message };

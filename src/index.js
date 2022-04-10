@@ -7,6 +7,6 @@ setupApp(app);
 mongoose.connect(mongoUrl).then(() => {
   console.log("connected to db");
 });
-app.listen(port, () => {
+export default app.listen(port, () => {
   console.log("Server started on port", port);
 });
