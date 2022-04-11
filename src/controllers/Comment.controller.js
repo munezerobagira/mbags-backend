@@ -1,5 +1,5 @@
 import { ArticleServive } from "../services";
-export default class Message {
+export default class Comment {
   static async addComment(request, response) {
     try {
       const { articleId } = request.params;
