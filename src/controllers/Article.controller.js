@@ -1,5 +1,6 @@
 import { ArticleServive } from "../services";
-export default class Message {
+import { unlinkSync } from "fs";
+export default class Article {
   static async addArticle(request, response) {
     try {
       if (!request.file)
@@ -7,6 +8,7 @@ export default class Message {
           .status(400)
           .json({ status: 400, error: "Image required" });
       const { path: image } = request.file;
+
       const { title, images, summary, content, categories } = request.body;
       const result = await ArticleServive.addArticle({
         title,
@@ -16,6 +18,7 @@ export default class Message {
         categories,
         image,
       });
+      unlinkSync(image);
       if (!result.success)
         return response.status(400).json({ status: 400, error: result.error });
       return response
@@ -47,25 +50,6 @@ export default class Message {
       return response
         .status(200)
         .json({ status: 200, success: true, articles: result.article });
-    } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
-    }
-  }
-
-  static async getCategoryArticles(request, response) {
-    try {
-      const { skip = 0, count = 100 } = request.query;
-      const { categoryId } = request.params;
-      const result = await ArticleServive.getArticles({
-        categoryId,
-        skip,
-        count,
-      });
-      if (!result.success)
-        return response.status(400).json({ status: 400, error: result.error });
-      return response
-        .status(200)
-        .json({ status: 200, success: true, article: result.article });
     } catch (error) {
       response.status(500).json({ status: 500, error: error.message });
     }
