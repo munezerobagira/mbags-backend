@@ -2,6 +2,11 @@ import { ArticleServive } from "../services";
 export default class Message {
   static async addArticle(request, response) {
     try {
+      if (!request.file)
+        return response
+          .status(400)
+          .json({ status: 400, error: "Image required" });
+      const { path: image } = request.file;
       const { title, images, summary, content, categories } = request.body;
       const result = await ArticleServive.addArticle({
         title,
@@ -9,6 +14,7 @@ export default class Message {
         summary,
         content,
         categories,
+        image,
       });
       if (!result.success)
         return response.status(400).json({ status: 400, error: result.error });

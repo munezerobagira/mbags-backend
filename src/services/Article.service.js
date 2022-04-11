@@ -1,26 +1,36 @@
 import { Article, Category, Comment } from "../models";
+import { uploadFolder } from "../config";
 export default class MessageServive {
   // Articles
-  static async addArticle({ title, summary, categories, content, authorId }) {
+  static async addArticle({
+    title,
+    summary,
+    categories,
+    content,
+    authorId,
+    image,
+  }) {
     try {
+      image = image.replace(uploadFolder, "/public");
       const article = new Article({
         title,
         summary,
         content,
         authorId,
+        images: [{ path: image }],
       });
       await article.save();
       if (categories) {
         categories = categories.split(",").map((tag) => tag.trim());
-        categories.forEach(async (tag) => {
+        for (let tag of categories) {
           tag = tag[0].toUpperCase() + tag.slice(1).toLowerCase();
           let category = await Category.findOne({ title: tag });
           if (!category) category = new Category({ title: tag, articles: [] });
           category.articles.push(article._id);
           await category.save();
           article.categories.push(category._id);
-          await article.save();
-        });
+        }
+        await article.save();
       }
       return { success: true, article };
     } catch (error) {
@@ -235,7 +245,6 @@ export default class MessageServive {
           path: "articles",
           options: { limit: count, skip: count * skip },
         });
-
       if (!category) return { success: false, error: "Category not found" };
       return { success: true, category };
     } catch (error) {
