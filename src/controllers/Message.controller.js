@@ -14,8 +14,6 @@ export default class Message {
       return response
         .status(201)
         .json({ status: 201, success: true, message: result.message });
-
-      return;
     } catch (error) {
       response.status(500).json({ status: 500, error: error.message });
     }

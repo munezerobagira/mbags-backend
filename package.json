@@ -5,15 +5,18 @@
   "description": "A backend api made for sostene protofolio",
   "main": "index.js",
   "scripts": {
-    "start": "bable src && node dist/index.js",
-    "dev": "nodemon --exec babel-node src/index.js"
+    "start": "cross-env NODE_ENV=production babel src --out-dir dist/ && node dist/index.js",
+    "dev": "cross-env NODE_ENV=development nodemon --exec babel-node src/index.js",
+    "dev-freshdb": "cross-env NODE_ENV=development babel-node src/emptyDb.js && npm run dev"
   },
   "keywords": [],
   "license": "ISC",
   "dependencies": {
+    "cross-env": "^7.0.3",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
-    "mongoose": "^6.2.10"
+    "mongoose": "^6.2.10",
+    "multer": "^1.4.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.6",
