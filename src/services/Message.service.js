@@ -39,7 +39,7 @@ export default class MessageServive {
     try {
       const message = await Message.findOne({ _id: id });
       if (!message) return { success: false, error: "Message not found" };
-      if (reply) message.reply = reply;
+      if (reply) message.reply.push(reply);
       if (read) message.read = read;
       await message.save();
       return { success: true, message };
