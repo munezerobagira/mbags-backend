@@ -2,3 +2,5 @@
 node_modules/
 dist/
 uploads/
+.nyc_output/
+coverage/
