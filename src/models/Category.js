@@ -8,6 +8,6 @@ const categorySchema = new Schema(
   { timestamps: true }
 );
 categorySchema.pre("validate", function () {
-  this.title = this.title[0] + this.title.slice(1);
+  this.title = this.title[0].toLowerCase() + this.title.slice(1).toLowerCase();
 });
 export default model("Category", categorySchema);
