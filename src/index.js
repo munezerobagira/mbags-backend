@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import { port, mongoUrl } from "./config";
 import setupApp from "./setupApp";
+import "./auth";
 const app = express();
 setupApp(app);
 mongoose.connect(mongoUrl).then(() => {

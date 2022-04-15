@@ -1,6 +1,8 @@
+import { cloudinaryFolders } from "../config";
+import { cloudinaryUploader } from "../helpers/uploader";
 import { Article, Category, Comment } from "../models";
-import { uploadFolder } from "../config";
-export default class MessageServive {
+
+export default class ArticleServive {
   // Articles
   static async addArticle({
     title,
@@ -11,13 +13,23 @@ export default class MessageServive {
     image,
   }) {
     try {
-      image = image.replace(uploadFolder, "/public");
+      const uploadResult = await cloudinaryUploader(
+        image,
+        cloudinaryFolders.articles
+      );
+      if (!uploadResult) return { succes: false, error: "Image upload error" };
       const article = new Article({
         title,
         summary,
         content,
         authorId,
-        images: [{ path: image }],
+        images: [
+          {
+            path: uploadResult.secure_url || uploadResult.url,
+            width: uploadResult.width,
+            height: uploadResult.height,
+          },
+        ],
       });
       await article.save();
       if (categories) {

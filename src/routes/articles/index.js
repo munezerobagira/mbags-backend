@@ -1,6 +1,6 @@
 import express from "express";
 import { ArticleController, CommentController } from "../../controllers";
-import { multerUploader } from "../../helpers/upload";
+import { multerUploader } from "../../helpers/uploader";
 import categoryRoutes from "./category";
 import commentsRoutes from "./comments";
 const router = express.Router();

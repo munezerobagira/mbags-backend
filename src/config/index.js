@@ -40,8 +40,10 @@ export const uploadFolder = path.join(
   "uploads",
   "temps"
 );
+
 export const port = process.env.PORT || 5000;
 export const cloudinaryApiKey = process.env.CLOUDINARY_API_KEY;
 export const cloudinaryApiSecret = process.env.CLOUDINARY_API_SECRET;
 export const cloudName = process.env.CLOUD_NAME;
 export const mongoUrl = baseMongoUrl;
+export const tokenSecret = process.env.TOKEN_SECRET;

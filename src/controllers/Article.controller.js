@@ -83,6 +83,8 @@ export default class Article {
   }
   static async updateArticle(request, response) {
     try {
+      let image;
+      if (request.file && request.file.path) image = request.file.path;
       const { id } = request.params;
       const {
         title,
@@ -101,6 +103,7 @@ export default class Article {
         categories,
         published,
         featured,
+        image,
       });
       if (!result.success)
         return response.status(400).json({ status: 400, error: result.error });

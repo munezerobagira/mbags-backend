@@ -67,7 +67,7 @@ export default class Message {
       const { read, reply } = request.body;
       const result = await MessageServive.updateMessage(id, { read, reply });
       if (!result.success)
-        return response.status(404).json({ status: 404, error: result.error });
+        return response.status(400).json({ status: 400, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, message: result.message });
