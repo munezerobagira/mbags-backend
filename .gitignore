@@ -2,11 +2,6 @@
 node_modules/
 dist/
 uploads/
-<<<<<<< HEAD
 .nyc_output/
 coverage/
-
-=======
-coverage
-.nyc_output
->>>>>>> develop
+.idea/
