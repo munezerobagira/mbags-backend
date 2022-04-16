@@ -16,11 +16,18 @@ jobs:
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/node
     docker:
       - image: cimg/node:16.10
+      - image: circleci/mongo:4.2.0
+        port: 27017:27017
     # Then run your tests!
     # CircleCI will report the results back to your VCS provider.
     steps:
       # Checkout the code as the first step.
       - checkout
+      - setup_remote_docker
+      - run:
+          - name: MongoDB install
+          - command: |
+              sudo apt-get install -y mongodb
       # Next, the node orb's install-packages step will install the dependencies from a package.json.
       # The orb install-packages step will also automatically cache them for faster future runs.
       - node/install-packages:
