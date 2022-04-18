@@ -89,18 +89,13 @@ export default class ArticleServive {
       return { success: false, error: error.message };
     }
   }
-  static async getArticles({ categoryId, count = 100, skip = 0, filter = {} }) {
+  static async getArticles({ count = 100, skip = 0, ...filter }) {
     try {
       let articles;
-      if (!categoryId)
-        articles = await Article.find(filter)
-          .limit(count)
-          .skip(count * skip);
-      else
-        articles = await Category.find({ _id: categoryId })
-          .limit(count)
-          .populate("articles")
-          .skip(count * skip);
+      if (!filter) filter = {};
+      articles = await Article.find(filter)
+        .limit(count)
+        .skip(count * skip);
       if (!articles) return { success: false, error: "Articles not found" };
       return { success: true, articles };
     } catch (error) {

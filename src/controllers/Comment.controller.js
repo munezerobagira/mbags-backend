@@ -1,19 +1,5 @@
 import { ArticleServive } from "../services";
 export default class Comment {
-  static async addComment(request, response) {
-    try {
-      const { articleId } = request.params;
-      const { comment } = request.body;
-      const result = await ArticleServive.addComment(articleId, { comment });
-      if (!result.success)
-        return response.status(400).json({ status: 400, error: result.error });
-      return response
-        .status(201)
-        .json({ status: 201, success: true, comment: result.comment });
-    } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
-    }
-  }
   static async getComment(request, response) {
     try {
       const { id } = request.params;
@@ -65,8 +51,8 @@ export default class Comment {
       if (!result.success)
         return response.status(400).json({ status: 400, error: result.error });
       return response
-        .status(201)
-        .json({ status: 201, success: true, comments: result.comment });
+        .status(200)
+        .json({ status: 200, success: true, comments: result.comment });
     } catch (error) {
       response.status(500).json({ status: 500, error: error.message });
     }
