@@ -10,27 +10,10 @@ const cloudFolders = {
   profiles: "profiles",
 };
 
-let envTag;
-
-switch (environment && environment.toLowerCase()) {
-  //make sure db are different for each environment
-  case "development":
-    envTag = "-dev";
-    break;
-  case "test":
-    envTag = "-test";
-    break;
-  case "production":
-    envTag = "";
-    break;
-  default:
-  // baseMongoUrl;
-}
-
 // Make sure that resources are different for each environment
-baseMongoUrl += envTag;
+baseMongoUrl += environment;
 for (let key in cloudFolders) {
-  cloudFolders[key] += envTag;
+  cloudFolders[key] += environment;
 }
 export const cloudinaryFolders = cloudFolders;
 export const uploadFolder = path.join(
