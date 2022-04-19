@@ -25,14 +25,3 @@ passport.use(
     }
   )
 );
-passport.use(
-  new JWTStrategy(
-    {
-      secretOrKey: tokenSecret,
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    },
-    async (payload, done) => {
-      done(null, payload.user);
-    }
-  )
-);

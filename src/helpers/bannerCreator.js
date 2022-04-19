@@ -1,17 +1,11 @@
-const fs = require("fs");
-const { createCanvas } = require("canvas");
-const { join: joinPath } = require("path");
+import fs from "fs";
+import { createCanvas } from "canvas";
 
-// loadImage("./logo.png").then((image) => {
-// context.drawImage(image, 340, 515, 70, 70);
-
-// });
-
-const createBanner = async (
+export const createBanner = async (
   title,
-  { width = 1200, height = 630, outputName = "Testing" }
+  { width = 1200, height = 630, inputPath = "temp" }
 ) => {
-  return new Promise((reject, resolve) => {
+  return new Promise((resolve, reject) => {
     const canvas = createCanvas(width, height);
     const context = canvas.getContext("2d");
     context.fillStyle = "#555";
@@ -32,25 +26,10 @@ const createBanner = async (
     context.fillText("sostene.dev", 600, 530);
 
     const buffer = canvas.toBuffer("image/png");
-    outputName += ".png";
-    const outputDir = joinPath(__dirname, outputName);
-    fs.writeFile(outputName, buffer, (error) => {
-      if (error) reject(error);
-      resolve(outputDir);
+    let imagePath = inputPath + ".png";
+    fs.writeFile(imagePath, buffer, (error) => {
+      if (error) resolve(error);
+      if (fs.existsSync(imagePath)) resolve(imagePath);
     });
   });
 };
-const output = async () => {
-  try {
-    const name = await createBanner(
-      `How to make the most amazing banner ever
-     without using the main user`,
-      {
-        outputName: "banner",
-      }
-    );
-  } catch (error) {
-    console.log(error);
-  }
-};
-output();
