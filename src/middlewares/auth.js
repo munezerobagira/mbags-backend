@@ -12,6 +12,7 @@ export const isLoggedIn = async (request, response, next) => {
     next();
   } catch (error) {
     return response.status(401).json({
+      status: 401,
       error: "You must login first",
     });
   }

@@ -4,6 +4,6 @@ import { multerUploader } from "../helpers/uploader";
 import { isLoggedIn } from "../middlewares/auth";
 const router = express.Router();
 router.get("/profile", isLoggedIn, UserController.getUser);
-router.patch("/profile", UserController.updateUser);
+router.patch("/profile", isLoggedIn, UserController.updateUser);
 router.delete("/", UserController.deleteUser);
 export default router;
