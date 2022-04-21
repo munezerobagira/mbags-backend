@@ -1,0 +1,1199 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This provide documentation for the blog api for the sostene protofolio",
+    "version": "1.0.0",
+    "contact": { "email": "munezerobagira@gmail.com" },
+    "title": "Sostene protofolio api"
+  },
+  "basePath": "/api",
+  "servers": [
+    {
+      "url": "http://localhost:{port}/",
+      "description": "Local server",
+      "variables": {
+        "port": {
+          "default": "5000"
+        },
+        "basePath": {
+          "default": "api"
+        }
+      }
+    }
+  ],
+  "schemes": ["http"],
+  "tags": [
+    {
+      "name": "authentication",
+      "description": "Give access to some endpoints that require authentication"
+    },
+    {
+      "name": "sample",
+      "description": "Endpoints for sample"
+    },
+    {
+      "name": "messages",
+      "description": "All the endpoints that are related to messages"
+    },
+    {
+      "name": "articles",
+      "description": "Endpoints for articles"
+    },
+    {
+      "name": "comments",
+      "description": "Endpoints for the comments"
+    },
+    {
+      "name": "categories",
+      "description": "Endpoints for the categories"
+    }
+  ],
+  "definitions": {
+    "userMessage": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "subject": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": ["name", "message", "email"],
+      "example": {
+        "name": "John Doe",
+        "subject": "A sending you a wonderful email",
+        "email": "johndoe@example.com",
+        "message": "I just wanted you to see this email"
+      }
+    },
+    "replyMessage": {
+      "type": "object",
+      "properties": {
+        "read": {
+          "type": "boolean"
+        },
+        "reply": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "example": {
+        "read": true,
+        "reply": "Welcome"
+      }
+    },
+    "databaseMessage": {
+      "allOf": [
+        { "$ref": "#/definitions/userMessage" },
+        { "$ref": "#/definitions/replyMessage" },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "reply": {
+              "type": "array",
+              "items": ["string"]
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "example": {
+            "id": "64fa44242fa44242",
+            "createdAt": "",
+            "updatedAt": "",
+            "reply": []
+          }
+        }
+      ]
+    },
+    "signup": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "confirmPassword": {
+          "type": "string"
+        }
+      },
+      "required": ["name", "email", "password"],
+      "example": {
+        "name": "John Doe",
+        "email": "johndoe@example.com",
+        "password": "password",
+        "confirmPassword": "password",
+        "username": "johndoe"
+      }
+    },
+    "login": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "required": ["email", "password"],
+      "example": {
+        "email": "johndoe@example.com",
+        "password": "password"
+      }
+    },
+    "comment": {
+      "type": "object",
+      "properties": {
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": ["comment"],
+      "example": {
+        "comment": "This is a comment"
+      }
+    },
+    "category": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "articles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/databaseArticle"
+          }
+        }
+      },
+      "required": ["name"],
+      "example": {
+        "name": "Technology",
+        "description": "Technology articles"
+      }
+    },
+    "user": {
+      "allOf": [
+        { "$ref": "#/definitions/login" },
+        {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string"
+            },
+            "summary": {
+              "type": "string"
+            },
+            "verified": {
+              "type": "boolean"
+            },
+            "keywords": {
+              "type": "string",
+              "items": {
+                "type": "string"
+              }
+            },
+            "info": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "example": {
+            "id": "64fa44242fa44242",
+            "username": "johndoe",
+            "createdAt": "",
+            "updatedAt": ""
+          }
+        }
+      ]
+    },
+    "userArticle": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "categories": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        }
+      },
+      "required": ["title", "content", "categories", "summary"],
+      "example": {
+        "title": "How to make api",
+        "summary": "Every thing you need to make sure that your api is working",
+        "content": "This is the amzing content you willl need to become the api expert",
+        "categories": "javascript, blog"
+      }
+    },
+    "updateArticle": {
+      "allOf": [
+        { "$ref": "#/definitions/userArticle" },
+        {
+          "type": "object",
+          "properties": {
+            "published": { "type": "boolean", "default": false },
+            "featured": { "type": "boolean", "default": false }
+          },
+          "example": {
+            "published": true,
+            "featured": true
+          }
+        }
+      ]
+    },
+    "databaseArticle": {
+      "allOf": [
+        { "$ref": "#/definitions/updateArticle" },
+        {
+          "type": "object",
+          "properties": {
+            "published": { "type": "boolean", "default": false },
+            "featured": { "type": "boolean", "default": false },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "example": {
+            "id": "64fa44242fa44242",
+            "createdAt": "",
+            "updatedAt": "",
+            "reply": []
+          }
+        }
+      ]
+    },
+    "unauntheticatedError": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "format": "int32",
+          "default": 401
+        },
+        "error": {
+          "type": "string",
+          "default": "You must login first"
+        }
+      }
+    },
+    "validationError": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "format": "int32",
+          "default": 400
+        },
+        "error": {
+          "type": "array"
+        }
+      }
+    },
+    "notFoundError": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "format": "int32",
+          "default": 404
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "bearerToken": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": ["authentication"],
+        "summary": "Login to the system",
+        "description": "Login to the system",
+        "operationId": "login",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Login credentials",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/login"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/login"
+            }
+          },
+          "400": {
+            "description": "Invalid username or password",
+            "schema": {
+              "$ref": "#/definitions/validationError"
+            }
+          }
+        }
+      }
+    },
+    "/auth/signup": {
+      "post": {
+        "tags": ["authentication"],
+        "summary": "Signup to the system",
+        "description": "Signup to the system",
+        "operationId": "signup",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Signup credentials",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/signup"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/signup"
+            }
+          },
+          "400": {
+            "description": "Invalid username or password",
+            "schema": {
+              "$ref": "#/definitions/validationError"
+            }
+          }
+        }
+      }
+    },
+    "/messages": {
+      "get": {
+        "description": "Returns a list of all the messages received",
+        "tags": ["messages"],
+        "security": [{ "bearerToken": [] }],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of messages recieved of defined length",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/databaseMessage"
+              }
+            }
+          },
+          "401": {
+            "description": "User need to login",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/unauntheticatedError"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create a new message",
+        "tags": ["messages"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User can add the messsage",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userMessage"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/databaseMessage"
+            }
+          },
+          "400": {
+            "description": "User need to send valid other",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/validationError"
+            }
+          },
+          "401": {
+            "description": "User need to login",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/unauntheticatedError"
+            }
+          }
+        }
+      }
+    },
+    "/messages/{id}": {
+      "get": {
+        "description": "Get a single message",
+        "tags": ["messages"],
+        "security": [{ "bearerToken": [] }],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "specifies the id of message to get",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A message with given id",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/databaseMessage"
+            }
+          },
+          "401": {
+            "description": "User need to login",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/unauntheticatedError"
+            }
+          },
+          "404": {
+            "description": "Message notFound",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/notFoundError"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Update a single message with given id",
+        "tags": ["messages"],
+        "security": [{ "bearerToken": [] }],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "specifies the id of message to get",
+            "required": true
+          },
+          {
+            "name": "message",
+            "description": "Properties to update",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/replyMessage"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of messages",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/databaseMessage"
+            }
+          },
+          "401": {
+            "description": "User need to login",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/unauntheticatedError"
+            }
+          },
+          "404": {
+            "description": "Message notFound",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/notFoundError"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Update a single message with given id",
+        "tags": ["messages"],
+        "security": [{ "bearerToken": [] }],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "specifies the id of message to get",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of messages",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/databaseMessage"
+            }
+          },
+          "401": {
+            "description": "User need to login",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/unauntheticatedError"
+            }
+          },
+          "404": {
+            "description": "Message notFound",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/notFoundError"
+            }
+          }
+        }
+      }
+    },
+    "/articles": {
+      "get": {
+        "description": "Returns a list of all articles",
+        "tags": ["articles"],
+        "security": [{ "bearerToken": [] }],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of blog posts",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/databaseArticle"
+              }
+            }
+          },
+          "401": {
+            "description": "User need to login",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/unauntheticatedError"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create a new post",
+        "tags": ["articles"],
+        "produces": ["application/json"],
+        "security": [{ "bearerToken": [] }],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Blog post to create",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userArticle"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/databaseArticle"
+            }
+          },
+          "400": {
+            "description": "User need to send valid other",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/validationError"
+            }
+          },
+          "401": {
+            "description": "User need to login",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/unauntheticatedError"
+            }
+          }
+        }
+      }
+    },
+    "/articles/{id}": {
+      "get": {
+        "description": "Get a single message",
+        "tags": ["articles"],
+        "security": [{ "bearerToken": [] }],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "specifies the id of message to get",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return a blogeof given id"
+          },
+          "401": {
+            "description": "User need to login"
+          },
+          "404": {
+            "description": "Message notFound"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update a single blog of given id",
+        "tags": ["articles"],
+        "security": [{ "bearerToken": [] }],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "specifies the id of blog to get",
+            "required": true
+          },
+          {
+            "name": "message",
+            "description": "Properties to update",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/updateArticle"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of messages",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/databaseArticle"
+            }
+          },
+          "401": {
+            "description": "User need to login",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/unauntheticatedError"
+            }
+          },
+          "404": {
+            "description": "Message notFound",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/notFoundError"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete a blog of given id",
+        "tags": ["articles"],
+        "security": [{ "bearerToken": [] }],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "specifies the id of message to get",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of messages",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/databaseArticle"
+            }
+          },
+          "401": {
+            "description": "User need to login",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/unauntheticatedError"
+            }
+          },
+          "404": {
+            "description": "Message notFound",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/notFoundError"
+            }
+          }
+        }
+      }
+    },
+    "/articles/{id}/comment": {
+      "post": {
+        "description": "Create a comment for the article",
+        "tags": ["articles"],
+        "produces": ["application/json"],
+        "security": [{ "bearerToken": [] }],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Add the comment",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/comment"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "description": "article id",
+            "required": true
+          },
+
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "User need to send invalid data"
+          },
+          "401": {
+            "description": "User need to login"
+          }
+        }
+      }
+    },
+    "/articles/categories": {
+      "get": {
+        "description": "Get the article categories categories",
+        "tags": ["categories"],
+        "produces": ["application/json"],
+        "security": [{ "bearerToken": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "User need to login"
+          }
+        }
+      }
+    },
+    "/articles/categories/{id}": {
+      "get": {
+        "description": "Get the article categories categories",
+        "tags": ["categories"],
+        "produces": ["application/json"],
+        "security": [{ "bearerToken": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "category id",
+            "required": true
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "User need to login"
+          },
+          "404": {
+            "description": "Category not found"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update the category of given id",
+        "tags": ["categories"],
+        "produces": ["application/json"],
+        "security": [{ "bearerToken": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "category id",
+            "required": true
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "User need to login"
+          },
+          "404": {
+            "description": "Category not found"
+          }
+        }
+      }
+    },
+    "/articles/comments": {
+      "get": {
+        "description": "Get all comments",
+        "tags": ["comments"],
+        "produces": ["application/json"],
+        "security": [{ "bearerToken": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "User need to login"
+          }
+        }
+      }
+    },
+    "/articles/comments/{id}": {
+      "patch": {
+        "description": "Update the comment",
+        "tags": ["comments"],
+        "produces": ["application/json"],
+        "security": [{ "bearerToken": [] }],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Add the comment",
+            "required": true,
+            "schema": {
+              "allOf": [
+                { "$ref": "#/definitions/comment" },
+                {
+                  "type": "object",
+                  "properties": {
+                    "read": {
+                      "type": "boolean"
+                    },
+                    "vote": {
+                      "type": "number",
+                      "enum": [-1, 1]
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "description": "article id",
+            "required": true
+          },
+
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "User need to send invalid data"
+          },
+          "401": {
+            "description": "User need to login"
+          }
+        }
+      },
+      "delete": {
+        "description": "Update the comment",
+        "tags": ["comments"],
+        "produces": ["application/json"],
+        "security": [{ "bearerToken": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "article id",
+            "required": true
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "404": {
+            "description": "Comment not found"
+          },
+          "401": {
+            "description": "User need to login"
+          }
+        }
+      }
+    },
+    "/articles/comments/${id}/reply": {
+      "post": {
+        "description": "Reply to a comment for the article",
+        "tags": ["comments"],
+        "produces": ["application/json"],
+        "security": [{ "bearerToken": [] }],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Add the comment",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/comment"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "description": "article id",
+            "required": true
+          },
+
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "User need to send invalid data"
+          },
+          "401": {
+            "description": "User need to login"
+          }
+        }
+      }
+    }
+  }
+}

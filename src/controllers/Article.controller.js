@@ -1,13 +1,19 @@
 import { ArticleServive } from "../services";
 import { unlinkSync } from "fs";
+import { createBanner } from "../helpers/bannerCreator";
+import { uploadFolder } from "../config";
 export default class Article {
   static async addArticle(request, response) {
     try {
+      let image;
       if (!request.file)
-        return response
-          .status(400)
-          .json({ status: 400, error: "Image required" });
-      const { path: image } = request.file;
+        image = await createBanner(
+          request.body?.title || "a blog tempelate banner",
+          {
+            inputPath: uploadFolder + "/temp",
+          }
+        );
+      else image = request.file?.path;
 
       const { title, images, summary, content, categories } = request.body;
       let { authorId } = request.body;

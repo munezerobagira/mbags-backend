@@ -294,7 +294,7 @@ describe("API test", () => {
 
           expect(response).to.have.status(400);
         });
-        it("should return 400 if image is not provided", async () => {
+        it("should return 201 created if image is not provided", async () => {
           let response = await request(server)
             .post("/api/articles")
             .field("title", faker.company.catchPhrase())
@@ -303,7 +303,7 @@ describe("API test", () => {
             .field("categories", faker.fake("{{random.word}}, {{random.word}}"))
             .set("Authorization", `Bearer ${token}`);
 
-          expect(response).to.have.status(400);
+          expect(response).to.have.status(201);
         });
         it("should return 201 status and created article if token  provided and messages", async () => {
           let inputPath = joinPath(
@@ -476,14 +476,16 @@ describe("API test", () => {
             );
             expect(response).to.have.status(401);
           });
-          it("should return 400 if invalidId given", async () => {
+          it("should return 404 if invalidId given", async () => {
             let response = await request(server)
               .patch("/api/articles/categories/" + invalidArticleId)
               .send({
                 description: "Welcoem",
                 title: "welcome",
-              });
-            expect(response).to.have.status(401);
+              })
+              .set("Authorization", `Bearer ${token}`);
+
+            expect(response).to.have.status(404);
           });
           it("should return 200 if valid  id and token are provided", async () => {
             let response = await request(server)
@@ -498,105 +500,111 @@ describe("API test", () => {
           });
         });
       });
-      // describe("/comments", () => {
-      //   let validCommentId;
-      //   before(async () => {
-      //     let response = await request(server)
-      //       .post("/api/articles/" + validArticleId + "/comment")
-      //       .set("Authorization", `Bearer ${token}`)
-      //       .send({
-      //         comment: faker.company.catchPhrase(),
-      //       });
-      //     validCommentId = response?.body?.comment?._id;
-      //   });
-      //   describe("GET /", () => {
-      //     it("should return 401 if token  is not given", async () => {
-      //       let response = await request(server).get("/api/articles/comments/");
-      //       expect(response).to.have.status(401);
-      //     });
+      describe("/comments", () => {
+        let validCommentId;
+        before(async () => {
+          let response = await request(server)
+            .post("/api/articles/" + validArticleId + "/comment")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+              comment: faker.company.catchPhrase(),
+            });
+          validCommentId = response?.body?.comment?._id;
+        });
+        describe("GET /", () => {
+          it("should return 401 if token  is not given", async () => {
+            let response = await request(server).get("/api/articles/comments/");
+            expect(response).to.have.status(401);
+          });
 
-      //     it("should return 200 if valid  id and token are provided", async () => {
-      //       let response = await request(server)
-      //         .get("/api/articles/comments/")
-      //         .set("Authorization", `Bearer ${token}`);
-      //       expect(response).to.have.status(200);
-      //       expect(response.body).to.have.property("comments");
-      //     });
-      //   });
-      //   describe("GET /:id", () => {
-      //     it("should return 401 if token  is not given", async () => {
-      //       let response = await request(server).get(
-      //         "/api/articles/comments/" + validCommentId
-      //       );
-      //       expect(response).to.have.status(401);
-      //     });
-      //     it("should return 404 if token  is not given", async () => {
-      //       let response = await request(server).get(
-      //         "/api/articles/comments/" + invalidArticleId
-      //       );
-      //       expect(response).to.have.status(404);
-      //     });
-      //     it("should return 200 if valid  id and token are provided", async () => {
-      //       let response = await request(server)
-      //         .get("/api/articles/comments/" + validCommentId)
-      //         .set("Authorization", `Bearer ${token}`);
-      //       expect(response).to.have.status(200);
-      //       expect(response.body).to.have.property("comment");
-      //     });
-      //   });
-      //   describe("UPDATE /:id", () => {
-      //     it("should return 401 if token  is not given", async () => {
-      //       let response = await request(server).patch(
-      //         "/api/articles/comments/" + validCommentId
-      //       );
-      //       expect(response).to.have.status(401);
-      //     });
-      //     it("should return 404 if invalidId is given", async () => {
-      //       let response = await request(server).patch(
-      //         "/api/articles/comments/" + invalidArticleId
-      //       );
-      //       expect(response).to.have.status(404);
-      //     });
-      //     it("should return 400 if invalid data is given", async () => {
-      //       let response = await request(server)
-      //         .patch("/api/articles/comments/" + validCommentId)
-      //         .send({
-      //           comment: 2.1,
-      //         });
-      //       expect(response).to.have.status(400);
-      //     });
-      //     it("should return 200 if valid  id and token are provided", async () => {
-      //       let response = await request(server)
-      //         .put("/api/articles/comments/" + validCommentId)
-      //         .set("Authorization", `Bearer ${token}`)
-      //         .send({
-      //           comment: faker.company.catchPhrase(),
-      //         });
-      //       expect(response).to.have.status(200);
-      //       expect(response.body).to.have.property("comment");
-      //     });
-      //   });
-      //   describe("DELETE /:id", () => {
-      //     it("should return 401 if token  is not given", async () => {
-      //       let response = await request(server).delete(
-      //         "/api/articles/comments/" + validCommentId
-      //       );
-      //       expect(response).to.have.status(401);
-      //     });
-      //     it("should return 404 if invalidId is provided", async () => {
-      //       let response = await request(server).delete(
-      //         "/api/articles/comments/" + invalidArticleId
-      //       );
-      //       expect(response).to.have.status(404);
-      //     });
-      //     it("should return 200 if valid  id and token are provided", async () => {
-      //       let response = await request(server)
-      //         .delete("/api/articles/comments/" + validCommentId)
-      //         .set("Authorization", `Bearer ${token}`);
-      //       expect(response).to.have.status(200);
-      //     });
-      //   });
-      // });
+          it("should return 200 and comments if valid  id and token are provided", async () => {
+            let response = await request(server)
+              .get("/api/articles/comments/")
+              .set("Authorization", `Bearer ${token}`);
+            expect(response).to.have.status(200);
+            expect(response.body).to.have.property("comments");
+          });
+        });
+        describe("GET /:id", () => {
+          it("should return 401 if token  is not given", async () => {
+            let response = await request(server).get(
+              "/api/articles/comments/" + validCommentId
+            );
+            expect(response).to.have.status(401);
+          });
+          it("should return 404 if token  invalid id is given", async () => {
+            let response = await request(server)
+              .get("/api/articles/comments/" + invalidArticleId)
+              .set("Authorization", `Bearer ${token}`);
+            expect(response).to.have.status(404);
+          });
+          it("should return 200 if valid  id and token are provided", async () => {
+            let response = await request(server)
+              .get("/api/articles/comments/" + validCommentId)
+              .set("Authorization", `Bearer ${token}`);
+            expect(response).to.have.status(200);
+            expect(response.body).to.have.property("comment");
+          });
+        });
+        describe("UPDATE /:id", () => {
+          it("should return 401 if token  is not given", async () => {
+            let response = await request(server).patch(
+              "/api/articles/comments/" + validCommentId
+            );
+            expect(response).to.have.status(401);
+          });
+          it("should return 404 if comment id is invalid", async () => {
+            let response = await request(server)
+              .patch("/api/articles/comments/" + invalidArticleId)
+              .set("Authorization", `Bearer ${token}`);
+
+            expect(response).to.have.status(404);
+          });
+          it("should return 400 if invalid data is given", async () => {
+            let response = await request(server)
+              .patch("/api/articles/comments/" + validCommentId)
+              .send({
+                comment: 2.1,
+              })
+              .set("Authorization", `Bearer ${token}`);
+
+            expect(response).to.have.status(400);
+          });
+          it("should return 200 if valid comment id and token are provided", async () => {
+            let response = await request(server)
+              .patch("/api/articles/comments/" + validCommentId)
+              .set("Authorization", `Bearer ${token}`)
+              .send({
+                comment: faker.company.catchPhrase(),
+              })
+              .set("Authorization", `Bearer ${token}`);
+
+            expect(response).to.have.status(200);
+            expect(response.body).to.have.property("comment");
+          });
+        });
+        describe("DELETE /:id", () => {
+          it("should return 401 if token  is not given", async () => {
+            let response = await request(server).delete(
+              "/api/articles/comments/" + validCommentId
+            );
+            expect(response).to.have.status(401);
+          });
+          it("should return 404 if invalidId is provided", async () => {
+            let response = await request(server)
+              .delete("/api/articles/comments/" + invalidArticleId)
+              .set("Authorization", `Bearer ${token}`);
+
+            expect(response).to.have.status(404);
+          });
+          it("should return 200 if valid  id and token are provided", async () => {
+            let response = await request(server)
+              .delete("/api/articles/comments/" + validCommentId)
+              .set("Authorization", `Bearer ${token}`);
+            expect(response).to.have.status(200);
+          });
+        });
+      });
       describe("DELETE /:id", () => {
         it("should return 401 if token  is not given", async () => {
           let response = await request(server).delete(
