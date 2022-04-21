@@ -5,7 +5,8 @@
   "description": "A backend api made for sostene protofolio",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production babel src --out-dir dist/ && node dist/index.js",
+    "start": "cross-env NODE_ENV=production node dist/index.js ",
+    "build": "babel src --out-dir  dist/ --copy-files",
     "dev": "cross-env NODE_ENV=development nodemon --exec babel-node src/index.js",
     "test": "cross-env NODE_ENV=test mocha src/tests/**/*.test.js --require @babel/register",
     "coverage": "nyc --reporter=text-summary --reporter=text --reporter=html npm run test",

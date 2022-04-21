@@ -5,7 +5,7 @@ export default class Comment {
       const { id } = request.params;
       const result = await ArticleServive.getComment(id);
       if (!result.success)
-        return response.status(400).json({ status: 400, error: result.error });
+        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, comment: result.comment });
@@ -18,7 +18,7 @@ export default class Comment {
       const { count = 100, skip = 0, ...filter } = request.query;
       const result = await ArticleServive.getComments({ count, skip, filter });
       if (!result.success)
-        return response.status(400).json({ status: 400, error: result.error });
+        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, comments: result.comments });
@@ -36,10 +36,10 @@ export default class Comment {
         vote,
       });
       if (!result.success)
-        return response.status(400).json({ status: 400, error: result.error });
+        return response.status(404).json({ status: 404, error: result.error });
       return response
-        .status(201)
-        .json({ status: 201, success: true, comments: result.comment });
+        .status(200)
+        .json({ status: 200, success: true, comment: result.comment });
     } catch (error) {
       response.status(500).json({ status: 500, error: error.message });
     }
@@ -49,7 +49,7 @@ export default class Comment {
       const { id } = request.params;
       const result = await ArticleServive.deleteComment(id);
       if (!result.success)
-        return response.status(400).json({ status: 400, error: result.error });
+        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, comments: result.comment });
@@ -63,7 +63,7 @@ export default class Comment {
       const { id } = request.params;
       const result = await ArticleServive.replyComment(id, { comment });
       if (!result.success)
-        return response.status(400).json({ status: 400, error: result.error });
+        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(201)
         .json({ status: 201, success: true, comments: result.comment });

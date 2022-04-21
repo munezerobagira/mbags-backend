@@ -34,7 +34,6 @@ export default class Article {
         .status(201)
         .json({ status: 201, success: true, article: result.article });
     } catch (error) {
-      console.log(error);
       response.status(500).json({ status: 500, error: error.message });
     }
   }

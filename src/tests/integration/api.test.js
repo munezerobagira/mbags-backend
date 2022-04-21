@@ -476,14 +476,16 @@ describe("API test", () => {
             );
             expect(response).to.have.status(401);
           });
-          it("should return 400 if invalidId given", async () => {
+          it("should return 404 if invalidId given", async () => {
             let response = await request(server)
               .patch("/api/articles/categories/" + invalidArticleId)
               .send({
                 description: "Welcoem",
                 title: "welcome",
-              });
-            expect(response).to.have.status(401);
+              })
+              .set("Authorization", `Bearer ${token}`);
+
+            expect(response).to.have.status(404);
           });
           it("should return 200 if valid  id and token are provided", async () => {
             let response = await request(server)
@@ -498,7 +500,7 @@ describe("API test", () => {
           });
         });
       });
-      describe.skip("/comments", () => {
+      describe("/comments", () => {
         let validCommentId;
         before(async () => {
           let response = await request(server)
@@ -515,7 +517,7 @@ describe("API test", () => {
             expect(response).to.have.status(401);
           });
 
-          it("should return 200 if valid  id and token are provided", async () => {
+          it("should return 200 and comments if valid  id and token are provided", async () => {
             let response = await request(server)
               .get("/api/articles/comments/")
               .set("Authorization", `Bearer ${token}`);
@@ -530,10 +532,10 @@ describe("API test", () => {
             );
             expect(response).to.have.status(401);
           });
-          it("should return 404 if token  is not given", async () => {
-            let response = await request(server).get(
-              "/api/articles/comments/" + invalidArticleId
-            );
+          it("should return 404 if token  invalid id is given", async () => {
+            let response = await request(server)
+              .get("/api/articles/comments/" + invalidArticleId)
+              .set("Authorization", `Bearer ${token}`);
             expect(response).to.have.status(404);
           });
           it("should return 200 if valid  id and token are provided", async () => {
@@ -551,10 +553,11 @@ describe("API test", () => {
             );
             expect(response).to.have.status(401);
           });
-          it("should return 404 if invalidId is given", async () => {
-            let response = await request(server).patch(
-              "/api/articles/comments/" + invalidArticleId
-            );
+          it("should return 404 if comment id is invalid", async () => {
+            let response = await request(server)
+              .patch("/api/articles/comments/" + invalidArticleId)
+              .set("Authorization", `Bearer ${token}`);
+
             expect(response).to.have.status(404);
           });
           it("should return 400 if invalid data is given", async () => {
@@ -562,16 +565,20 @@ describe("API test", () => {
               .patch("/api/articles/comments/" + validCommentId)
               .send({
                 comment: 2.1,
-              });
+              })
+              .set("Authorization", `Bearer ${token}`);
+
             expect(response).to.have.status(400);
           });
-          it("should return 200 if valid  id and token are provided", async () => {
+          it("should return 200 if valid comment id and token are provided", async () => {
             let response = await request(server)
-              .put("/api/articles/comments/" + validCommentId)
+              .patch("/api/articles/comments/" + validCommentId)
               .set("Authorization", `Bearer ${token}`)
               .send({
                 comment: faker.company.catchPhrase(),
-              });
+              })
+              .set("Authorization", `Bearer ${token}`);
+
             expect(response).to.have.status(200);
             expect(response.body).to.have.property("comment");
           });
@@ -584,9 +591,10 @@ describe("API test", () => {
             expect(response).to.have.status(401);
           });
           it("should return 404 if invalidId is provided", async () => {
-            let response = await request(server).delete(
-              "/api/articles/comments/" + invalidArticleId
-            );
+            let response = await request(server)
+              .delete("/api/articles/comments/" + invalidArticleId)
+              .set("Authorization", `Bearer ${token}`);
+
             expect(response).to.have.status(404);
           });
           it("should return 200 if valid  id and token are provided", async () => {
