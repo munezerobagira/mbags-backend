@@ -3,7 +3,7 @@ const createComment = Joi.object({
   comment: Joi.string().required(),
 });
 const updateComment = Joi.object({
-  comment: Joi.string().required(),
+  comment: Joi.string(),
   votes: Joi.number().valid(-1, 1),
   read: Joi.boolean(),
   reply: Joi.boolean(),

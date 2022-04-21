@@ -30,7 +30,13 @@ export default class UserServive {
         });
       }
       await user.save();
-      return { success: true, user };
+      return {
+        success: true,
+        user: Object.assign(user._doc, {
+          password: undefined,
+          tokens: undefined,
+        }),
+      };
     } catch (error) {
       return { error: error.message };
     }
@@ -81,7 +87,13 @@ export default class UserServive {
       }
       if (star) user.star = star;
       await user.save();
-      return { success: true, user };
+      return {
+        success: true,
+        user: Object.assign(user._doc, {
+          password: undefined,
+          tokens: undefined,
+        }),
+      };
     } catch (error) {
       return { error: error.message };
     }
@@ -107,7 +119,10 @@ export default class UserServive {
           success: false,
           error: "User not found or you might need to login",
         };
-      let user = Object.assign({}, userData._doc, { password: undefined });
+      let user = Object.assign({}, userData._doc, {
+        password: undefined,
+        tokens: undefined,
+      });
 
       return { success: true, user };
     } catch (error) {
