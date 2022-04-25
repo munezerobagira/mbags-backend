@@ -9,6 +9,6 @@ router.post(
   passport.authenticate("login", { session: false }),
   AuthenticationController.login
 );
-router.get("/logout", isLoggedIn, AuthenticationController.logout);
+router.patch("/signout", isLoggedIn, AuthenticationController.signout);
 router.post("/signup", multerUploader.single("profile"), UserController.signup);
 export default router;

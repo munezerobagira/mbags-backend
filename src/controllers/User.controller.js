@@ -47,7 +47,7 @@ export default class User {
         email,
         verified,
       });
-      if (profilePic) unlinkSync(profilePic);
+      profilePic && unlinkSync(profilePic);
       if (!result.success)
         return response.status(400).json({ status: 400, error: result.error });
       return response

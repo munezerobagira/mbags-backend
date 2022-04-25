@@ -31,9 +31,10 @@ describe("API test", () => {
       expect(res).to.have.status(404);
     });
   });
-  describe("Base /api", () => {
+  describe("Base /api", function () {
     let user;
     let token;
+    this.timeout(10000);
 
     before(async () => {
       let password = faker.internet.password();
@@ -44,10 +45,19 @@ describe("API test", () => {
         email: faker.internet.email(),
         confirmPassword: password,
       };
-      await request(server).post("/api/auth/signup").send(user);
+      // let image = await createBanner("test", { inputPath: inputPath });
+      await request(server)
+        .post("/api/auth/signup")
+        .field("name", user.name)
+        .field("username", user.username)
+        .field("password", user.password)
+        .field("confirmPassword", user.confirmPassword)
+        .field("email", user.email);
+      // .attach("image", image);
       token = await (
         await request(server).post("/api/auth/login").send(user)
       ).body.token;
+      console.log(token);
     });
     after(async () => {
       await server.close();
@@ -60,6 +70,15 @@ describe("API test", () => {
       });
     });
     describe("/auth", () => {
+      let userToken;
+      let password = faker.internet.password();
+      let user = {
+        name: faker.name.firstName() + " " + faker.name.lastName(),
+        username: faker.internet.userName(),
+        password,
+        email: faker.internet.email(),
+        confirmPassword: password,
+      };
       describe("POST /signup", async () => {
         it("should return 400, if invalidData is not given", async () => {
           let response;
@@ -74,15 +93,7 @@ describe("API test", () => {
         it("should return 201 status and user created, if valid credentials provided", async () => {
           let response;
           let password = faker.internet.password();
-          response = await request(server)
-            .post("/api/auth/signup")
-            .send({
-              name: faker.name.firstName() + " " + faker.name.lastName(),
-              username: faker.internet.userName(),
-              password,
-              email: faker.internet.email(),
-              confirmPassword: password,
-            });
+          response = await request(server).post("/api/auth/signup").send(user);
           expect(response).to.have.status(201);
           expect(response.body).to.have.property("user");
         });
@@ -113,6 +124,21 @@ describe("API test", () => {
             .send(user);
           expect(response).to.have.status(200);
           expect(response.body).to.have.property("token");
+          userToken = response.body.token;
+          console.log(userToken, token);
+        });
+      });
+      describe("GET /signout", () => {
+        it("should return 308, if user is not logged in", async () => {
+          let response = await request(server).patch("/api/auth/signout");
+          expect(response).to.have.status(401);
+        });
+        it("should return 200", async () => {
+          console.log();
+          let response = await request(server)
+            .patch("/api/auth/signout")
+            .set("Authorization", `Bearer ${userToken}`);
+          expect(response).to.have.status(200);
         });
       });
     });
@@ -261,7 +287,7 @@ describe("API test", () => {
           .field("summary", faker.company.catchPhraseDescriptor())
           .field("content", faker.lorem.paragraphs(3))
           .field("categories", faker.fake("{{random.word}}, {{random.word}}"))
-          .attach("image", image, "test.png")
+          .attach("image", image)
           .set("Authorization", `Bearer ${token}`);
 
         validArticleId = response.body?.article?._id;
@@ -622,6 +648,53 @@ describe("API test", () => {
         it("should return 200 if valid  id and token are provided", async () => {
           let response = await request(server)
             .delete("/api/articles/" + validArticleId)
+            .set("Authorization", `Bearer ${token}`);
+          expect(response).to.have.status(200);
+        });
+      });
+    });
+    describe("/user", function () {
+      describe("GET /profile", async () => {
+        it("should return 401 if token  is not given", async () => {
+          let response = await request(server).get("/api/user/profile");
+          expect(response).to.have.status(401);
+        });
+        it("should return 200 if valid  id and token are provided", async () => {
+          let response = await request(server)
+            .get("/api/user/profile")
+            .set("Authorization", `Bearer ${token}`);
+          expect(response).to.have.status(200);
+          expect(response.body).to.have.property("user");
+        });
+      });
+      describe("PATCH /profile", async () => {
+        it("should return 401 if token  is not given", async () => {
+          let response = await request(server).patch("/api/user/profile");
+          expect(response).to.have.status(401);
+        });
+        it("should return 200 if valid  id and token are provided", async () => {
+          let response = await request(server)
+            .patch("/api/user/profile")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+              user: {
+                summary: faker.company.catchPhrase(),
+                info: faker.lorem.lines(2),
+                keywords: faker.fake("{{random.word}}, {{random.word}}"),
+              },
+            });
+          expect(response).to.have.status(200);
+          expect(response.body).to.have.property("user");
+        });
+      });
+      describe("DELETE /profile", async () => {
+        it("should return 401 if token  is not given", async () => {
+          let response = await request(server).delete("/api/user/profile");
+          expect(response).to.have.status(401);
+        });
+        it("should return 200 if valid  id and token are provided", async () => {
+          let response = await request(server)
+            .delete("/api/user/profile")
             .set("Authorization", `Bearer ${token}`);
           expect(response).to.have.status(200);
         });

@@ -8,7 +8,7 @@ const emptyDb = async () => {
   await Comment.deleteMany();
   await Message.deleteMany();
   await User.deleteMany();
-  await mongoose.disconnect();
+  // await mongoose.disconnect();
 };
 export default emptyDb;
 emptyDb();
