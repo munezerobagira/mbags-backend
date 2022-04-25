@@ -121,7 +121,6 @@ export default class UserServive {
         };
       let user = Object.assign({}, userData._doc, {
         password: undefined,
-        tokens: undefined,
       });
 
       return { success: true, user };

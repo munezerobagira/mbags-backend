@@ -20,22 +20,15 @@ export default class Authentication {
         return response
           .status(400)
           .json({ status: 400, success: true, error: result.error });
-      return response
-        .status(200)
-        .json({ status: 200, success: true, user: result.user, token });
+      return response.status(200).json({ status: 200, success: true, token });
     } catch (error) {
       response.status(500).json({ status: 500, error: error.message });
     }
   }
-  static async logout(request, response) {
+  static async signout(request, response) {
     try {
       const { user } = request;
       const { token } = request;
-      if (!user)
-        return response
-          .status(403)
-          .json({ status: 403, error: "Unauthorized" });
-
       const result = await UserServive.updateUser(user._id, {
         token: { action: -1, value: token },
       });
