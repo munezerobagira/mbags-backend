@@ -1,17 +1,21 @@
 import chaiHttp from "chai-http";
 import chai, { expect } from "chai";
-const { faker } = require("@faker-js/faker");
-import server from "../../";
+import { join as joinPath } from "path";
+import { existsSync } from "fs";
 import mongoose from "mongoose";
+import { faker } from "@faker-js/faker";
+import { describe, it, after, before } from "mocha";
+
+import server from "../..";
 import { createBanner } from "../../helpers/bannerCreator";
 import {
   createImageTestingFolder,
   deleteImageTestingFolder,
 } from "../../testFunctions";
-import { join as joinPath } from "path";
-import { existsSync } from "fs";
+import { createUser } from "../../models/User";
+
 chai.use(chaiHttp);
-const request = chai.request;
+const { request } = chai;
 
 describe("API test", () => {
   let testingImageFolder;
@@ -32,32 +36,32 @@ describe("API test", () => {
     });
   });
   describe("Base /api", function () {
-    let user;
     let token;
     this.timeout(10000);
 
     before(async () => {
-      let password = faker.internet.password();
-      user = {
-        name: faker.name.firstName() + " " + faker.name.lastName(),
-        username: faker.internet.userName(),
-        password,
+      const password = faker.internet.password();
+      const guest = {
+        name: faker.name.findName(),
         email: faker.internet.email(),
-        confirmPassword: password,
+        password,
+        username: faker.internet.userName(),
       };
-      // let image = await createBanner("test", { inputPath: inputPath });
-      await request(server)
-        .post("/api/auth/signup")
-        .field("name", user.name)
-        .field("username", user.username)
-        .field("password", user.password)
-        .field("confirmPassword", user.confirmPassword)
-        .field("email", user.email);
-      // .attach("image", image);
+      const adminUser = {
+        name: faker.name.findName(),
+        email: faker.internet.email(),
+        password,
+        username: faker.internet.userName(),
+        role: "admin",
+      };
+      await createUser(adminUser);
+      await createUser(guest);
       token = await (
-        await request(server).post("/api/auth/login").send(user)
+        await request(server)
+          .post("/api/auth/login")
+          .send({ email: adminUser.email, password })
       ).body.token;
-      console.log(token);
+      expect(token).to.be.a("string");
     });
     after(async () => {
       await server.close();
@@ -71,9 +75,9 @@ describe("API test", () => {
     });
     describe("/auth", () => {
       let userToken;
-      let password = faker.internet.password();
-      let user = {
-        name: faker.name.firstName() + " " + faker.name.lastName(),
+      const password = faker.internet.password();
+      const user = {
+        name: faker.name.findName(),
         username: faker.internet.userName(),
         password,
         email: faker.internet.email(),
@@ -121,11 +125,10 @@ describe("API test", () => {
         it("should return 200 and token, if credentials are valid", async () => {
           let response = await request(server)
             .post("/api/auth/login")
-            .send(user);
+            .send({ email: user.email, password });
           expect(response).to.have.status(200);
           expect(response.body).to.have.property("token");
           userToken = response.body.token;
-          console.log(userToken, token);
         });
       });
       describe("GET /signout", () => {
@@ -134,7 +137,6 @@ describe("API test", () => {
           expect(response).to.have.status(401);
         });
         it("should return 200", async () => {
-          console.log();
           let response = await request(server)
             .patch("/api/auth/signout")
             .set("Authorization", `Bearer ${userToken}`);
@@ -493,6 +495,15 @@ describe("API test", () => {
               .set("Authorization", `Bearer ${token}`);
             expect(response).to.have.status(200);
             expect(response.body).to.have.property("category");
+            response = await request(server)
+              .get(
+                "/api/articles/categories/" +
+                  validCategoryId +
+                  "?categories=true"
+              )
+              .set("Authorization", `Bearer ${token}`);
+            expect(response).to.have.status(200);
+            expect(response.body).to.have.property("category");
           });
         });
         describe("PATCH /:category", () => {
@@ -654,6 +665,7 @@ describe("API test", () => {
       });
     });
     describe("/user", function () {
+      before(() => {});
       describe("GET /profile", async () => {
         it("should return 401 if token  is not given", async () => {
           let response = await request(server).get("/api/user/profile");
@@ -672,8 +684,8 @@ describe("API test", () => {
           let response = await request(server).patch("/api/user/profile");
           expect(response).to.have.status(401);
         });
-        it("should return 200 if valid  id and token are provided", async () => {
-          let response = await request(server)
+        it.skip("should return 200 if valid  id and token are provided", async () => {
+          const response = await request(server)
             .patch("/api/user/profile")
             .set("Authorization", `Bearer ${token}`)
             .send({

@@ -23,6 +23,7 @@ export const uploadFolder = path.join(
   "uploads",
   "temps"
 );
+export const logsFolder = path.join(__dirname, "..", "..", "logs");
 
 export const port = process.env.PORT || 5000;
 export const cloudinaryApiKey = process.env.CLOUDINARY_API_KEY;

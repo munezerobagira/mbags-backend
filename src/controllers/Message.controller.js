@@ -1,4 +1,7 @@
+import errorFormatter from "../helpers/errorFormatter";
+import Logger from "../helpers/Logger";
 import { MessageServive } from "../services";
+
 export default class Message {
   static async addMessage(request, response) {
     try {
@@ -15,9 +18,14 @@ export default class Message {
         .status(201)
         .json({ status: 201, success: true, message: result.message });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
+
   static async fetchMessages(request, response) {
     try {
       const { count = 100, skip = 0, filter = {} } = request.query;
@@ -32,9 +40,14 @@ export default class Message {
         .status(200)
         .json({ status: 200, success: true, messages: result.messages });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
+
   static async fetchMessage(request, response) {
     try {
       const { id } = request.params;
@@ -45,9 +58,14 @@ export default class Message {
         .status(200)
         .json({ status: 200, success: true, message: result.message });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
+
   static async deleteMessage(request, response) {
     try {
       const { id } = request.params;
@@ -58,9 +76,14 @@ export default class Message {
         .status(200)
         .json({ status: 200, success: true, message: result.message });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
+
   static async updateMessage(request, response) {
     try {
       const { id } = request.params;
@@ -72,7 +95,11 @@ export default class Message {
         .status(200)
         .json({ status: 200, success: true, message: result.message });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
 }

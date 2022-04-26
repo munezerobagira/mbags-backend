@@ -1,11 +1,11 @@
 import express from "express";
-import { SampleController } from "../controllers/";
+import { SampleController } from "../controllers";
 import messageRoutes from "./message";
 import articlesRoutes from "./articles";
 import userRoutes from "./user";
 import authRoutes from "./auth";
 import { isLoggedIn } from "../middlewares/auth";
-import { is } from "express/lib/request";
+
 const router = express.Router();
 router.get("/", (request, response) => {
   response.status(200).json({ message: "Welcome" });

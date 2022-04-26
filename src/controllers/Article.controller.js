@@ -1,7 +1,11 @@
-import { ArticleServive } from "../services";
 import { unlinkSync } from "fs";
+
+import { ArticleServive } from "../services";
 import { createBanner } from "../helpers/bannerCreator";
 import { uploadFolder } from "../config";
+import Logger from "../helpers/Logger";
+import errorFormatter from "../helpers/errorFormatter";
+
 export default class Article {
   static async addArticle(request, response) {
     try {
@@ -34,9 +38,14 @@ export default class Article {
         .status(201)
         .json({ status: 201, success: true, article: result.article });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(formattedError.stack);
+      return response
+        .status(formattedError.status)
+        .json(formattedError.message);
     }
   }
+
   static async getArticles(request, response) {
     try {
       const { skip = 0, count = 100 } = request.query;
@@ -47,9 +56,14 @@ export default class Article {
         .status(200)
         .json({ status: 200, success: true, articles: result.articles });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(formattedError.stack);
+      return response
+        .status(formattedError.status)
+        .json(formattedError.message);
     }
   }
+
   static async getArticle(request, response) {
     try {
       const { id } = request.params;
@@ -60,13 +74,19 @@ export default class Article {
         .status(200)
         .json({ status: 200, success: true, article: result.article });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(formattedError.stack);
+      return response
+        .status(formattedError.status)
+        .json(formattedError.message);
     }
   }
+
   static async addComment(request, response) {
     try {
       const { articleId } = request.params;
-      let { comment, author } = request.body;
+      const { comment } = request.body;
+      let { author } = request.body;
       if (!author) author = request.user._id;
       const result = await ArticleServive.addComment(articleId, {
         comment,
@@ -78,9 +98,14 @@ export default class Article {
         .status(201)
         .json({ status: 201, success: true, comment: result.comment });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(formattedError.stack);
+      return response
+        .status(formattedError.status)
+        .json(formattedError.message);
     }
   }
+
   static async deleteArticle(request, response) {
     try {
       const { id } = request.params;
@@ -91,9 +116,14 @@ export default class Article {
         .status(200)
         .json({ status: 200, success: true, comment: result.comment });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(formattedError.stack);
+      return response
+        .status(formattedError.status)
+        .json(formattedError.message);
     }
   }
+
   static async updateArticle(request, response) {
     try {
       let image;
@@ -116,7 +146,11 @@ export default class Article {
         .status(200)
         .json({ status: 200, success: true, article: result.article });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(formattedError.stack);
+      return response
+        .status(formattedError.status)
+        .json(formattedError.message);
     }
   }
 }

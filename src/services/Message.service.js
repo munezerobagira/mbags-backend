@@ -11,7 +11,7 @@ export default class MessageServive {
       await message.save();
       return { success: true, message };
     } catch (error) {
-      return { error: error.message };
+      return { success: false, error: error };
     }
   }
 
@@ -23,7 +23,7 @@ export default class MessageServive {
       if (!messages) return { success: false, error: "Messages not found" };
       return { success: true, messages };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error: error };
     }
   }
   static async getAMessage(id) {
@@ -32,7 +32,7 @@ export default class MessageServive {
       if (!message) return { success: false, error: "Message not found" };
       return { success: true, message };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error: error };
     }
   }
   static async updateMessage(id, { reply, read }) {
@@ -44,7 +44,7 @@ export default class MessageServive {
       await message.save();
       return { success: true, message };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error: error };
     }
   }
   static async deleteMessage(id) {
@@ -53,7 +53,7 @@ export default class MessageServive {
       if (!message) return { success: false, error: "Message not found" };
       return { success: true, message };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error: error };
     }
   }
 }

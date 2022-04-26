@@ -1,8 +1,7 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt";
 import { User } from "../models";
-import { tokenSecret } from "../config";
+
 passport.use(
   "login",
   new LocalStrategy(

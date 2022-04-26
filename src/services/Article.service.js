@@ -33,8 +33,8 @@ export default class ArticleServive {
       });
       await article.save();
       if (categories) {
-        categories = categories.split(",").map((tag) => tag.trim());
-        for (let tag of categories) {
+        const tags = categories.split(",").map((tag) => tag.trim());
+        for (let tag of tags) {
           tag = tag[0].toUpperCase() + tag.slice(1).toLowerCase();
           let category = await Category.findOne({ title: tag });
           if (!category) category = new Category({ title: tag, articles: [] });
@@ -46,12 +46,13 @@ export default class ArticleServive {
       }
       return { success: true, article };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error };
     }
   }
+
   static async updateArticle(
     id,
-    { title, summary, categories, content, featured, published, authorId }
+    { title, summary, categories, content, featured, published }
   ) {
     try {
       const article = await Article.findOne({ _id: id });
@@ -63,15 +64,15 @@ export default class ArticleServive {
       if (featured) article.featured = !!featured;
       if (categories) {
         article.categories.forEach(async (categoryId) => {
-          let category = await Category.findOne({ _id: categoryId });
+          const category = await Category.findOne({ _id: categoryId });
           if (!category) return;
           category.articles.pull(id);
           await category.save();
         });
         article.categories = [];
         await article.save();
-        categories = categories.split(",").map((tag) => tag.trim());
-        for (let tag of categories) {
+        const tags = categories.split(",").map((tag) => tag.trim());
+        for (let tag of tags) {
           tag = tag[0].toUpperCase() + tag.slice(1).toLowerCase();
           let category = await Category.findOne({ title: tag });
           if (!category) category = new Category({ title: tag, articles: [] });
@@ -86,22 +87,22 @@ export default class ArticleServive {
       await article.save();
       return { success: true, article };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error };
     }
   }
-  static async getArticles({ count = 100, skip = 0, ...filter }) {
+
+  static async getArticles({ count = 100, skip = 0, filter = {} }) {
     try {
-      let articles;
-      if (!filter) filter = {};
-      articles = await Article.find(filter)
+      const articles = await Article.find(filter)
         .limit(count)
         .skip(count * skip);
       if (!articles) return { success: false, error: "Articles not found" };
       return { success: true, articles };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error };
     }
   }
+
   static async getArticle(id) {
     try {
       const article = await Article.findOne({ _id: id })
@@ -110,9 +111,10 @@ export default class ArticleServive {
       if (!article) return { success: false, error: "Article not found" };
       return { success: true, article };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error };
     }
   }
+
   static async deleteArticle(id) {
     try {
       const article = await Article.findOneAndDelete({ _id: id });
@@ -120,21 +122,20 @@ export default class ArticleServive {
       if (article.comments)
         article.comments.forEach(async (commentId) => {
           let comment = await Comment.findOneAndDelete(commentId);
-          //experimental
           while (comment.reply) {
-            comment = await Comment.findOneAndDelete(reply);
+            comment = await Comment.findOneAndDelete(comment.reply);
           }
         });
       if (article.categories)
         article.categories.forEach(async (categoryId) => {
-          let category = await Category.findOne({ _id: categoryId });
+          const category = await Category.findOne({ _id: categoryId });
           if (!category) return;
           category.articles.pull(id);
           await category.save();
         });
       return { success: true, article };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error };
     }
   }
   // comments
@@ -152,7 +153,7 @@ export default class ArticleServive {
       await article.save();
       return { success: true, comment: commentDocument };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error };
     }
   }
 
@@ -164,16 +165,16 @@ export default class ArticleServive {
       await comment.save();
       return { success: true, comment };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error };
     }
   }
+
   static async updateComment(id, { vote, read, updatedComment }) {
     try {
       const comment = await Comment.findOne({ _id: id });
       if (!comment) return { success: false, error: "Comment not found" };
       if (vote) {
-        vote = parseInt(vote) > 0 ? 1 : -1;
-        comment.votes += vote;
+        comment.votes += parseInt(vote, 10) > 0 ? 1 : -1;
       }
       if (updatedComment) comment.comment = updatedComment;
       if (read) comment.read = read;
@@ -182,9 +183,10 @@ export default class ArticleServive {
 
       return { success: true, comment };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error };
     }
   }
+
   static async replyComment(id, { comment, author }) {
     try {
       const mainComment = await Comment.findOne({ _id: id });
@@ -195,7 +197,7 @@ export default class ArticleServive {
       await mainComment.save();
       return { success: true, comment: commentDocument };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error };
     }
   }
 
@@ -205,9 +207,10 @@ export default class ArticleServive {
       if (!Comment) return { succes: true, message: "Comment not found" };
       return { success: true, comment };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error };
     }
   }
+
   static async getComments({ count = 100, skip = 0, filter = {} }) {
     try {
       const comments = await Comment.find(filter)
@@ -217,19 +220,9 @@ export default class ArticleServive {
       if (!comments) return { succes: true, error: "Comments not found" };
       return { success: true, comments };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error };
     }
   }
-  static async addArticleImages(id, { image }) {
-    try {
-      const article = await Article.findOne({ _id: id });
-      // article.images.push()
-      return { success: true, article };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
-
   // categories
 
   static async getCategories({ skip = 0, count = 100 }) {
@@ -240,9 +233,10 @@ export default class ArticleServive {
       if (!categories) return { success: false, error: "Categories not found" };
       return { success: true, categories };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error };
     }
   }
+
   static async getCategory(id, { articles, skip = 0, count = 100 }) {
     try {
       let category;
@@ -255,9 +249,10 @@ export default class ArticleServive {
       if (!category) return { success: false, error: "Category not found" };
       return { success: true, category };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error };
     }
   }
+
   static async updateCategory(id, { title, description }) {
     try {
       const category = await Category.findOne({ _id: id });
@@ -269,7 +264,7 @@ export default class ArticleServive {
       await category.save();
       return { success: true, category };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error };
     }
   }
 }

@@ -1,10 +1,16 @@
 import express from "express";
 import { MessageController } from "../controllers";
 import { joiValidator } from "../middlewares";
-import { isLoggedIn } from "../middlewares/auth";
+import { isLoggedIn, checkRole } from "../middlewares/auth";
 import { messageSchema } from "../validations";
+
 const router = express.Router();
-router.get("/", isLoggedIn, MessageController.fetchMessages);
+router.get(
+  "/",
+  isLoggedIn,
+  checkRole("admin"),
+  MessageController.fetchMessages
+);
 router.post(
   "/",
   joiValidator(messageSchema.createMessage),

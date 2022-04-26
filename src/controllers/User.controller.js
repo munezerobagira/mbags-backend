@@ -1,5 +1,6 @@
 import { UserServive } from "../services";
 import { unlinkSync } from "fs";
+import Logger from "../helpers/Logger";
 export default class User {
   static async signup(request, response) {
     try {
@@ -27,6 +28,7 @@ export default class User {
         .status(201)
         .json({ status: 201, success: true, user: result.user });
     } catch (error) {
+      Logger.error(error.stack);
       response.status(500).json({ status: 500, error: error.message });
     }
   }
@@ -54,6 +56,7 @@ export default class User {
         .status(200)
         .json({ status: 200, success: true, user: result.user });
     } catch (error) {
+      Logger.error(error.stack);
       response.status(500).json({ status: 500, error: error.message });
     }
   }
@@ -67,6 +70,7 @@ export default class User {
         .status(200)
         .json({ status: 200, success: true, user: result.user });
     } catch (error) {
+      Logger.error(error.stack);
       response.status(500).json({ status: 500, error: error.message });
     }
   }
@@ -80,6 +84,7 @@ export default class User {
         .status(200)
         .json({ status: 200, success: true, user: result.user });
     } catch (error) {
+      Logger.error(error.stack);
       response.status(500).json({ status: 500, error: error.message });
     }
   }
@@ -96,6 +101,7 @@ export default class User {
         .status(200)
         .json({ status: 200, success: true, users: result.users });
     } catch (error) {
+      Logger.error(error.stack);
       response.status(500).json({ status: 500, error: error.message });
     }
   }

@@ -1,4 +1,7 @@
+import errorFormatter from "../helpers/errorFormatter";
 import { verifyAuthToken } from "../helpers/jwt";
+import Logger from "../helpers/Logger";
+
 export const isLoggedIn = async (request, response, next) => {
   try {
     const token =
@@ -9,7 +12,24 @@ export const isLoggedIn = async (request, response, next) => {
     const user = await verifyAuthToken(token);
     request.user = user;
     request.token = token;
-    next();
+    request.userRole = user.role;
+    return next();
+  } catch (error) {
+    const formattedError = errorFormatter(error);
+    Logger.error(formattedError.stack);
+    return response
+      .status(formattedError.status)
+      .json({ status: formattedError.status, error: formattedError.message });
+  }
+};
+export const checkRole = (role) => async (request, response, next) => {
+  try {
+    const { userRole } = request;
+    if (userRole === role) return next();
+    return response.status(403).json({
+      status: 403,
+      error: "Resource access denied",
+    });
   } catch (error) {
     return response.status(401).json({
       status: 401,

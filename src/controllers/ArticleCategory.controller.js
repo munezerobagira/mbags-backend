@@ -1,4 +1,7 @@
+import errorFormatter from "../helpers/errorFormatter";
+import Logger from "../helpers/Logger";
 import { ArticleServive } from "../services";
+
 export default class ArticleCategory {
   static async getCategories(request, response) {
     try {
@@ -14,9 +17,14 @@ export default class ArticleCategory {
         .status(200)
         .json({ status: 200, success: true, categories: result.categories });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(formattedError.stack);
+      return response
+        .status(500)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
+
   static async getCategory(request, response) {
     try {
       const { id } = request.params;
@@ -32,9 +40,14 @@ export default class ArticleCategory {
         .status(200)
         .json({ status: 200, success: true, category: result.category });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(formattedError.stack);
+      return response
+        .status(500)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
+
   static async updateCategory(request, response) {
     try {
       const { id } = request.params;
@@ -49,7 +62,11 @@ export default class ArticleCategory {
         .status(200)
         .json({ status: 200, success: true, category: result.category });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(formattedError.stack);
+      return response
+        .status(500)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
 }

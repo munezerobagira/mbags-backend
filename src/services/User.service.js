@@ -1,6 +1,7 @@
 import { cloudinaryFolders } from "../config";
 import { cloudinaryUploader } from "../helpers/uploader";
 import { User } from "../models";
+
 export default class UserServive {
   static async signup({ name, username, email, password, profilePic }) {
     try {
@@ -13,7 +14,7 @@ export default class UserServive {
           password,
         });
       else {
-        let uploadResult = await cloudinaryUploader(
+        const uploadResult = await cloudinaryUploader(
           profilePic,
           cloudinaryFolders.profiles
         );
@@ -38,16 +39,16 @@ export default class UserServive {
         }),
       };
     } catch (error) {
-      return { error: error.message };
+      return { success: false, error };
     }
   }
+
   static async updateUser(
     id,
     {
       name = null,
       email = null,
       username = null,
-      password = null,
       verified = null,
       keywords = null,
       summary = null,
@@ -67,24 +68,21 @@ export default class UserServive {
       if (name) user.name = name;
       if (email) user.email = email;
       if (username) user.username = username;
-      if (password) user.password = password;
       if (verified) user.verified = verified;
       if (keywords) user.keywords = keywords;
       if (summary) user.summary = summary;
       if (info) user.info = info;
       if (profilePic) {
-        let uploadResult = await cloudinaryUploader(profilePic);
+        const uploadResult = await cloudinaryUploader(profilePic);
         user.profilePic = {
           path: uploadResult.path,
           width: uploadResult.width,
           height: uploadResult.height,
         };
       }
-      if (token) {
-        token.type > 0
-          ? user.tokens.push(token.value)
-          : user.tokens.pull(token.value);
-      }
+      if (token && token.type > 0) user.tokens.push(token.value);
+      else user.tokens.pull(token.value);
+
       if (star) user.star = star;
       await user.save();
       return {
@@ -95,9 +93,10 @@ export default class UserServive {
         }),
       };
     } catch (error) {
-      return { error: error.message };
+      return { success: false, error };
     }
   }
+
   static async deleteUser(id) {
     try {
       const user = await User.findOneAndDelete({ _id: id });
@@ -108,9 +107,10 @@ export default class UserServive {
         };
       return { success: true, user };
     } catch (error) {
-      return { error: error.message };
+      return { success: false, error };
     }
   }
+
   static async getUser(id) {
     try {
       const userData = await User.findOne({ _id: id });
@@ -119,13 +119,11 @@ export default class UserServive {
           success: false,
           error: "User not found or you might need to login",
         };
-      let user = Object.assign({}, userData._doc, {
-        password: undefined,
-      });
+      const user = { ...userData._doc, password: undefined };
 
       return { success: true, user };
     } catch (error) {
-      return { error: error.message };
+      return { success: false, error };
     }
   }
 
@@ -138,6 +136,28 @@ export default class UserServive {
       return { success: true, users };
     } catch (error) {
       return { success: false, error: error.message };
+    }
+  }
+
+  static async changePassword(
+    id,
+    { password, oldPassword, withToken = false }
+  ) {
+    try {
+      const user = await User.findOne({ _id: id });
+      if (!oldPassword && !withToken)
+        throw new Error("Token or password needed");
+      if (user.comparePassword(oldPassword)) this.password = password;
+      await user.save();
+      return {
+        success: true,
+        user: Object.assign(user._doc, {
+          password: undefined,
+          tokens: undefined,
+        }),
+      };
+    } catch (error) {
+      return { success: false, error };
     }
   }
 }

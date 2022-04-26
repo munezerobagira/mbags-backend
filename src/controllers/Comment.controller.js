@@ -1,4 +1,7 @@
+import errorFormatter from "../helpers/errorFormatter";
+import Logger from "../helpers/Logger";
 import { ArticleServive } from "../services";
+
 export default class Comment {
   static async getComment(request, response) {
     try {
@@ -10,9 +13,14 @@ export default class Comment {
         .status(200)
         .json({ status: 200, success: true, comment: result.comment });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
+
   static async getComments(request, response) {
     try {
       const { count = 100, skip = 0, ...filter } = request.query;
@@ -23,9 +31,14 @@ export default class Comment {
         .status(200)
         .json({ status: 200, success: true, comments: result.comments });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
+
   static async updateComment(request, response) {
     try {
       const { comment, read, vote } = request.body;
@@ -41,9 +54,14 @@ export default class Comment {
         .status(200)
         .json({ status: 200, success: true, comment: result.comment });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
+
   static async deleteComment(request, response) {
     try {
       const { id } = request.params;
@@ -54,9 +72,14 @@ export default class Comment {
         .status(200)
         .json({ status: 200, success: true, comments: result.comment });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
+
   static async replyComment(request, response) {
     try {
       const { comment } = request.body;
@@ -68,7 +91,11 @@ export default class Comment {
         .status(201)
         .json({ status: 201, success: true, comments: result.comment });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
 }
