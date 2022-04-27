@@ -30,7 +30,7 @@ export default class Authentication {
       Logger.error(error.stack);
       return response
         .status(formattedError.status)
-        .json({ status: 500, error: formattedError.message });
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
 
@@ -50,10 +50,10 @@ export default class Authentication {
         .json({ status: 200, success: true, user: result.user, token });
     } catch (error) {
       const formattedError = errorFormatter(error);
-      Logger.error();
+      Logger.error(error.error);
       return response
         .status(formattedError.status)
-        .json({ status: 500, error: formattedError.message });
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
 }

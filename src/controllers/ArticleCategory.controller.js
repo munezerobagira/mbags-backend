@@ -18,7 +18,7 @@ export default class ArticleCategory {
         .json({ status: 200, success: true, categories: result.categories });
     } catch (error) {
       const formattedError = errorFormatter(error);
-      Logger.error(formattedError.stack);
+      Logger.error(formattedError.error.stack);
       return response
         .status(500)
         .json({ status: formattedError.status, error: formattedError.message });
@@ -41,7 +41,7 @@ export default class ArticleCategory {
         .json({ status: 200, success: true, category: result.category });
     } catch (error) {
       const formattedError = errorFormatter(error);
-      Logger.error(formattedError.stack);
+      Logger.error(formattedError.error.stack);
       return response
         .status(500)
         .json({ status: formattedError.status, error: formattedError.message });
@@ -63,7 +63,7 @@ export default class ArticleCategory {
         .json({ status: 200, success: true, category: result.category });
     } catch (error) {
       const formattedError = errorFormatter(error);
-      Logger.error(formattedError.stack);
+      Logger.error(formattedError.error.stack);
       return response
         .status(500)
         .json({ status: formattedError.status, error: formattedError.message });

@@ -10,5 +10,5 @@ mongoose.connect(mongoUrl).then(() => {
   Logger.info("connected to db");
 });
 export default app.listen(port, () => {
-  Logger.info("Server started on port", port);
+  Logger.info(`Server started on port ${port}`);
 });

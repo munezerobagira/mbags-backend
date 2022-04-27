@@ -16,7 +16,11 @@ export const isLoggedIn = async (request, response, next) => {
     return next();
   } catch (error) {
     const formattedError = errorFormatter(error);
-    Logger.error(formattedError.stack);
+    Logger.info(
+      `${new Date().toLocaleString()} - ${request.ip} - ${
+        formattedError.message
+      }`
+    );
     return response
       .status(formattedError.status)
       .json({ status: formattedError.status, error: formattedError.message });

@@ -8,6 +8,7 @@ let baseMongoUrl = process.env.MONGO_URL;
 const cloudFolders = {
   articles: "articles",
   profiles: "profiles",
+  projects: "projects",
 };
 
 // Make sure that resources are different for each environment

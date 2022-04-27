@@ -1,115 +1,91 @@
 import { unlinkSync } from "fs";
 
-import { ArticleServive } from "../services";
+import { ProjectServive } from "../services";
 import { createBanner } from "../helpers/bannerCreator";
 import { uploadFolder } from "../config";
 import Logger from "../helpers/Logger";
 import errorFormatter from "../helpers/errorFormatter";
 
 export default class Article {
-  static async addArticle(request, response) {
+  static async addProject(request, response) {
     try {
       let image;
       if (!request.file)
         image = await createBanner(
-          request.body?.title || "a blog tempelate banner",
+          request.body?.title || "This image for project",
           {
             inputPath: `${uploadFolder}/temp`,
           }
         );
-      else image = request.file?.path;
+      if (request.file) image = request.file?.path;
 
-      const { title, images, summary, content, categories } = request.body;
-      let { authorId } = request.body;
+      const { title, images, summary, link, categories } = request.body;
+      let { _id: authorId } = request.user;
       if (!authorId) authorId = request.user._id;
-      const result = await ArticleServive.addArticle({
+      const result = await ProjectServive.addProject({
         title,
         images,
         summary,
-        content,
+        link,
         categories,
         image,
         authorId,
       });
-      unlinkSync(image);
+      if (image) unlinkSync(image);
       if (!result.success)
         return response.status(400).json({ status: 400, error: result.error });
       return response
         .status(201)
-        .json({ status: 201, success: true, article: result.article });
+        .json({ status: 201, success: true, project: result.project });
     } catch (error) {
       const formattedError = errorFormatter(error);
-      Logger.error(formattedError.error);
+      Logger.error(formattedError.error.stack);
       return response
         .status(formattedError.status)
         .json(formattedError.message);
     }
   }
 
-  static async getArticles(request, response) {
+  static async getProjects(request, response) {
     try {
       const { skip = 0, count = 100 } = request.query;
-      const result = await ArticleServive.getArticles({ skip, count });
+      const result = await ProjectServive.getProjects({ skip, count });
       if (!result.success)
         return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
-        .json({ status: 200, success: true, articles: result.articles });
+        .json({ status: 200, success: true, projects: result.projects });
     } catch (error) {
       const formattedError = errorFormatter(error);
-      Logger.error(formattedError.error);
+      Logger.error(formattedError.error.stack);
       return response
         .status(formattedError.status)
         .json(formattedError.message);
     }
   }
 
-  static async getArticle(request, response) {
+  static async getProject(request, response) {
     try {
       const { id } = request.params;
-      const result = await ArticleServive.getArticle(id);
+      const result = await ProjectServive.getProject(id);
       if (!result.success)
         return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
-        .json({ status: 200, success: true, article: result.article });
+        .json({ status: 200, success: true, project: result.project });
     } catch (error) {
       const formattedError = errorFormatter(error);
-      Logger.error(formattedError.error);
+      Logger.error(formattedError.error.stack);
       return response
         .status(formattedError.status)
         .json(formattedError.message);
     }
   }
 
-  static async addComment(request, response) {
-    try {
-      const { articleId } = request.params;
-      const { comment } = request.body;
-      let { author } = request.body;
-      if (!author) author = request.user._id;
-      const result = await ArticleServive.addComment(articleId, {
-        comment,
-        author,
-      });
-      if (!result.success)
-        return response.status(404).json({ status: 404, error: result.error });
-      return response
-        .status(201)
-        .json({ status: 201, success: true, comment: result.comment });
-    } catch (error) {
-      const formattedError = errorFormatter(error);
-      Logger.error(formattedError.error);
-      return response
-        .status(formattedError.status)
-        .json(formattedError.message);
-    }
-  }
-
-  static async deleteArticle(request, response) {
+  static async deleteProject(request, response) {
     try {
       const { id } = request.params;
-      const result = await ArticleServive.deleteArticle(id);
+      const result = await ProjectServive.deleteProject(id);
       if (!result.success)
         return response.status(404).json({ status: 404, error: result.error });
       return response
@@ -117,24 +93,24 @@ export default class Article {
         .json({ status: 200, success: true, comment: result.comment });
     } catch (error) {
       const formattedError = errorFormatter(error);
-      Logger.error(formattedError.error);
+      Logger.error(formattedError.error.stack);
       return response
         .status(formattedError.status)
         .json(formattedError.message);
     }
   }
 
-  static async updateArticle(request, response) {
+  static async updateProject(request, response) {
     try {
       let image;
       if (request.file && request.file.path) image = request.file.path;
       const { id } = request.params;
-      const { title, summary, content, categories, published, featured } =
+      const { title, summary, link, categories, published, featured } =
         request.body;
-      const result = await ArticleServive.updateArticle(id, {
+      const result = await ProjectServive.updateProject(id, {
         title,
         summary,
-        content,
+        link,
         categories,
         published,
         featured,
@@ -147,7 +123,7 @@ export default class Article {
         .json({ status: 200, success: true, article: result.article });
     } catch (error) {
       const formattedError = errorFormatter(error);
-      Logger.error(formattedError.error);
+      Logger.error(formattedError.error.stack);
       return response
         .status(formattedError.status)
         .json(formattedError.message);

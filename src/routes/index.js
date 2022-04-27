@@ -2,6 +2,8 @@ import express from "express";
 import { SampleController } from "../controllers";
 import messageRoutes from "./message";
 import articlesRoutes from "./articles";
+import projectsRoutes from "./project";
+
 import userRoutes from "./user";
 import authRoutes from "./auth";
 import { isLoggedIn } from "../middlewares/auth";
@@ -12,6 +14,7 @@ router.get("/", (request, response) => {
 });
 router.use("/messages", messageRoutes);
 router.use("/articles", isLoggedIn, articlesRoutes);
+router.use("/projects", isLoggedIn, projectsRoutes);
 router.use("/user", isLoggedIn, userRoutes);
 router.use("/auth", authRoutes);
 router.use("*", SampleController.notFound);

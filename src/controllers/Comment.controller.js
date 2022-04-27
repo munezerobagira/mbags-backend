@@ -14,7 +14,7 @@ export default class Comment {
         .json({ status: 200, success: true, comment: result.comment });
     } catch (error) {
       const formattedError = errorFormatter(error);
-      Logger.error(error.stack);
+      Logger.error(formattedError.error.stack);
       return response
         .status(formattedError.status)
         .json({ status: formattedError.status, error: formattedError.message });
@@ -32,7 +32,7 @@ export default class Comment {
         .json({ status: 200, success: true, comments: result.comments });
     } catch (error) {
       const formattedError = errorFormatter(error);
-      Logger.error(error.stack);
+      Logger.error(formattedError.error.stack);
       return response
         .status(formattedError.status)
         .json({ status: formattedError.status, error: formattedError.message });
@@ -55,7 +55,7 @@ export default class Comment {
         .json({ status: 200, success: true, comment: result.comment });
     } catch (error) {
       const formattedError = errorFormatter(error);
-      Logger.error(error.stack);
+      Logger.error(formattedError.error.stack);
       return response
         .status(formattedError.status)
         .json({ status: formattedError.status, error: formattedError.message });
@@ -73,7 +73,7 @@ export default class Comment {
         .json({ status: 200, success: true, comments: result.comment });
     } catch (error) {
       const formattedError = errorFormatter(error);
-      Logger.error(error.stack);
+      Logger.error(formattedError.error.stack);
       return response
         .status(formattedError.status)
         .json({ status: formattedError.status, error: formattedError.message });
@@ -92,7 +92,7 @@ export default class Comment {
         .json({ status: 201, success: true, comments: result.comment });
     } catch (error) {
       const formattedError = errorFormatter(error);
-      Logger.error(error.stack);
+      Logger.error(formattedError.error.stack);
       return response
         .status(formattedError.status)
         .json({ status: formattedError.status, error: formattedError.message });
