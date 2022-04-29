@@ -12,4 +12,6 @@ jobs:
     name: Node ${{ matrix.node }} test
     steps:
       - uses: actions/checkout@master
+      - run: npm ci
+      - run: npm run coverage
       - uses: codecov/codecov-action@v2
