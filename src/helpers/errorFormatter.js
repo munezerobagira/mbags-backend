@@ -1,12 +1,16 @@
-import { ValidationError } from "joi";
 import { JsonWebTokenError } from "jsonwebtoken";
-import {} from "mongoose";
-import {
-  INTERNAL_SERVER_ERROR,
-  TOKEN_ERROR,
-  UNSUPPORTED_IMAGE_FORMAT,
-} from "./Constants";
+import { Error } from "mongoose";
+import { INTERNAL_SERVER_ERROR, TOKEN_ERROR } from "./Constants";
 
+const mongoDuplicateErrorMessage = (stack) => {
+  let error = stack.split("index")[1]?.trim();
+  error = error
+    .replace(/[{}:_"]|dup\s+key/g, "")
+    .trim()
+    .replace(/\s+/, " ");
+  error = `${error} already exists`;
+  return error;
+};
 /**
  *
  * @param {*} error
@@ -27,15 +31,24 @@ const errorFormatter = (error) => {
           },
         };
       default:
-        if (error instanceof ValidationError) {
+        if (error instanceof Error.CastError || Error.name === "CastError") {
           return {
-            status: 400,
-            message: error.message,
+            status: 404,
+            message: "Invalid id",
             error: {
               stack,
             },
           };
         }
+
+        if (error.name === "MongoServerError" && error.code === 11000)
+          return {
+            status: 400,
+            message: mongoDuplicateErrorMessage(error.message),
+            error: {
+              stack,
+            },
+          };
         if (error instanceof JsonWebTokenError) {
           return {
             status: 401,
@@ -45,24 +58,6 @@ const errorFormatter = (error) => {
             },
           };
         }
-        if (error.stack.includes("Invalid input\n    at Sharp"))
-          return {
-            status: 400,
-            message: UNSUPPORTED_IMAGE_FORMAT,
-            error: {
-              stack,
-            },
-          };
-        if (
-          error.stack.includes("Input buffer contains unsupported image format")
-        )
-          return {
-            status: 400,
-            message: UNSUPPORTED_IMAGE_FORMAT,
-            error: {
-              stack,
-            },
-          };
         return {
           status: 500,
           message: error.name,

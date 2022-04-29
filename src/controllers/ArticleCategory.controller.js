@@ -11,8 +11,6 @@ export default class ArticleCategory {
         count,
         filter,
       });
-      if (!result.success)
-        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, categories: result.categories });
@@ -34,8 +32,6 @@ export default class ArticleCategory {
         skip,
         count,
       });
-      if (!result.success)
-        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, category: result.category });
@@ -43,7 +39,7 @@ export default class ArticleCategory {
       const formattedError = errorFormatter(error);
       Logger.error(formattedError.error.stack);
       return response
-        .status(500)
+        .status(formattedError.status)
         .json({ status: formattedError.status, error: formattedError.message });
     }
   }
@@ -56,8 +52,6 @@ export default class ArticleCategory {
         title,
         description,
       });
-      if (!result.success)
-        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, category: result.category });
@@ -65,7 +59,7 @@ export default class ArticleCategory {
       const formattedError = errorFormatter(error);
       Logger.error(formattedError.error.stack);
       return response
-        .status(500)
+        .status(formattedError.status)
         .json({ status: formattedError.status, error: formattedError.message });
     }
   }

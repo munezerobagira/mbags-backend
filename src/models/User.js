@@ -18,7 +18,12 @@ const userSchema = new mongoose.Schema(
     },
     star: { type: Number, default: 0 },
     tokens: [{ type: String }],
-    role: { type: String, default: "guest", enum: ["admin", "guest"] },
+    role: {
+      type: String,
+      required: true,
+      default: "guest",
+      enum: ["admin", "guest"],
+    },
   },
   { timestamps: true }
 );

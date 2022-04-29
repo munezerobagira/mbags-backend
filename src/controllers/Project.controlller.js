@@ -32,8 +32,6 @@ export default class Article {
         authorId,
       });
       if (image) unlinkSync(image);
-      if (!result.success)
-        return response.status(400).json({ status: 400, error: result.error });
       return response
         .status(201)
         .json({ status: 201, success: true, project: result.project });

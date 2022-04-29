@@ -20,8 +20,8 @@ export default class Article {
       else image = request.file?.path;
 
       const { title, images, summary, content, categories } = request.body;
-      let { authorId } = request.body;
-      if (!authorId) authorId = request.user._id;
+      let authorId;
+      if (!authorId) authorId = request?.user?._id;
       const result = await ArticleServive.addArticle({
         title,
         images,
@@ -32,8 +32,6 @@ export default class Article {
         authorId,
       });
       unlinkSync(image);
-      if (!result.success)
-        return response.status(400).json({ status: 400, error: result.error });
       return response
         .status(201)
         .json({ status: 201, success: true, article: result.article });
@@ -50,8 +48,6 @@ export default class Article {
     try {
       const { skip = 0, count = 100 } = request.query;
       const result = await ArticleServive.getArticles({ skip, count });
-      if (!result.success)
-        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, articles: result.articles });
@@ -68,8 +64,6 @@ export default class Article {
     try {
       const { id } = request.params;
       const result = await ArticleServive.getArticle(id);
-      if (!result.success)
-        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, article: result.article });
@@ -87,13 +81,11 @@ export default class Article {
       const { articleId } = request.params;
       const { comment } = request.body;
       let { author } = request.body;
-      if (!author) author = request.user._id;
+      if (!author) author = request?.user?._id;
       const result = await ArticleServive.addComment(articleId, {
         comment,
         author,
       });
-      if (!result.success)
-        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(201)
         .json({ status: 201, success: true, comment: result.comment });
@@ -110,8 +102,6 @@ export default class Article {
     try {
       const { id } = request.params;
       const result = await ArticleServive.deleteArticle(id);
-      if (!result.success)
-        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, comment: result.comment });
@@ -140,8 +130,6 @@ export default class Article {
         featured,
         image,
       });
-      if (!result.success)
-        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, article: result.article });

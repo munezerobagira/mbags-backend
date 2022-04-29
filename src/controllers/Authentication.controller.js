@@ -1,29 +1,28 @@
 import errorFormatter from "../helpers/errorFormatter";
 import { signToken } from "../helpers/jwt";
 import Logger from "../helpers/Logger";
+import { User } from "../models";
 import { UserServive } from "../services";
 
 export default class Authentication {
   static async login(request, response) {
     try {
-      const { user } = request;
-      const id = user._id;
-      if (!user)
+      const { email, password } = request.body;
+      const user = await User.findOne({ email });
+      if (!user || !(await user.comparePassword(password)))
         return response
           .status(400)
-          .json({ status: 400, error: "You must login" });
+          .json({ status: 400, error: "Invalid credentials" });
+
+      const id = user._id;
 
       const token = await signToken(
         { user: { _id: id, username: user.email } },
         { expiresIn: "12h" }
       );
-      const result = await UserServive.updateUser(user._id, {
+      await UserServive.updateUser(user._id, {
         token: { type: 1, value: token },
       });
-      if (!result.success)
-        return response
-          .status(400)
-          .json({ status: 400, success: true, error: result.error });
       return response.status(200).json({ status: 200, success: true, token });
     } catch (error) {
       const formattedError = errorFormatter(error);
@@ -41,10 +40,6 @@ export default class Authentication {
       const result = await UserServive.updateUser(user._id, {
         token: { action: -1, value: token },
       });
-      if (!result.success)
-        return response
-          .status(400)
-          .json({ status: 400, success: true, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, user: result.user, token });

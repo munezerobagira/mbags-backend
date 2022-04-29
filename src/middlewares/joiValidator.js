@@ -6,10 +6,13 @@ export default function joiValidator(schema) {
       });
       if (error)
         return response.status(400).json({
-          errors: error,
+          errors: error.details.map((err) => ({
+            message: err.message,
+            path: err.path,
+          })),
         });
       request.body = value;
-      next();
+      return next();
     } catch (error) {
       return response.status(500).json({
         status: 500,

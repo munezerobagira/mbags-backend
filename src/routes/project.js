@@ -11,8 +11,8 @@ router.post(
   joiValidator(projectSchema.createProject),
   ProjectController.addProject
 );
-router.get("/", isLoggedIn, ProjectController.getProjects);
-router.get("/:id", isLoggedIn, ProjectController.getProject);
+router.get("/", ProjectController.getProjects);
+router.get("/:id", ProjectController.getProject);
 router.patch(
   "/:id",
   joiValidator(projectSchema.updateProject),

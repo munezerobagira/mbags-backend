@@ -13,8 +13,8 @@ router.get("/", (request, response) => {
   response.status(200).json({ message: "Welcome" });
 });
 router.use("/messages", messageRoutes);
-router.use("/articles", isLoggedIn, articlesRoutes);
-router.use("/projects", isLoggedIn, projectsRoutes);
+router.use("/articles", articlesRoutes);
+router.use("/projects", projectsRoutes);
 router.use("/user", isLoggedIn, userRoutes);
 router.use("/auth", authRoutes);
 router.use("*", SampleController.notFound);

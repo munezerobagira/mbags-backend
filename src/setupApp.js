@@ -4,6 +4,7 @@ import swaggerUI from "swagger-ui-express";
 import morgan from "morgan";
 import cors from "cors";
 import { join as joinPath } from "path";
+import multer from "multer";
 
 import "./helpers/auth";
 import errorHandler from "./helpers/errorHandler";
@@ -24,9 +25,9 @@ const accessLogStream = fs.createWriteStream(
 // setup the logger
 export default function setupApp(app) {
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
   app.use(cors());
   app.use(morgan("combined", { stream: accessLogStream }));
-  app.use(express.urlencoded({ extended: true }));
   app.use("/public", express.static(uploadFolder));
   app.use("/api", routes);
   app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
