@@ -13,8 +13,3 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - uses: codecov/codecov-action@v2
-      - run: npm ci
-      - run: npm run coverage
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          verbose: true # optional (default = false)
