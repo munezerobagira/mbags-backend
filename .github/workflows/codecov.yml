@@ -4,14 +4,26 @@ on: [push]
 
 jobs:
   coverage:
+    services:
+      mongo:
+        image: mongo
+        ports:
+          - 27017:27017
     runs-on: ubuntu-latest
     timeout-minutes: 10
     strategy:
       matrix:
         node: ["16"]
     name: Node ${{ matrix.node }} test
+    env:
+      MONGO_URL: {{ secrets.MONGO_URL }}
+      CLOUD_NAME: {{ secrets.CLOUD_NAME }}
+      CLOUDINARY_API_KEY: {{ secrets.CLOUDINARY_API_KEY }}
+      CLOUDINARY_API_SECRET: {{ secrets.CLOUDINARY_API_SECRET }}
+      CLOUDINARY_API_SECRET: {{ secrets.CLOUDINARY_API_SECRET }}
     steps:
       - uses: actions/checkout@master
+      - run: sudo docker run --name mongo -d -p 27017:27017 mongo
       - run: npm ci
       - run: npm run coverage
       - uses: codecov/codecov-action@v2
