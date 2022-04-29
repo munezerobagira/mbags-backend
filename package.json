@@ -10,7 +10,8 @@
     "dev": "cross-env NODE_ENV=development nodemon --exec babel-node src/index.js ",
     "test": "cross-env NODE_ENV=development mocha src/tests/**/*.test.js --require @babel/register",
     "test-dev": "cross-env NODE_ENV=development mocha src/tests/**/*.test.js --bail --require @babel/register",
-    "coverage": "nyc --reporter=text-summary --reporter=text --reporter=html npm run test"
+    "coverage": "nyc --reporter=lcov --reporter=text-summary --reporter=text --reporter=html npm run test",
+    "createUser": "cross-env NODE_ENV=development babel-node src/createUser.js"
   },
   "keywords": [],
   "license": "ISC",
