@@ -17,14 +17,13 @@ jobs:
     name: Node ${{ matrix.node }} test
     steps:
       - uses: actions/checkout@master
-      - run: sudo docker run --name mongo -d -p 27017:27017 mongo
       - run: npm ci
       - name: npm install, run coverage
         run: npm run coverage
         env:
-          MONGO_URL: ${ { secrets.MONGO_URL } }
-          CLOUD_NAME: ${ { secrets.CLOUD_NAME } }
-          CLOUDINARY_API_KEY: ${ { secrets.CLOUDINARY_API_KEY } }
-          CLOUDINARY_API_SECRET: ${ { secrets.CLOUDINARY_API_SECRET } }
-          TOKEN_SECRET: ${ { secrets.TOKEN_SECRET } }
+          MONGO_URL: ${{ secrets.MONGO_URL }}
+          CLOUD_NAME: ${{ secrets.CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
       - uses: codecov/codecov-action@v2
