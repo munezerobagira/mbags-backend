@@ -314,22 +314,19 @@ describe("/api/articles", function () {
 
         expect(response).to.have.status(403);
       });
-      it.skip("should return 404 if invalidId provided", async () => {
-        console.log(invalidArticleId);
+      it("should return 404 if invalidId provided", async () => {
         const response = await request(server)
-          .patch(`"/api/articles/categories/${invalidArticleId}`)
+          .patch(`/api/articles/categories/${invalidArticleId}`)
           .send({
             description: "Welcome",
             title: "welcome",
           })
           .set("Authorization", `Bearer ${token}`);
-        console.log(response.body);
-
         expect(response).to.have.status(404);
       });
-      it.skip("should return 200 if valid  id and token are provided", async () => {
+      it("should return 200 if valid  id and token are provided", async () => {
         const response = await request(server)
-          .patch(`/api/artices/categories/${validCategoryId}`)
+          .patch(`/api/articles/categories/${validCategoryId}`)
           .send({
             title: "new",
             description: faker.company.catchPhraseDescriptor(),

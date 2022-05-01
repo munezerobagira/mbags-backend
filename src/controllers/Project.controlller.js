@@ -48,8 +48,6 @@ export default class Article {
     try {
       const { skip = 0, count = 100 } = request.query;
       const result = await ProjectServive.getProjects({ skip, count });
-      if (!result.success)
-        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, projects: result.projects });
@@ -66,8 +64,6 @@ export default class Article {
     try {
       const { id } = request.params;
       const result = await ProjectServive.getProject(id);
-      if (!result.success)
-        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, project: result.project });
@@ -84,11 +80,9 @@ export default class Article {
     try {
       const { id } = request.params;
       const result = await ProjectServive.deleteProject(id);
-      if (!result.success)
-        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
-        .json({ status: 200, success: true, comment: result.comment });
+        .json({ status: 200, success: true, project: result.project });
     } catch (error) {
       const formattedError = errorFormatter(error);
       Logger.error(formattedError.error.stack);
@@ -114,11 +108,9 @@ export default class Article {
         featured,
         image,
       });
-      if (!result.success)
-        return response.status(404).json({ status: 404, error: result.error });
       return response
         .status(200)
-        .json({ status: 200, success: true, article: result.article });
+        .json({ status: 200, success: true, project: result.project });
     } catch (error) {
       const formattedError = errorFormatter(error);
       Logger.error(formattedError.error.stack);

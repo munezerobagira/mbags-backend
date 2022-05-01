@@ -6,20 +6,13 @@ import errorFormatter from "../helpers/errorFormatter";
 export default class User {
   static async signup(request, response) {
     try {
-      let profilePic;
-      if (request.file && request.file.path) profilePic = request.file.path;
-
-      const { name, username, password, confirmPassword, email } = request.body;
-      if (password !== confirmPassword) if (profilePic) unlinkSync(profilePic);
-
+      const { name, username, password, email } = request.body;
       const result = await UserServive.signup({
         name,
         username,
         password,
         email,
-        profilePic,
       });
-      if (profilePic) unlinkSync(profilePic);
       return response
         .status(201)
         .json({ status: 201, success: true, user: result.user });
@@ -78,7 +71,7 @@ export default class User {
   static async getUser(request, response) {
     try {
       const { _id: id } = request.user;
-      const result = await UserServive.getUser(id);
+      const result = await UserServive.getUser({ id });
       if (!result.success)
         return response.status(400).json({ status: 400, error: result.error });
       return response

@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       default: "guest",
-      enum: ["admin", "guest"],
+      enum: ["guest", "admin"],
     },
   },
   { timestamps: true }
@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema(
 userSchema.pre("save", async function presave(next) {
   if (!this.isModified("password")) return next();
   this.password = await hash(this.password, 10);
+  if (!this.role) this.role = "guest";
   return next();
 });
 

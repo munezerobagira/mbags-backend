@@ -22,12 +22,20 @@ describe("/api/auth", () => {
       expect(response).to.have.status(400);
       expect(response.body).to.have.property("errors");
     });
+
     it("should return 201 status and user created, if valid credentials provided", async () => {
       const response = await request(server)
         .post("/api/auth/signup")
         .send(user);
       expect(response).to.have.status(201);
       expect(response.body).to.have.property("user");
+    });
+    it("should return 400 with an error, if username or email already exists", async () => {
+      const response = await request(server)
+        .post("/api/auth/signup")
+        .send(user);
+      expect(response).to.have.status(400);
+      expect(response.body).to.have.property("error");
     });
   });
   describe("POST api/auth/login", () => {

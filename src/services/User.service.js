@@ -3,7 +3,7 @@ import { cloudinaryUploader } from "../helpers/uploader";
 import { User } from "../models";
 
 export default class UserServive {
-  static async signup({ name, username, email, password, profilePic }) {
+  static async signup({ name, username, email, password }) {
     const user = new User({
       name,
       username,
@@ -26,13 +26,13 @@ export default class UserServive {
       name = null,
       email = null,
       username = null,
-      verified = null,
       keywords = null,
       summary = null,
       info = null,
       profilePic,
       token = null,
       star = null,
+      password = null,
     }
   ) {
     const user = await User.findOne({ _id: id });
@@ -44,9 +44,9 @@ export default class UserServive {
     if (name) user.name = name;
     if (email) user.email = email;
     if (username) user.username = username;
-    if (verified) user.verified = verified;
     if (keywords) user.keywords = keywords;
     if (summary) user.summary = summary;
+    if (password) user.password = password;
     if (info) user.info = info;
     if (profilePic) {
       const uploadResult = await cloudinaryUploader(
@@ -83,8 +83,8 @@ export default class UserServive {
     return { success: true, user };
   }
 
-  static async getUser(id) {
-    const userData = await User.findOne({ _id: id });
+  static async getUser({ id, email }) {
+    const userData = await User.findOne(id ? { _id: id } : { email });
     if (!userData)
       return {
         success: false,
@@ -103,13 +103,9 @@ export default class UserServive {
     return { success: true, users };
   }
 
-  static async changePassword(
-    id,
-    { password, oldPassword, withToken = false }
-  ) {
+  static async verifyProfile(id) {
     const user = await User.findOne({ _id: id });
-    if (!oldPassword && !withToken) throw new Error("Token or password needed");
-    if (user.comparePassword(oldPassword)) this.password = password;
+    user.verified = true;
     await user.save();
     return {
       success: true,

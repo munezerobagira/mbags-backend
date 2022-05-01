@@ -16,13 +16,14 @@ import {
 
 chai.use(chaiHttp);
 const { request } = chai;
-// let validCategoryId;
-describe.skip("/api/project", function projectTest() {
+describe("/api/project", function projectTest() {
   let validProjectId;
   let invalidProjectId;
   let token;
   let guestToken;
   let testingImageFolder;
+  // eslint-disable-next-line no-unused-vars
+  let validCategoryId;
   this.timeout(30000);
   before(async () => {
     await mongoose.connection.asPromise();
@@ -34,6 +35,7 @@ describe.skip("/api/project", function projectTest() {
       email: faker.internet.email(),
       password,
       username: faker.internet.userName(),
+      role: "guest",
     };
     const adminUser = {
       name: faker.name.findName(),
@@ -76,14 +78,10 @@ describe.skip("/api/project", function projectTest() {
   });
   after(async () => {
     await deleteImageTestingFolder();
-    expect(existsSync(testingImageFolder)).to.be(false);
+    expect(existsSync(testingImageFolder)).to.equal(false);
   });
   describe("GET /", () => {
-    it("should return 401 if token is not provided", async () => {
-      const response = await request(server).get("/api/articles");
-      expect(response).to.have.status(401);
-    });
-    it("should return 200  and articles if valid token  is provided", async () => {
+    it("should return 200  and projects", async () => {
       const response = await request(server)
         .get("/api/projects")
         .set("Authorization", `Bearer ${token}`);
@@ -92,20 +90,30 @@ describe.skip("/api/project", function projectTest() {
     });
   });
 
-  describe("POST /", () => {
-    it("should return 401 if token  is not given", async () => {
-      const response = await request(server).post("/api/articles/");
-      expect(response).to.have.status(401);
-    });
+  describe("POST /api/projects", () => {
     it("should return 400 if invalid data is  provided", async () => {
       const response = await request(server)
-        .post("/api/articles")
+        .post("/api/projects")
         .set("Authorization", `Bearer ${token}`);
       expect(response).to.have.status(400);
     });
+    it("should return 401 if token  is not given", async () => {
+      const response = await request(server).post("/api/projects/");
+      expect(response).to.have.status(401);
+    });
+    it("should return 403 if non admin token  is not given", async () => {
+      const response = await request(server)
+        .post("/api/projects")
+        .field("title", faker.company.catchPhrase())
+        .field("summary", faker.company.catchPhraseDescriptor())
+        .field("link", faker.internet.avatar())
+        .field("categories", faker.fake("{{random.word}}, {{random.word}}"))
+        .set("Authorization", `Bearer ${guestToken}`);
+      expect(response).to.have.status(403);
+    });
     it("should return 201 created if image is not provided", async () => {
       const response = await request(server)
-        .post("/api/project")
+        .post("/api/projects")
         .field("title", faker.company.catchPhrase())
         .field("summary", faker.company.catchPhraseDescriptor())
         .field("link", faker.internet.avatar())
@@ -123,13 +131,13 @@ describe.skip("/api/project", function projectTest() {
         .post("/api/projects")
         .field("title", faker.company.catchPhrase())
         .field("summary", faker.company.catchPhraseDescriptor())
-        .field("content", faker.lorem.paragraphs(3))
+        .field("link", faker.lorem.paragraphs(3))
         .field("categories", faker.lorem.words(3))
         .attach("image", image, "test.png")
         .set("Authorization", `Bearer ${token}`);
 
       expect(response).to.have.status(201);
-      expect(response.body).to.have.property("article");
+      expect(response.body).to.have.property("project");
     });
   });
   describe("PATCH /:id", () => {
@@ -141,7 +149,7 @@ describe.skip("/api/project", function projectTest() {
     });
     it("should return 400 if invalid data is given", async () => {
       const response = await request(server)
-        .patch(`/api/articles/${validProjectId}`)
+        .patch(`/api/projects/${validProjectId}`)
         .set("Authorization", `Bearer ${token}`)
         .send({
           featured: 12.3,
@@ -150,13 +158,13 @@ describe.skip("/api/project", function projectTest() {
 
       expect(response).to.have.status(400);
     });
-    it("should return 404 if  articleId is invalid", async () => {
+    it("should return 404 if  project doesn't exist", async () => {
       const response = await request(server)
         .patch(`/api/projects/${invalidProjectId}`)
         .send({
           title: "changed",
           summary: "changed",
-          content: "changed",
+          link: "https://www.changed.com",
           categories: "changed",
           published: true,
           featured: true,
@@ -170,49 +178,47 @@ describe.skip("/api/project", function projectTest() {
         .send({
           title: "changed",
           summary: "changed",
-          content: "changed",
+          link: "https://wwww.changed.com",
           categories: "changed",
-          link: faker.internet.avatar(),
           published: true,
           featured: true,
         })
         .set("Authorization", `Bearer ${token}`);
       expect(response).to.have.status(200);
-      expect(response.body).to.have.property("article");
+      expect(response.body).to.have.property("project");
     });
   });
   describe("GET /:id", () => {
-    it("should return 401 if token  is not given", async () => {
-      const response = await request(server).get(
-        `/api/articles/${validProjectId}`
-      );
-      expect(response).to.have.status(401);
-    });
     it("should return 404 if invalid id is given", async () => {
       const response = await request(server)
-        .get(`/api/articles/${invalidProjectId}`)
+        .get(`/api/projects/${invalidProjectId}`)
         .set("Authorization", `Bearer ${token}`);
 
       expect(response).to.have.status(404);
     });
-    it("should return 200 with message if valid  id and token are provided", async () => {
+    it("should return 200 with project ", async () => {
       const response = await request(server)
-        .get(`/api/articles/${validProjectId}`)
+        .get(`/api/projects/${validProjectId}`)
         .set("Authorization", `Bearer ${token}`);
-
       expect(response).to.have.status(200);
-      expect(response.body).to.have.property("article");
+      expect(response.body).to.have.property("project");
     });
     describe("DELETE /:id", () => {
       it("should return 401 if token  is not given", async () => {
         const response = await request(server).delete(
-          `/api/articles/${validProjectId}`
+          `/api/projects/${validProjectId}`
         );
         expect(response).to.have.status(401);
       });
-      it("should return 404 if invalid id is given", async () => {
+      it("should return 403 if non admin token  is given", async () => {
         const response = await request(server)
           .delete(`/api/projects/${validProjectId}`)
+          .set("Authorization", `Bearer ${guestToken}`);
+        expect(response).to.have.status(403);
+      });
+      it("should return 404 if invalid id is given", async () => {
+        const response = await request(server)
+          .delete(`/api/projects/${invalidProjectId}`)
           .set("Authorization", `Bearer ${token}`);
 
         expect(response).to.have.status(404);
@@ -222,6 +228,7 @@ describe.skip("/api/project", function projectTest() {
           .delete(`/api/projects/${validProjectId}`)
           .set("Authorization", `Bearer ${token}`);
         expect(response).to.have.status(200);
+        expect(response.body).to.have.property("project");
       });
     });
   });

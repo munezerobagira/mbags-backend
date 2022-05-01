@@ -4,10 +4,7 @@ import swaggerUI from "swagger-ui-express";
 import morgan from "morgan";
 import cors from "cors";
 import { join as joinPath } from "path";
-import multer from "multer";
 
-import "./helpers/auth";
-import errorHandler from "./helpers/errorHandler";
 import routes from "./routes";
 import { logsFolder, uploadFolder } from "./config";
 import swaggerDocument from "./swagger.json";
@@ -32,5 +29,4 @@ export default function setupApp(app) {
   app.use("/api", routes);
   app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
   app.use("*", SampleController.notFound);
-  app.use(errorHandler);
 }

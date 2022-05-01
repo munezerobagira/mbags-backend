@@ -133,10 +133,8 @@ export default class ArticleServive {
   }
 
   static async deleteComment(id) {
-    const comment = await Comment.findOne({ _id: id });
+    const comment = await Comment.findOneAndDelete({ _id: id });
     if (!comment) return { success: false, error: "Comment not found" };
-    comment.comment = "Deleted";
-    await comment.save();
     return { success: true, comment };
   }
 
@@ -184,7 +182,6 @@ export default class ArticleServive {
     const categories = await Category.find({})
       .limit(count)
       .skip(count * skip);
-    if (!categories) return { success: false, error: "Categories not found" };
     return { success: true, categories };
   }
 
@@ -196,14 +193,11 @@ export default class ArticleServive {
         path: "articles",
         options: { limit: count, skip: count * skip },
       });
-    if (!category) return { success: false, error: "Category not found" };
     return { success: true, category };
   }
 
   static async updateCategory(id, { title, description }) {
     const category = await Category.findOne({ _id: id });
-
-    if (!category) return { success: false, error: "Category not found" };
     if (title)
       category.title = title[0].toUpperCase() + title.slice(1).toLowerCase();
     if (description) category.description = description;

@@ -1,4 +1,5 @@
 import { JsonWebTokenError } from "jsonwebtoken";
+import { ResponseError as SendgridResponseError } from "@sendgrid/mail";
 import { Error } from "mongoose";
 import { INTERNAL_SERVER_ERROR, TOKEN_ERROR } from "./Constants";
 
@@ -34,7 +35,7 @@ const errorFormatter = (error) => {
         if (error instanceof Error.CastError || Error.name === "CastError") {
           return {
             status: 404,
-            message: "Invalid id",
+            message: "Resource not found",
             error: {
               stack,
             },
@@ -58,6 +59,15 @@ const errorFormatter = (error) => {
             },
           };
         }
+        if (error instanceof SendgridResponseError) {
+          return {
+            status: 500,
+            message: "Unkonwn error",
+            error: {
+              stack,
+            },
+          };
+        }
         return {
           status: 500,
           message: error.name,
@@ -68,9 +78,12 @@ const errorFormatter = (error) => {
     }
   } else {
     return {
-      status: 500,
-      message: "Ask admin to check the error",
-      stack: "You designed the systems so check this error",
+      status: 501,
+      message: "Not implemented",
+      stack: {
+        error: "You designed the systems so check this error",
+        stack: error?.stack,
+      },
     };
   }
 };

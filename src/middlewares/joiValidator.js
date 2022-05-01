@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 export default function joiValidator(schema) {
   return async function (request, response, next) {
     try {

@@ -21,8 +21,13 @@ const profile = Joi.object({
   keywords: Joi.string(),
   info: Joi.string(),
 }).with("password", "confirmPassword");
+const passwordReset = Joi.object({
+  password: Joi.string(),
+  confirmPassword: Joi.ref("password"),
+}).with("password", "confirmPassword");
 export default {
   signup,
   profile,
   login,
+  passwordReset,
 };

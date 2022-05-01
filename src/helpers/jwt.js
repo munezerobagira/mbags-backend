@@ -12,3 +12,12 @@ export const verifyAuthToken = async (token) => {
   if (!fetchedUser) throw new JsonWebTokenError("Invalid token");
   return fetchedUser;
 };
+export const verifyPasswordResetToken = async (token) => {
+  const payload = await jwt.verify(token, tokenSecret);
+  const { user } = payload;
+  const fetchedUser = await User.findOne({ _id: user._id, tokens: token });
+  if (!fetchedUser) throw new JsonWebTokenError("Invalid token");
+  if (!fetchedUser.tokens.includes(token))
+    throw new JsonWebTokenError("Invalid token");
+  return fetchedUser;
+};
