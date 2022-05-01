@@ -1,46 +1,56 @@
+import { tokenSecret } from "../config";
+import errorFormatter from "../helpers/errorFormatter";
 import { signToken } from "../helpers/jwt";
+import Logger from "../helpers/Logger";
+import { User } from "../models";
 import { UserServive } from "../services";
+
 export default class Authentication {
   static async login(request, response) {
     try {
-      const { user } = request;
-      if (!user)
+      const { email, password } = request.body;
+      const user = await User.findOne({ email });
+      if (!user || !(await user.comparePassword(password)))
         return response
           .status(400)
-          .json({ status: 400, error: "You must login" });
+          .json({ status: 400, error: "Invalid credentials" });
+
+      const id = user._id;
 
       const token = await signToken(
-        { user: { _id: user._id, username: user.email } },
+        { user: { _id: id, username: user.email } },
+        tokenSecret,
         { expiresIn: "12h" }
       );
-      const result = await UserServive.updateUser(user._id, {
-        token: { type: 1, value: token },
+      await UserServive.updateUser(user._id, {
+        token: { type: "add", value: token },
       });
-      if (!result.success)
-        return response
-          .status(400)
-          .json({ status: 400, success: true, error: result.error });
       return response.status(200).json({ status: 200, success: true, token });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
+
   static async signout(request, response) {
     try {
       const { user } = request;
       const { token } = request;
       const result = await UserServive.updateUser(user._id, {
-        token: { action: -1, value: token },
+        token: { action: "remove", value: token },
       });
-      if (!result.success)
-        return response
-          .status(400)
-          .json({ status: 400, success: true, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, user: result.user, token });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(error.error);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
 }

@@ -1,35 +1,41 @@
-import { UserServive } from "../services";
 import { unlinkSync } from "fs";
+import { UserServive } from "../services";
+import {
+  generatePasswordResetTemplate,
+  generateVerifyTemplate,
+  sendEmail,
+} from "../helpers/email";
+import Logger from "../helpers/Logger";
+import errorFormatter from "../helpers/errorFormatter";
+import {
+  signToken,
+  verifyPasswordResetToken,
+  verifyUserProfileToken,
+} from "../helpers/jwt";
+import { resetSecret, verificationSecret } from "../config";
+
 export default class User {
   static async signup(request, response) {
     try {
-      let profilePic;
-      if (request.file && request.file.path) profilePic = request.file.path;
-
-      const { name, username, password, confirmPassword, email } = request.body;
-      if (password !== confirmPassword) {
-        profilePic && unlinkSync(profilePic);
-        return response
-          .status(400)
-          .json({ status: 400, error: "Passwords do not match" });
-      }
+      const { name, username, password, email } = request.body;
       const result = await UserServive.signup({
         name,
         username,
         password,
         email,
-        profilePic,
       });
-      profilePic && unlinkSync(profilePic);
-      if (!result.success)
-        return response.status(400).json({ status: 400, error: result.error });
       return response
         .status(201)
         .json({ status: 201, success: true, user: result.user });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(formattedError.error);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
+
   static async updateUser(request, response) {
     try {
       let profilePic;
@@ -47,42 +53,50 @@ export default class User {
         email,
         verified,
       });
-      profilePic && unlinkSync(profilePic);
-      if (!result.success)
-        return response.status(400).json({ status: 400, error: result.error });
+      if (profilePic) unlinkSync(profilePic);
       return response
         .status(200)
         .json({ status: 200, success: true, user: result.user });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      Logger.error(error.stack);
+      return response.status(500).json({ status: 500, error: error.message });
     }
   }
+
   static async deleteUser(request, response) {
     try {
       const { _id: id } = request.user;
       const result = await UserServive.deleteUser(id);
-      if (!result.success)
-        return response.status(400).json({ status: 400, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, user: result.user });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(formattedError.error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError, error: formattedError.message });
     }
   }
+
   static async getUser(request, response) {
     try {
       const { _id: id } = request.user;
-      const result = await UserServive.getUser(id);
+      const result = await UserServive.getUser({ id });
       if (!result.success)
         return response.status(400).json({ status: 400, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, user: result.user });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(formattedError.error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError, error: formattedError.message });
     }
   }
+
   static async getUsers(request, response) {
     try {
       if (!request.user)
@@ -90,13 +104,111 @@ export default class User {
       const { skip, count } = request.query;
 
       const result = await UserServive.getUsers({ skip, count });
-      if (!result.success)
-        return response.status(400).json({ status: 400, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, users: result.users });
     } catch (error) {
-      response.status(500).json({ status: 500, error: error.message });
+      const formattedError = errorFormatter(error);
+      Logger.error(formattedError.error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError, error: formattedError.message });
+    }
+  }
+
+  static async passwordReset(request, response) {
+    try {
+      const { password } = request.body;
+      const { token } = request.query;
+      const user = verifyPasswordResetToken(token);
+      const result = await UserServive.updateUser(user._id, {
+        password,
+        token: { action: "remove", value: token },
+      });
+      return response
+        .status(200)
+        .json({ status: 200, success: true, user: result.user });
+    } catch (error) {
+      const formattedError = errorFormatter(error);
+      Logger.error(error.error);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
+    }
+  }
+
+  static async getPasswordResetToken(request, response) {
+    try {
+      const { email } = request.body;
+      const result = await UserServive.getUser({ email });
+      const token = await signToken(
+        { user: { _id: result.user._id } },
+        resetSecret,
+        { expiresIn: 30 * 60 * 1000 }
+      );
+      const template = generatePasswordResetTemplate({
+        name: result.user.name,
+        email: result.user.email,
+        token,
+      });
+      await sendEmail(template);
+      result.user.token.push(token);
+      await result.user.save();
+      return response
+        .status(200)
+        .json({ status: 200, success: true, user: result.user, token });
+    } catch (error) {
+      const formattedError = errorFormatter(error);
+      Logger.error(error.error);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
+    }
+  }
+
+  static async verifyProfile(request, response) {
+    try {
+      const { token } = request.query;
+      const user = verifyUserProfileToken(token);
+      const result = await UserServive.verifyProfile(user._id);
+      return response
+        .status(200)
+        .json({ status: 200, success: true, user: result.user, token });
+    } catch (error) {
+      const formattedError = errorFormatter(error);
+      Logger.error(error.error);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
+    }
+  }
+
+  static async getVerifyToken(request, response) {
+    try {
+      const { email } = request.query;
+      if (!email)
+        return response
+          .status(400)
+          .json({ status: 400, error: "Email is required" });
+      const user = await UserServive.getUser({ email });
+      const token = signToken(
+        { user: { _id: user._id, username: user.email } },
+        verificationSecret,
+        { expiresIn: "12h" }
+      );
+      const template = generateVerifyTemplate({
+        name: user.name,
+        email: user.email,
+        token,
+      });
+      await sendEmail(template);
+      return response.status(200).json({ status: 200, success: true });
+    } catch (error) {
+      const formattedError = errorFormatter(error);
+      Logger.error(error.error);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError.status, error: formattedError.message });
     }
   }
 }

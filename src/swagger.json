@@ -21,7 +21,7 @@
       }
     }
   ],
-  "schemes": ["http"],
+  "schemes": ["http", "https"],
   "tags": [
     {
       "name": "authentication",
@@ -426,6 +426,50 @@
         }
       }
     },
+    "/auth/signout": {
+      "patch": {
+        "tags": ["authentication"],
+        "summary": "Signout from  the system",
+        "description": "Signout  from  the system",
+        "operationId": "signup",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [{ "bearerToken": [] }],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Signup credentials",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/signup"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Add the token in the format 'Bearer token'",
+            "required": true,
+            "type": "string",
+            "default": "Bearer "
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/signup"
+            }
+          },
+          "400": {
+            "description": "Invalid username or password",
+            "schema": {
+              "$ref": "#/definitions/validationError"
+            }
+          }
+        }
+      }
+    },
     "/messages": {
       "get": {
         "description": "Returns a list of all the messages received",
@@ -470,6 +514,13 @@
           },
           "401": {
             "description": "User need to login",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/unauntheticatedError"
+            }
+          },
+          "403": {
+            "description": "User is not authorized to acces the resources",
             "schema": {
               "type": "object",
               "$ref": "#/definitions/unauntheticatedError"

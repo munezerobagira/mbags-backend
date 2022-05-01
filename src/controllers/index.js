@@ -5,3 +5,4 @@ export { default as CommentController } from "./Comment.controller";
 export { default as ArticleCategoryController } from "./ArticleCategory.controller";
 export { default as UserController } from "./User.controller";
 export { default as AuthenticationController } from "./Authentication.controller";
+export { default as ProjectController } from "./Project.controlller";

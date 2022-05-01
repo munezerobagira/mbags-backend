@@ -1,11 +1,12 @@
 import { expect } from "chai";
-import { createBanner } from "../../helpers/bannerCreator";
 import { join as joinPath } from "path";
+import { existsSync } from "fs";
+
 import {
   createImageTestingFolder,
   deleteImageTestingFolder,
 } from "../../testFunctions";
-import { existsSync } from "fs";
+import { createBanner } from "../../helpers/bannerCreator";
 
 describe("createBanner(name, {options})", () => {
   let testingImageFolder;
@@ -19,7 +20,6 @@ describe("createBanner(name, {options})", () => {
   });
   it("should create Image", async () => {
     let inputPath = joinPath(testingImageFolder, "test");
-    console.log(inputPath);
     const imagePath = await createBanner("Welcome to our website", {
       inputPath: inputPath,
     });

@@ -5,3 +5,4 @@ uploads/
 .nyc_output/
 coverage/
 .idea/
+*.log
