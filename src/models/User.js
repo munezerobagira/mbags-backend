@@ -46,6 +46,7 @@ export async function createUser({
   username = "admin",
   password = "admin",
   role = "admin",
+  verified = false,
 }) {
   const createdUser = await User.create({
     name,
@@ -53,6 +54,7 @@ export async function createUser({
     username,
     role,
     password,
+    verified,
   });
   return createdUser._doc;
 }

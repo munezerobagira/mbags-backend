@@ -1,29 +1,29 @@
-name: Coverage
+# name: Coverage
 
-on: [push]
+# on: [push]
 
-jobs:
-  coverage:
-    services:
-      mongo:
-        image: mongo
-        ports:
-          - 27017:27017
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    strategy:
-      matrix:
-        node: ["16"]
-    name: Node ${{ matrix.node }} test
-    steps:
-      - uses: actions/checkout@master
-      - run: npm ci
-      - name: npm install, run coverage
-        run: npm run coverage
-        env:
-          MONGO_URL: ${{ secrets.MONGO_URL }}
-          CLOUD_NAME: ${{ secrets.CLOUD_NAME }}
-          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-          TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
-      - uses: codecov/codecov-action@v2
+# jobs:
+#   coverage:
+#     services:
+#       mongo:
+#         image: mongo
+#         ports:
+#           - 27017:27017
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 10
+#     strategy:
+#       matrix:
+#         node: ["16"]
+#     name: Node ${{ matrix.node }} test
+#     steps:
+#       - uses: actions/checkout@master
+#       - run: npm ci
+#       - name: npm install, run coverage
+#         run: npm run coverage
+#         env:
+#           MONGO_URL: ${{ secrets.MONGO_URL }}
+#           CLOUD_NAME: ${{ secrets.CLOUD_NAME }}
+#           CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+#           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+#           TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
+#       - uses: codecov/codecov-action@v2

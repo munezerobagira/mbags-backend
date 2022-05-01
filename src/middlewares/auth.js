@@ -21,6 +21,7 @@ export const isLoggedIn = async (request, response, next) => {
         formattedError.message
       }`
     );
+    Logger.error(error.stack);
     return response
       .status(formattedError.status)
       .json({ status: formattedError.status, error: formattedError.message });

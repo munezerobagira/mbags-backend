@@ -25,9 +25,13 @@ const passwordReset = Joi.object({
   password: Joi.string(),
   confirmPassword: Joi.ref("password"),
 }).with("password", "confirmPassword");
+const email = Joi.object({
+  email: Joi.string().email().required(),
+});
 export default {
   signup,
   profile,
   login,
   passwordReset,
+  email,
 };

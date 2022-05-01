@@ -20,6 +20,8 @@ describe("/api/messages", () => {
       email: faker.internet.email(),
       password,
       username: faker.internet.userName(),
+      verified: true,
+      role: "guest",
     };
     const adminUser = {
       name: faker.name.findName(),
@@ -27,6 +29,7 @@ describe("/api/messages", () => {
       password,
       username: faker.internet.userName(),
       role: "admin",
+      verified: true,
     };
     await createUser(adminUser);
     await createUser(guest);
@@ -45,7 +48,7 @@ describe("/api/messages", () => {
     const response = await request(server).post("/api/messages").send({
       name: faker.name.findName(),
       subject: faker.company.catchPhrase(),
-      email: faker.internet.email(),
+      email: "bagira.sostenee@gmail.com",
       message: faker.lorem.paragraph(),
     });
     validId = response.body?.message?._id;
@@ -56,7 +59,7 @@ describe("/api/messages", () => {
       const response = await request(server).get("/api/messages");
       expect(response).to.have.status(401);
     });
-    it.skip("should return 403 if non admin token is provided", async () => {
+    it("should return 403 if non admin token is provided", async () => {
       const response = await request(server)
         .get("/api/messages")
         .set("Authorization", `Bearer ${guestToken}`);
@@ -87,7 +90,8 @@ describe("/api/messages", () => {
       expect(response.body).to.have.property("message");
     });
   });
-  describe("PATCH /api/messages/:id", () => {
+  describe("PATCH /api/messages/:id", async function () {
+    this.timeout(10000);
     it("should return 401 if token  is not given", async () => {
       const response = await request(server).patch(`/api/messages/${validId}`);
       expect(response).to.have.status(401);
@@ -103,7 +107,7 @@ describe("/api/messages", () => {
 
       expect(response).to.have.status(400);
     });
-    it.skip("should return 403 if non admin token is provided", async () => {
+    it("should return 403 if non admin token is provided", async () => {
       const response = await request(server)
         .patch(`/api/messages/${validId}`)
         .set("Authorization", `Bearer ${guestToken}`);

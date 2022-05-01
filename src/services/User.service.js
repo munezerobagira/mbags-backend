@@ -59,8 +59,8 @@ export default class UserServive {
         height: uploadResult.height,
       };
     }
-    if (token && token.type > 0) user.tokens.push(token.value);
-    else user.tokens.pull(token.value);
+    if (token && token.type === "add") user.tokens.push(token.value);
+    else if (token && token.type === "remove") user.tokens.pull(token.value);
 
     if (star) user.star = star;
     await user.save();

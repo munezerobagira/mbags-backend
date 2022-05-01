@@ -36,16 +36,18 @@ describe("/api/articles", function () {
       password,
       username: faker.internet.userName(),
       role: "guest",
+      verified: true,
     };
     const adminUser = {
       name: faker.name.findName(),
       email: faker.internet.email(),
       password,
       username: faker.internet.userName(),
+      verified: true,
       role: "admin",
     };
-    await createUser(adminUser);
     await createUser(guest);
+    await createUser(adminUser);
     token = await (
       await request(server)
         .post("/api/auth/login")
@@ -71,7 +73,6 @@ describe("/api/articles", function () {
       .field("categories", faker.fake("{{random.word}}, {{random.word}}"))
       .attach("image", image)
       .set("Authorization", `Bearer ${token}`);
-
     validArticleId = response.body?.article?._id;
     invalidArticleId = faker.random.alphaNumeric(16);
     validCategoryId = response.body?.article?.categories[0];

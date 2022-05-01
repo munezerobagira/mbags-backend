@@ -1,8 +1,8 @@
 /* eslint-disable func-names */
-export default function joiValidator(schema) {
+export default function joiValidator(schema, path = "body") {
   return async function (request, response, next) {
     try {
-      const { value, error } = await schema.validate(request.body, {
+      const { value, error } = await schema.validate(request[path], {
         abortEarly: false,
       });
       if (error)
@@ -12,7 +12,7 @@ export default function joiValidator(schema) {
             path: err.path,
           })),
         });
-      request.body = value;
+      request[path] = value;
       return next();
     } catch (error) {
       return response.status(500).json({

@@ -1,3 +1,4 @@
+import { generateReplyMessageTemplate, sendEmail } from "../helpers/email";
 import Message from "../models/Message";
 
 export default class MessageServive {
@@ -29,7 +30,15 @@ export default class MessageServive {
   static async updateMessage(id, { reply, read }) {
     const message = await Message.findOne({ _id: id });
     if (!message) return { success: false, error: "Message not found" };
-    if (reply) message.reply.push(reply);
+    if (reply) {
+      const template = generateReplyMessageTemplate({
+        name: message.name,
+        email: message.email,
+        message: reply,
+      });
+      await sendEmail(template);
+      message.reply.push(reply);
+    }
     if (read) message.read = read;
     await message.save();
     return { success: true, message };

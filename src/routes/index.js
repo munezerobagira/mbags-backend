@@ -6,7 +6,6 @@ import projectsRoutes from "./project";
 
 import userRoutes from "./user";
 import authRoutes from "./auth";
-import { isLoggedIn } from "../middlewares/auth";
 
 const router = express.Router();
 router.get("/", (request, response) => {
@@ -15,7 +14,7 @@ router.get("/", (request, response) => {
 router.use("/messages", messageRoutes);
 router.use("/articles", articlesRoutes);
 router.use("/projects", projectsRoutes);
-router.use("/user", isLoggedIn, userRoutes);
+router.use("/user", userRoutes);
 router.use("/auth", authRoutes);
 router.use("*", SampleController.notFound);
 export default router;

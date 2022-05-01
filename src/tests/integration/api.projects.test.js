@@ -36,6 +36,7 @@ describe("/api/project", function projectTest() {
       password,
       username: faker.internet.userName(),
       role: "guest",
+      verified: true,
     };
     const adminUser = {
       name: faker.name.findName(),
@@ -43,6 +44,7 @@ describe("/api/project", function projectTest() {
       password,
       username: faker.internet.userName(),
       role: "admin",
+      verified: true,
     };
     await createUser(adminUser);
     await createUser(guest);
