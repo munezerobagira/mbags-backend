@@ -2,5 +2,5 @@ import express from "express";
 import profileRoutes from "./profile";
 
 const router = express.Router();
-router.get("/profile", profileRoutes);
+router.use("/profile", profileRoutes);
 export default router;

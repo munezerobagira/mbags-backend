@@ -40,7 +40,6 @@ export default class User {
     try {
       let profilePic;
       if (request.file) profilePic = request.file.path;
-
       const { name, username, keywords, summary, info, email, verified } =
         request.body;
       const { _id: id } = request.user;
@@ -139,8 +138,8 @@ export default class User {
 
   static async getPasswordResetToken(request, response) {
     try {
-      const { email } = request.body;
-      const result = await UserServive.getUser({ email });
+      const { id } = request.body;
+      const result = await UserServive.getUser({ _id: id });
       const token = await signToken(
         { user: { _id: result.user._id } },
         resetSecret,
@@ -169,8 +168,15 @@ export default class User {
   static async verifyProfile(request, response) {
     try {
       const { token } = request.query;
-      const user = verifyUserProfileToken(token);
-      const result = await UserServive.verifyProfile(user._id);
+      if (!token)
+        return response
+          .status(400)
+          .json({ status: 400, error: "Token is required" });
+      const user = await verifyUserProfileToken(token);
+      const result = await UserServive.verifyProfile(user.id);
+      await UserServive.updateUser(result.user._id, {
+        token: { action: "remove", value: token },
+      });
       return response
         .status(200)
         .json({ status: 200, success: true, user: result.user, token });
@@ -185,20 +191,23 @@ export default class User {
 
   static async getVerifyToken(request, response) {
     try {
-      const { email } = request.query;
-      if (!email)
-        return response
-          .status(400)
-          .json({ status: 400, error: "Email is required" });
-      const user = await UserServive.getUser({ email });
-      const token = signToken(
-        { user: { _id: user._id, username: user.email } },
+      const { id } = request.query;
+      const result = await UserServive.getUser({ _id: id, verified: false });
+      if (!result.user)
+        return response.status(400).json({ status: 400, error: result.error });
+      const token = await signToken(
+        { user: { id: result.user._id } },
         verificationSecret,
-        { expiresIn: "12h" }
+        {
+          expiresIn: "12h",
+        }
       );
+      await UserServive.updateUser(result.user._id, {
+        token: { action: "add", value: token },
+      });
       const template = generateVerifyTemplate({
-        name: user.name,
-        email: user.email,
+        name: result.user.name,
+        email: result.user.email,
         token,
       });
       await sendEmail(template);

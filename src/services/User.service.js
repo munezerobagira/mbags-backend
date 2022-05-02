@@ -59,9 +59,8 @@ export default class UserServive {
         height: uploadResult.height,
       };
     }
-    if (token && token.type === "add") user.tokens.push(token.value);
-    else if (token && token.type === "remove") user.tokens.pull(token.value);
-
+    if (token && token.action === "add") user.tokens.push(token.value);
+    else if (token && token.action === "remove") user.tokens.pull(token.value);
     if (star) user.star = star;
     await user.save();
     return {
@@ -83,8 +82,8 @@ export default class UserServive {
     return { success: true, user };
   }
 
-  static async getUser({ id, email }) {
-    const userData = await User.findOne(id ? { _id: id } : { email });
+  static async getUser(filter) {
+    const userData = await User.findOne(filter);
     if (!userData)
       return {
         success: false,

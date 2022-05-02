@@ -2,7 +2,6 @@ import { JsonWebTokenError } from "jsonwebtoken";
 import { ResponseError as SendgridResponseError } from "@sendgrid/mail";
 import { Error } from "mongoose";
 import { INTERNAL_SERVER_ERROR, TOKEN_ERROR } from "./Constants";
-import { NonVerifiedUserError } from "./Errors";
 
 const mongoDuplicateErrorMessage = (stack) => {
   let error = stack.split("index")[1]?.trim();
@@ -64,15 +63,6 @@ const errorFormatter = (error) => {
           return {
             status: 500,
             message: "Unkonwn error",
-            error: {
-              stack,
-            },
-          };
-        }
-        if (error instanceof NonVerifiedUserError) {
-          return {
-            status: 403,
-            message: error.message,
             error: {
               stack,
             },

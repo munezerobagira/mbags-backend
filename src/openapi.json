@@ -13,6 +13,9 @@
       "url": "/api"
     },
     {
+      "url": "https://mybrand-sostene.herokuapp.com/api"
+    },
+    {
       "url": "http://localhost:{port}/api",
       "variables": {
         "port": {
@@ -49,6 +52,10 @@
     {
       "name": "projects",
       "description": "Endpoints for the projects"
+    },
+    {
+      "name": "projects",
+      "description": "Endpoints for the user"
     }
   ],
   "paths": {
@@ -87,23 +94,21 @@
         },
         "responses": {
           "200": {
-            "description": "Successful operation",
+            "description": "User succesfull logged in",
             "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/login"
-                }
-              }
+              "application/json": {}
             }
           },
           "400": {
             "description": "Invalid username or password",
             "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/validationError"
-                }
-              }
+              "application/json": {}
+            }
+          },
+          "403": {
+            "description": "User need to verify the account",
+            "content": {
+              "application/json": {}
             }
           }
         },
@@ -162,18 +167,6 @@
         "summary": "Signout from  the system",
         "description": "Signout  from  the system",
         "operationId": "path-signup",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Add the token in the format 'Bearer token'",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "default": "Bearer "
-            }
-          }
-        ],
         "requestBody": {
           "description": "Signup credentials",
           "content": {
@@ -189,21 +182,13 @@
           "200": {
             "description": "Successful operation",
             "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/signup"
-                }
-              }
+              "application/json": {}
             }
           },
-          "400": {
-            "description": "Invalid username or password",
+          "401": {
+            "description": "User must login in order to loggout or token required",
             "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/validationError"
-                }
-              }
+              "application/json": {}
             }
           }
         },
@@ -290,7 +275,7 @@
         "requestBody": {
           "description": "User can add the messsage",
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/userMessage"
               }
@@ -310,21 +295,11 @@
             }
           },
           "400": {
-            "description": "User need to send valid other",
+            "description": "Invalid data has been sent",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/validationError"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "User need to login",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/unauntheticatedError"
                 }
               }
             }
@@ -363,6 +338,16 @@
           },
           "401": {
             "description": "User need to login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/unauntheticatedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User is not authorized to resources",
             "content": {
               "application/json": {
                 "schema": {
@@ -425,8 +410,18 @@
               }
             }
           },
+          "403": {
+            "description": "User is not authorized to the resources",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/unauntheticatedError"
+                }
+              }
+            }
+          },
           "404": {
-            "description": "Message notFound",
+            "description": "Message was not found, check the id",
             "content": {
               "application/json": {
                 "schema": {
@@ -485,7 +480,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/unauntheticatedError"
+                  "type": "object"
                 }
               }
             }
@@ -627,12 +622,6 @@
         "responses": {
           "200": {
             "description": "Return a blogeof given id",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "401": {
-            "description": "User need to login",
             "content": {
               "application/json": {}
             }
@@ -1087,17 +1076,17 @@
         "x-codegen-request-body-name": "body"
       }
     },
-    "/user/profile/verify": {
+    "/user/profile": {
       "get": {
         "tags": [
           "user"
         ],
-        "description": "get verifification email",
+        "description": "Get the verification verifification email",
         "parameters": [
           {
-            "name": "email",
+            "name": "id",
             "in": "query",
-            "description": "your email",
+            "description": "your id",
             "required": true,
             "schema": {
               "type": "string"
@@ -1107,15 +1096,205 @@
         "responses": {
           "200": {
             "description": "Successful operation",
-            "content": {}
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Invalid id",
+            "content": {
+              "application/json": {}
+            }
           },
           "404": {
-            "description": "Email not found",
-            "content": {}
+            "description": "Account with id is not found",
+            "content": {
+              "application/json": {}
+            }
           },
           "500": {
             "description": "Internal server error",
-            "content": {}
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      },
+      "patch": {
+        "tags": [
+          "user"
+        ],
+        "description": "Get the verification verifification email",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "your id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account has been verified",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "The token is not valid",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "404": {
+            "description": "Account with id in token is not found",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      },
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "description": "Get the verification verifification email",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "your id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account has been verified",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "The token is not valid",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "404": {
+            "description": "Account with id in token is not found",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/user/profile/verification": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "description": "Get the verification verifification email",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "your id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Invalid id",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "404": {
+            "description": "Account with id is not found",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {}
+            }
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      },
+      "patch": {
+        "tags": [
+          "user"
+        ],
+        "description": "Get the verification verifification email",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "your id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account has been verified",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "The token is not valid",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "404": {
+            "description": "Account with id in token is not found",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {}
+            }
           }
         },
         "x-codegen-request-body-name": "body"
