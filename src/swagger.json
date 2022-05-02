@@ -3,25 +3,16 @@
   "info": {
     "description": "This provide documentation for the blog api for the sostene protofolio",
     "version": "1.0.0",
-    "contact": { "email": "munezerobagira@gmail.com" },
+    "contact": {
+      "email": "munezerobagira@gmail.com"
+    },
     "title": "Sostene protofolio api"
   },
   "basePath": "/api",
-  "servers": [
-    {
-      "url": "http://localhost:{port}/",
-      "description": "Local server",
-      "variables": {
-        "port": {
-          "default": "5000"
-        },
-        "basePath": {
-          "default": "api"
-        }
-      }
-    }
+  "schemes": [
+    "http",
+    "https"
   ],
-  "schemes": ["http", "https"],
   "tags": [
     {
       "name": "authentication",
@@ -65,7 +56,11 @@
           "type": "string"
         }
       },
-      "required": ["name", "message", "email"],
+      "required": [
+        "name",
+        "message",
+        "email"
+      ],
       "example": {
         "name": "John Doe",
         "subject": "A sending you a wonderful email",
@@ -93,8 +88,12 @@
     },
     "databaseMessage": {
       "allOf": [
-        { "$ref": "#/definitions/userMessage" },
-        { "$ref": "#/definitions/replyMessage" },
+        {
+          "$ref": "#/definitions/userMessage"
+        },
+        {
+          "$ref": "#/definitions/replyMessage"
+        },
         {
           "type": "object",
           "properties": {
@@ -104,7 +103,9 @@
             },
             "reply": {
               "type": "array",
-              "items": ["string"]
+              "items": {
+                "type": "string"
+              }
             },
             "createdAt": {
               "type": "string",
@@ -140,7 +141,11 @@
           "type": "string"
         }
       },
-      "required": ["name", "email", "password"],
+      "required": [
+        "name",
+        "email",
+        "password"
+      ],
       "example": {
         "name": "John Doe",
         "email": "johndoe@example.com",
@@ -159,7 +164,10 @@
           "type": "string"
         }
       },
-      "required": ["email", "password"],
+      "required": [
+        "email",
+        "password"
+      ],
       "example": {
         "email": "johndoe@example.com",
         "password": "password"
@@ -172,7 +180,9 @@
           "type": "string"
         }
       },
-      "required": ["comment"],
+      "required": [
+        "comment"
+      ],
       "example": {
         "comment": "This is a comment"
       }
@@ -193,7 +203,9 @@
           }
         }
       },
-      "required": ["name"],
+      "required": [
+        "name"
+      ],
       "example": {
         "name": "Technology",
         "description": "Technology articles"
@@ -201,7 +213,9 @@
     },
     "user": {
       "allOf": [
-        { "$ref": "#/definitions/login" },
+        {
+          "$ref": "#/definitions/login"
+        },
         {
           "type": "object",
           "properties": {
@@ -257,7 +271,12 @@
           "type": "string"
         }
       },
-      "required": ["title", "content", "categories", "summary"],
+      "required": [
+        "title",
+        "content",
+        "categories",
+        "summary"
+      ],
       "example": {
         "title": "How to make api",
         "summary": "Every thing you need to make sure that your api is working",
@@ -267,12 +286,20 @@
     },
     "updateArticle": {
       "allOf": [
-        { "$ref": "#/definitions/userArticle" },
+        {
+          "$ref": "#/definitions/userArticle"
+        },
         {
           "type": "object",
           "properties": {
-            "published": { "type": "boolean", "default": false },
-            "featured": { "type": "boolean", "default": false }
+            "published": {
+              "type": "boolean",
+              "default": false
+            },
+            "featured": {
+              "type": "boolean",
+              "default": false
+            }
           },
           "example": {
             "published": true,
@@ -283,12 +310,20 @@
     },
     "databaseArticle": {
       "allOf": [
-        { "$ref": "#/definitions/updateArticle" },
+        {
+          "$ref": "#/definitions/updateArticle"
+        },
         {
           "type": "object",
           "properties": {
-            "published": { "type": "boolean", "default": false },
-            "featured": { "type": "boolean", "default": false },
+            "published": {
+              "type": "boolean",
+              "default": false
+            },
+            "featured": {
+              "type": "boolean",
+              "default": false
+            },
             "createdAt": {
               "type": "string",
               "format": "date-time"
@@ -330,7 +365,10 @@
           "default": 400
         },
         "error": {
-          "type": "array"
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
         }
       }
     },
@@ -358,12 +396,18 @@
   "paths": {
     "/auth/login": {
       "post": {
-        "tags": ["authentication"],
+        "tags": [
+          "authentication"
+        ],
         "summary": "Login to the system",
         "description": "Login to the system",
         "operationId": "login",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "in": "body",
@@ -393,12 +437,18 @@
     },
     "/auth/signup": {
       "post": {
-        "tags": ["authentication"],
+        "tags": [
+          "authentication"
+        ],
         "summary": "Signup to the system",
         "description": "Signup to the system",
         "operationId": "signup",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "in": "body",
@@ -428,13 +478,23 @@
     },
     "/auth/signout": {
       "patch": {
-        "tags": ["authentication"],
+        "tags": [
+          "authentication"
+        ],
         "summary": "Signout from  the system",
         "description": "Signout  from  the system",
-        "operationId": "signup",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "security": [{ "bearerToken": [] }],
+        "operationId": "path-signup",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "in": "body",
@@ -473,9 +533,17 @@
     "/messages": {
       "get": {
         "description": "Returns a list of all the messages received",
-        "tags": ["messages"],
-        "security": [{ "bearerToken": [] }],
-        "produces": ["application/json"],
+        "tags": [
+          "messages"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "skip",
@@ -515,14 +583,12 @@
           "401": {
             "description": "User need to login",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/unauntheticatedError"
             }
           },
           "403": {
             "description": "User is not authorized to acces the resources",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/unauntheticatedError"
             }
           }
@@ -530,8 +596,12 @@
       },
       "post": {
         "description": "Create a new message",
-        "tags": ["messages"],
-        "produces": ["application/json"],
+        "tags": [
+          "messages"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "in": "body",
@@ -553,14 +623,12 @@
           "400": {
             "description": "User need to send valid other",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/validationError"
             }
           },
           "401": {
             "description": "User need to login",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/unauntheticatedError"
             }
           }
@@ -570,9 +638,17 @@
     "/messages/{id}": {
       "get": {
         "description": "Get a single message",
-        "tags": ["messages"],
-        "security": [{ "bearerToken": [] }],
-        "produces": ["application/json"],
+        "tags": [
+          "messages"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "Authorization",
@@ -584,6 +660,7 @@
           },
           {
             "name": "id",
+            "type": "string",
             "in": "path",
             "description": "specifies the id of message to get",
             "required": true
@@ -593,21 +670,18 @@
           "200": {
             "description": "A message with given id",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/databaseMessage"
             }
           },
           "401": {
             "description": "User need to login",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/unauntheticatedError"
             }
           },
           "404": {
             "description": "Message notFound",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/notFoundError"
             }
           }
@@ -615,9 +689,17 @@
       },
       "patch": {
         "description": "Update a single message with given id",
-        "tags": ["messages"],
-        "security": [{ "bearerToken": [] }],
-        "produces": ["application/json"],
+        "tags": [
+          "messages"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "Authorization",
@@ -629,6 +711,7 @@
           },
           {
             "name": "id",
+            "type": "string",
             "in": "path",
             "description": "specifies the id of message to get",
             "required": true
@@ -646,21 +729,18 @@
           "200": {
             "description": "A list of messages",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/databaseMessage"
             }
           },
           "401": {
             "description": "User need to login",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/unauntheticatedError"
             }
           },
           "404": {
             "description": "Message notFound",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/notFoundError"
             }
           }
@@ -668,9 +748,17 @@
       },
       "delete": {
         "description": "Update a single message with given id",
-        "tags": ["messages"],
-        "security": [{ "bearerToken": [] }],
-        "produces": ["application/json"],
+        "tags": [
+          "messages"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "Authorization",
@@ -683,6 +771,7 @@
           {
             "name": "id",
             "in": "path",
+            "type": "string",
             "description": "specifies the id of message to get",
             "required": true
           }
@@ -691,21 +780,18 @@
           "200": {
             "description": "A list of messages",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/databaseMessage"
             }
           },
           "401": {
             "description": "User need to login",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/unauntheticatedError"
             }
           },
           "404": {
             "description": "Message notFound",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/notFoundError"
             }
           }
@@ -715,9 +801,17 @@
     "/articles": {
       "get": {
         "description": "Returns a list of all articles",
-        "tags": ["articles"],
-        "security": [{ "bearerToken": [] }],
-        "produces": ["application/json"],
+        "tags": [
+          "articles"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "skip",
@@ -757,7 +851,6 @@
           "401": {
             "description": "User need to login",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/unauntheticatedError"
             }
           }
@@ -765,9 +858,17 @@
       },
       "post": {
         "description": "Create a new post",
-        "tags": ["articles"],
-        "produces": ["application/json"],
-        "security": [{ "bearerToken": [] }],
+        "tags": [
+          "articles"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "in": "body",
@@ -797,14 +898,12 @@
           "400": {
             "description": "User need to send valid other",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/validationError"
             }
           },
           "401": {
             "description": "User need to login",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/unauntheticatedError"
             }
           }
@@ -814,9 +913,17 @@
     "/articles/{id}": {
       "get": {
         "description": "Get a single message",
-        "tags": ["articles"],
-        "security": [{ "bearerToken": [] }],
-        "produces": ["application/json"],
+        "tags": [
+          "articles"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "Authorization",
@@ -829,6 +936,7 @@
           {
             "name": "id",
             "in": "path",
+            "type": "string",
             "description": "specifies the id of message to get",
             "required": true
           }
@@ -847,9 +955,17 @@
       },
       "patch": {
         "description": "Update a single blog of given id",
-        "tags": ["articles"],
-        "security": [{ "bearerToken": [] }],
-        "produces": ["application/json"],
+        "tags": [
+          "articles"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "Authorization",
@@ -861,6 +977,7 @@
           },
           {
             "name": "id",
+            "type": "string",
             "in": "path",
             "description": "specifies the id of blog to get",
             "required": true
@@ -878,21 +995,18 @@
           "200": {
             "description": "A list of messages",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/databaseArticle"
             }
           },
           "401": {
             "description": "User need to login",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/unauntheticatedError"
             }
           },
           "404": {
             "description": "Message notFound",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/notFoundError"
             }
           }
@@ -900,9 +1014,17 @@
       },
       "delete": {
         "description": "Delete a blog of given id",
-        "tags": ["articles"],
-        "security": [{ "bearerToken": [] }],
-        "produces": ["application/json"],
+        "tags": [
+          "articles"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "Authorization",
@@ -915,6 +1037,7 @@
           {
             "name": "id",
             "in": "path",
+            "type": "string",
             "description": "specifies the id of message to get",
             "required": true
           }
@@ -923,21 +1046,18 @@
           "200": {
             "description": "A list of messages",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/databaseArticle"
             }
           },
           "401": {
             "description": "User need to login",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/unauntheticatedError"
             }
           },
           "404": {
             "description": "Message notFound",
             "schema": {
-              "type": "object",
               "$ref": "#/definitions/notFoundError"
             }
           }
@@ -947,9 +1067,17 @@
     "/articles/{id}/comment": {
       "post": {
         "description": "Create a comment for the article",
-        "tags": ["articles"],
-        "produces": ["application/json"],
-        "security": [{ "bearerToken": [] }],
+        "tags": [
+          "articles"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "in": "body",
@@ -963,10 +1091,10 @@
           {
             "in": "path",
             "name": "id",
+            "type": "string",
             "description": "article id",
             "required": true
           },
-
           {
             "name": "Authorization",
             "in": "header",
@@ -992,9 +1120,17 @@
     "/articles/categories": {
       "get": {
         "description": "Get the article categories categories",
-        "tags": ["categories"],
-        "produces": ["application/json"],
-        "security": [{ "bearerToken": [] }],
+        "tags": [
+          "categories"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "name": "Authorization",
@@ -1018,13 +1154,22 @@
     "/articles/categories/{id}": {
       "get": {
         "description": "Get the article categories categories",
-        "tags": ["categories"],
-        "produces": ["application/json"],
-        "security": [{ "bearerToken": [] }],
+        "tags": [
+          "categories"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
             "name": "id",
+            "type": "string",
             "description": "category id",
             "required": true
           },
@@ -1051,13 +1196,22 @@
       },
       "patch": {
         "description": "Update the category of given id",
-        "tags": ["categories"],
-        "produces": ["application/json"],
-        "security": [{ "bearerToken": [] }],
+        "tags": [
+          "categories"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
             "name": "id",
+            "type": "string",
             "description": "category id",
             "required": true
           },
@@ -1086,9 +1240,17 @@
     "/articles/comments": {
       "get": {
         "description": "Get all comments",
-        "tags": ["comments"],
-        "produces": ["application/json"],
-        "security": [{ "bearerToken": [] }],
+        "tags": [
+          "comments"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "name": "Authorization",
@@ -1112,9 +1274,17 @@
     "/articles/comments/{id}": {
       "patch": {
         "description": "Update the comment",
-        "tags": ["comments"],
-        "produces": ["application/json"],
-        "security": [{ "bearerToken": [] }],
+        "tags": [
+          "comments"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "in": "body",
@@ -1123,7 +1293,9 @@
             "required": true,
             "schema": {
               "allOf": [
-                { "$ref": "#/definitions/comment" },
+                {
+                  "$ref": "#/definitions/comment"
+                },
                 {
                   "type": "object",
                   "properties": {
@@ -1132,7 +1304,10 @@
                     },
                     "vote": {
                       "type": "number",
-                      "enum": [-1, 1]
+                      "enum": [
+                        -1,
+                        1
+                      ]
                     }
                   }
                 }
@@ -1142,10 +1317,10 @@
           {
             "in": "path",
             "name": "id",
+            "type": "string",
             "description": "article id",
             "required": true
           },
-
           {
             "name": "Authorization",
             "in": "header",
@@ -1169,12 +1344,21 @@
       },
       "delete": {
         "description": "Update the comment",
-        "tags": ["comments"],
-        "produces": ["application/json"],
-        "security": [{ "bearerToken": [] }],
+        "tags": [
+          "comments"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
+            "type": "string",
             "name": "id",
             "description": "article id",
             "required": true
@@ -1192,11 +1376,11 @@
           "200": {
             "description": "Successful operation"
           },
-          "404": {
-            "description": "Comment not found"
-          },
           "401": {
             "description": "User need to login"
+          },
+          "404": {
+            "description": "Comment not found"
           }
         }
       }
@@ -1204,9 +1388,17 @@
     "/articles/comments/${id}/reply": {
       "post": {
         "description": "Reply to a comment for the article",
-        "tags": ["comments"],
-        "produces": ["application/json"],
-        "security": [{ "bearerToken": [] }],
+        "tags": [
+          "comments"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
         "parameters": [
           {
             "in": "body",
@@ -1220,10 +1412,10 @@
           {
             "in": "path",
             "name": "id",
+            "type": "string",
             "description": "article id",
             "required": true
           },
-
           {
             "name": "Authorization",
             "in": "header",

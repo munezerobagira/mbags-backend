@@ -1,4 +1,5 @@
 import winston from "winston";
+import { environment } from "../config";
 
 const Logger = winston.createLogger({
   transports: [
@@ -17,11 +18,11 @@ const Logger = winston.createLogger({
   ],
 });
 
-// if (process.env.NODE_ENV === "development") {
-//   Logger.add(
-//     new winston.transports.Console({
-//       format: winston.format.simple(),
-//     })
-//   );
-// }
+if (environment === "development") {
+  Logger.add(
+    new winston.transports.Console({
+      format: winston.format.simple(),
+    })
+  );
+}
 export default Logger;
