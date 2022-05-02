@@ -9,7 +9,7 @@ const emptyDb = async () => {
   await Comment.deleteMany();
   await Message.deleteMany();
   await User.deleteMany();
-  if (process.env !== "test") mongoose.disconnect();
+  if (process.env.NODE_ENV !== "test") mongoose.disconnect();
 };
 export default emptyDb;
 emptyDb();
