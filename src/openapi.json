@@ -54,7 +54,7 @@
       "description": "Endpoints for the projects"
     },
     {
-      "name": "projects",
+      "name": "user",
       "description": "Endpoints for the user"
     }
   ],
@@ -554,7 +554,7 @@
         "requestBody": {
           "description": "Blog post to create",
           "content": {
-            "*/*": {
+            "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/userArticle"
               }
@@ -707,7 +707,7 @@
         "requestBody": {
           "description": "Properties to update",
           "content": {
-            "*/*": {
+            "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/updateArticle"
               }
@@ -775,7 +775,7 @@
         "requestBody": {
           "description": "Add the comment",
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/comment"
               }
@@ -816,16 +816,11 @@
             "description": "Successful operation",
             "content": {}
           },
-          "401": {
-            "description": "User need to login",
+          "500": {
+            "description": "Server error",
             "content": {}
           }
-        },
-        "security": [
-          {
-            "bearerToken": []
-          }
-        ]
+        }
       }
     },
     "/articles/categories/{id}": {
@@ -850,20 +845,11 @@
             "description": "Successful operation",
             "content": {}
           },
-          "401": {
-            "description": "User need to login",
-            "content": {}
-          },
           "404": {
             "description": "Category not found",
             "content": {}
           }
-        },
-        "security": [
-          {
-            "bearerToken": []
-          }
-        ]
+        }
       },
       "patch": {
         "tags": [
@@ -917,12 +903,7 @@
             "description": "User need to login",
             "content": {}
           }
-        },
-        "security": [
-          {
-            "bearerToken": []
-          }
-        ]
+        }
       }
     },
     "/articles/comments/{id}": {
@@ -1082,17 +1063,6 @@
           "user"
         ],
         "description": "Get the verification verifification email",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "description": "your id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -1100,14 +1070,8 @@
               "application/json": {}
             }
           },
-          "400": {
-            "description": "Invalid id",
-            "content": {
-              "application/json": {}
-            }
-          },
-          "404": {
-            "description": "Account with id is not found",
+          "401": {
+            "description": "User need to login",
             "content": {
               "application/json": {}
             }
@@ -1119,13 +1083,27 @@
             }
           }
         },
-        "x-codegen-request-body-name": "body"
+        "x-codegen-request-body-name": "body",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ]
       },
       "patch": {
         "tags": [
           "user"
         ],
         "description": "Get the verification verifification email",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/user"
+              }
+            }
+          }
+        },
         "parameters": [
           {
             "name": "token",
@@ -1150,12 +1128,6 @@
               "application/json": {}
             }
           },
-          "404": {
-            "description": "Account with id in token is not found",
-            "content": {
-              "application/json": {}
-            }
-          },
           "500": {
             "description": "Internal server error",
             "content": {
@@ -1163,24 +1135,18 @@
             }
           }
         },
-        "x-codegen-request-body-name": "body"
+        "x-codegen-request-body-name": "body",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ]
       },
       "delete": {
         "tags": [
           "user"
         ],
         "description": "Get the verification verifification email",
-        "parameters": [
-          {
-            "name": "token",
-            "in": "query",
-            "description": "your id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Account has been verified",
@@ -1194,12 +1160,6 @@
               "application/json": {}
             }
           },
-          "404": {
-            "description": "Account with id in token is not found",
-            "content": {
-              "application/json": {}
-            }
-          },
           "500": {
             "description": "Internal server error",
             "content": {
@@ -1207,7 +1167,12 @@
             }
           }
         },
-        "x-codegen-request-body-name": "body"
+        "x-codegen-request-body-name": "body",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ]
       }
     },
     "/user/profile/verification": {
@@ -1474,9 +1439,6 @@
       "user": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/login"
-          },
-          {
             "type": "object",
             "properties": {
               "username": {
@@ -1485,22 +1447,11 @@
               "summary": {
                 "type": "string"
               },
-              "verified": {
-                "type": "boolean"
-              },
               "keywords": {
                 "type": "string"
               },
               "info": {
                 "type": "string"
-              },
-              "createdAt": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "updatedAt": {
-                "type": "string",
-                "format": "date-time"
               }
             },
             "example": {
@@ -1532,6 +1483,10 @@
           },
           "summary": {
             "type": "string"
+          },
+          "image": {
+            "type": "string",
+            "format": "binary"
           }
         },
         "example": {
