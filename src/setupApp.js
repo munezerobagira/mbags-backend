@@ -4,11 +4,10 @@ import swaggerUI from "swagger-ui-express";
 import morgan from "morgan";
 import cors from "cors";
 import { join as joinPath } from "path";
-
 import routes from "./routes";
 import { logsFolder, uploadFolder } from "./config";
-import swaggerDocument from "./swagger.json";
 import { SampleController } from "./controllers";
+import openapiSpecification from "./openapi.json";
 
 if (!fs.existsSync(uploadFolder))
   fs.mkdirSync(uploadFolder, { recursive: true });
@@ -21,12 +20,12 @@ const accessLogStream = fs.createWriteStream(
 );
 // setup the logger
 export default function setupApp(app) {
+  app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  app.use(cors());
   app.use(morgan("combined", { stream: accessLogStream }));
   app.use("/public", express.static(uploadFolder));
   app.use("/api", routes);
-  app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+  app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(openapiSpecification));
   app.use("*", SampleController.notFound);
 }

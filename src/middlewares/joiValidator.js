@@ -1,3 +1,6 @@
+import errorFormatter from "../helpers/errorFormatter";
+import Logger from "../helpers/Logger";
+
 /* eslint-disable func-names */
 export default function joiValidator(schema, path = "body") {
   return async function (request, response, next) {
@@ -15,9 +18,11 @@ export default function joiValidator(schema, path = "body") {
       request[path] = value;
       return next();
     } catch (error) {
-      return response.status(500).json({
-        status: 500,
-        error: error.name,
+      const formattedError = errorFormatter(error);
+      Logger.error(error.stack);
+      return response.status(formattedError.status).json({
+        status: formattedError.status,
+        error: formattedError.message,
       });
     }
   };

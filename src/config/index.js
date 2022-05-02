@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config();
-const environment = process.env.NODE_ENV;
+export const environment = process.env.NODE_ENV;
 
 let baseMongoUrl = process.env.MONGO_URL;
 

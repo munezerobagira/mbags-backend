@@ -81,7 +81,16 @@ describe("/api/auth", () => {
       expect(response.body).to.have.property("error");
     });
 
-    it("should return 200 and token, if credentials are valid", async () => {
+    it("should return 403 and email, if account is not verified", async () => {
+      const response = await request(server)
+        .post("/api/auth/login")
+        .send({ email: user.email, password });
+      expect(response).to.have.status(403);
+      expect(response.body).to.have.property("id");
+      userToken = response.body.token;
+    });
+
+    it("should return 200 and token, if account and  credentials are valid", async () => {
       const response = await request(server)
         .post("/api/auth/login")
         .send({ email: verifiedUser.email, password });

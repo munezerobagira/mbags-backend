@@ -28,6 +28,7 @@ router.delete(
 );
 router.patch(
   "/:id",
+  multerUploader.single("image"),
   joiValidator(articleSchema.updateArticle),
   isLoggedIn,
   checkRole("admin"),

@@ -2,25 +2,34 @@
 import chaiHttp from "chai-http";
 import chai, { expect } from "chai";
 import { faker } from "@faker-js/faker";
+import { existsSync } from "fs";
 import server from "../..";
 import { createUser } from "../../models/User";
-// import { createBanner } from "../../../helpers/bannerCreator";
-// import {
-//   createImageTestingFolder,
-//   deleteImageTestingFolder,
-// } from "../../../testFunctions";
+import { createBanner } from "../../helpers/bannerCreator";
+import {
+  createImageTestingFolder,
+  deleteImageTestingFolder,
+} from "../../testFunctions";
+import { signToken } from "../../helpers/jwt";
+import { verificationSecret } from "../../config";
+import { UserServive } from "../../services";
 
 chai.use(chaiHttp);
 const { request } = chai;
 
-describe.skip("/api/user", () => {
+describe("/api/user", function () {
   let token;
   let guestToken;
   let unverifiedUser;
+  let guest;
+  let testingImageFolder;
+  this.timeout(60000);
 
   before(async () => {
+    testingImageFolder = await createImageTestingFolder();
+    expect(testingImageFolder).to.be.a("string");
     const password = faker.internet.password();
-    const guest = {
+    guest = {
       name: faker.name.findName(),
       email: faker.internet.email(),
       password,
@@ -29,7 +38,7 @@ describe.skip("/api/user", () => {
     };
     unverifiedUser = {
       name: faker.name.findName(),
-      email: faker.internet.email(),
+      email: "bagira.sostenee@gmail.com",
       password,
       username: faker.internet.userName(),
       verified: false,
@@ -43,8 +52,8 @@ describe.skip("/api/user", () => {
       verified: true,
     };
     await createUser(adminUser);
-    await createUser(guest);
-    await createUser(unverifiedUser);
+    guest = await createUser(guest);
+    unverifiedUser = await createUser(unverifiedUser);
     token = await (
       await request(server)
         .post("/api/auth/login")
@@ -58,36 +67,16 @@ describe.skip("/api/user", () => {
     expect(token).to.be.a("string");
     expect(guestToken).to.be.a("string");
   });
-  describe("GET /api/user/profile/verification", async () => {
-    it("should return 400 if email not provided", async () => {
-      const response = await request(server).get(
-        `/api/user/profile/verification`
-      );
-      expect(response).to.have.status(200);
-    });
-    it("should return 404 if  no user associated  with email ", async () => {
-      const response = await request(server).get(
-        `/api/user/profile/verification?email=${faker.internet.email()}`
-      );
-      expect(response).to.have.status(200);
-    });
-    it("should return 200 if valid  id and token are provided", async () => {
-      const response = await request(server).get(
-        `/api/user/profile/verification?email=${unverifiedUser.email}`
-      );
-      expect(response).to.have.status(200);
-    });
+  after(async () => {
+    await deleteImageTestingFolder();
+    expect(existsSync(testingImageFolder)).to.equal(false);
   });
-
   describe("GET /api/user/profile", async () => {
     it("should return 401 if token  is not given", async () => {
       const response = await request(server).get("/api/user/profile");
       expect(response).to.have.status(401);
     });
-    it("should return 403 if user is not verified  is not given", async () => {
-      const response = await request(server).get("/api/user/profile");
-      expect(response).to.have.status(401);
-    });
+
     it("should return 200 if valid  id and token are provided", async () => {
       const response = await request(server)
         .get("/api/user/profile")
@@ -101,20 +90,93 @@ describe.skip("/api/user", () => {
       const response = await request(server).patch("/api/user/profile");
       expect(response).to.have.status(401);
     });
-    it.skip("should return 200 if valid  id and token are provided", async () => {
+    it("should return 200 if valid  id and token are provided", async () => {
+      const profilePic = await createBanner("profilePic", {
+        inputPath: testingImageFolder,
+      });
       const response = await request(server)
         .patch("/api/user/profile")
-        .field("summary", faker.commpany.catchPhrase())
+        .field("summary", faker.company.catchPhrase())
         .field("info", faker.lorem.lines(2))
-        .field("keywords", faker.faker.fake("{{random.word}}, {{random.word}}"))
+        .field("keywords", faker.fake("{{random.word}}, {{random.word}}"))
         .set("Authorization", `Bearer ${token}`)
-        .send({
-          summary: faker.company.catchPhrase(),
-          info: faker.lorem.lines(2),
-          keywords: faker.fake("{{random.word}}, {{random.word}}"),
-        });
+        .attach("profilePic", profilePic);
       expect(response).to.have.status(200);
       expect(response.body).to.have.property("user");
+    });
+  });
+  describe("GET /api/user/profile/verification", async () => {
+    this.timeout(20000);
+    it("should return 400 if id not provided", async () => {
+      const response = await request(server).get(
+        `/api/user/profile/verification`
+      );
+      expect(response).to.have.status(400);
+    });
+    it("should return 404 if  no user associated  provided id ", async () => {
+      const response = await request(server).get(
+        `/api/user/profile/verification?id=${faker.datatype.uuid()}`
+      );
+      expect(response).to.have.status(404);
+    });
+    it("should return 400 if email is already verified", async () => {
+      const response = await request(server).get(
+        `/api/user/profile/verification?id=${guest._id}`
+      );
+      expect(response).to.have.status(400);
+    });
+    it("should return 200 if valid  id and token are provided", async () => {
+      const response = await request(server).get(
+        `/api/user/profile/verification?id=${unverifiedUser._id}`
+      );
+      expect(response).to.have.status(200);
+    });
+  });
+
+  describe("PATCH /api/user/profile/verification", async () => {
+    this.timeout(20000);
+    it("should return 400 if token is  not provided", async () => {
+      const response = await request(server).patch(
+        `/api/user/profile/verification`
+      );
+      expect(response).to.have.status(400);
+    });
+    it("should return 401 if  token is invalid  id ", async () => {
+      const response = await request(server).patch(
+        `/api/user/profile/verification?token=${faker.datatype.uuid()}`
+      );
+      expect(response).to.have.status(401);
+    });
+
+    it("should return 401 if token is not associated with the user", async () => {
+      const verifyToken = await signToken(
+        { user: { id: unverifiedUser._id } },
+        verificationSecret,
+        {
+          expiresIn: "12h",
+        }
+      );
+      const response = await request(server).patch(
+        `/api/user/profile/verification?token=${verifyToken}`
+      );
+
+      expect(response).to.have.status(401);
+    });
+    it("should return 200 if token is associated with the user", async () => {
+      const verifyToken = await signToken(
+        { user: { id: unverifiedUser._id } },
+        verificationSecret,
+        {
+          expiresIn: "2h",
+        }
+      );
+      await UserServive.updateUser(unverifiedUser._id, {
+        token: { action: "add", value: verifyToken },
+      });
+      const response = await request(server).patch(
+        `/api/user/profile/verification?token=${verifyToken}`
+      );
+      expect(response).to.have.status(200);
     });
   });
   describe("DELETE /api/user/profile", async () => {

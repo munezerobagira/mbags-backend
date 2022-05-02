@@ -8,8 +8,9 @@
     "start": "cross-env NODE_ENV=production node dist/index.js ",
     "build": "babel src --out-dir  dist/ --copy-files",
     "dev": "cross-env NODE_ENV=development nodemon --exec babel-node src/index.js ",
-    "test": "cross-env NODE_ENV=development mocha src/tests/**/*.test.js --exit --require @babel/register",
-    "test-dev": "cross-env NODE_ENV=development mocha src/tests/**/*.test.js --exit --bail --require @babel/register",
+    "dev-freshdb": "cross-env NODE_ENV=development babel-node src/emptyDb && cross-env NODE_ENV=development nodemon --exec babel-node src/index.js ",
+    "test": "cross-env NODE_ENV=test mocha src/tests/**/*.test.js --exit --require @babel/register",
+    "test-dev": "cross-env NODE_ENV=test mocha src/tests/**/*.test.js --exit --bail --require @babel/register",
     "coverage": "nyc --reporter=lcov --reporter=text-summary --reporter=text --reporter=html npm run test",
     "createUser": "cross-env NODE_ENV=development babel-node src/createUser.js"
   },

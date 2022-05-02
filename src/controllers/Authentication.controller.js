@@ -14,6 +14,12 @@ export default class Authentication {
         return response
           .status(400)
           .json({ status: 400, error: "Invalid credentials" });
+      if (!user.verified)
+        return response.status(403).json({
+          status: 403,
+          error: "Verify the account first",
+          id: user._id,
+        });
 
       const id = user._id;
 
@@ -23,7 +29,7 @@ export default class Authentication {
         { expiresIn: "12h" }
       );
       await UserServive.updateUser(user._id, {
-        token: { type: "add", value: token },
+        token: { action: "add", value: token },
       });
       return response.status(200).json({ status: 200, success: true, token });
     } catch (error) {
