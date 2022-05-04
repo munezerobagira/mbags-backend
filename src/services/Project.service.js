@@ -15,13 +15,11 @@ export default class ArticleServive {
       title,
       summary,
       link,
-      images: uploadResult && [
-        {
-          path: uploadResult.secure_url || uploadResult.url,
-          width: uploadResult.width,
-          height: uploadResult.height,
-        },
-      ],
+      image: uploadResult && {
+        path: uploadResult.secure_url || uploadResult.url,
+        width: uploadResult.width,
+        height: uploadResult.height,
+      },
     });
     await project.save();
     if (categories) {

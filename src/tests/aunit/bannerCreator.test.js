@@ -23,6 +23,7 @@ describe("createBanner(name, {options})", () => {
     const imagePath = await createBanner("Welcome to our website", {
       inputPath: inputPath,
     });
+    console.log(inputPath);
     expect(existsSync(imagePath)).to.be.true;
   });
 });

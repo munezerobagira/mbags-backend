@@ -46,8 +46,9 @@ export default class Article {
 
   static async getArticles(request, response) {
     try {
-      const { skip = 0, count = 100 } = request.query;
-      const result = await ArticleServive.getArticles({ skip, count });
+      const { skip = 0, count = 100, ...filter } = request.query;
+      if (filter.title) filter.title = { $regex: filter.title, $options: "i" };
+      const result = await ArticleServive.getArticles({ skip, count, filter });
       return response
         .status(200)
         .json({ status: 200, success: true, articles: result.articles });

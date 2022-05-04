@@ -46,8 +46,9 @@ export default class Article {
 
   static async getProjects(request, response) {
     try {
-      const { skip = 0, count = 100 } = request.query;
-      const result = await ProjectServive.getProjects({ skip, count });
+      const { skip = 0, count = 100, ...filter } = request.query;
+      if (filter.title) filter.title = { $regex: filter.title, $options: "i" };
+      const result = await ProjectServive.getProjects({ skip, count, filter });
       return response
         .status(200)
         .json({ status: 200, success: true, projects: result.projects });

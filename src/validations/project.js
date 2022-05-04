@@ -15,7 +15,15 @@ const updateProject = Joi.object({
   featured: Joi.boolean(),
   star: Joi.number().min(-1).max(1),
 });
+const filter = Joi.object({
+  featured: Joi.boolean(),
+  published: Joi.boolean().default(true),
+  title: Joi.string(),
+  skip: Joi.number(),
+  count: Joi.number(),
+});
 export default {
+  filter,
   createProject,
   updateProject,
 };

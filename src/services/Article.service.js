@@ -22,13 +22,11 @@ export default class ArticleServive {
       summary,
       content,
       authorId,
-      images: [
-        {
-          path: uploadResult.secure_url || uploadResult.url,
-          width: uploadResult.width,
-          height: uploadResult.height,
-        },
-      ],
+      image: {
+        path: uploadResult.secure_url || uploadResult.url,
+        width: uploadResult.width,
+        height: uploadResult.height,
+      },
     });
     await article.save();
     if (categories) {
