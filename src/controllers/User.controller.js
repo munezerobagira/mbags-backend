@@ -81,7 +81,7 @@ export default class User {
   static async getUser(request, response) {
     try {
       const { _id: id } = request.user;
-      const result = await UserServive.getUser({ id });
+      const result = await UserServive.getUser({ _id: id });
       if (!result.success)
         return response.status(400).json({ status: 400, error: result.error });
       return response
