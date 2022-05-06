@@ -39,6 +39,13 @@ export default class Comment {
     try {
       const { comment, read, vote } = request.body;
       const { id } = request.params;
+      const { _id: userId } = request.user;
+      const { commentToUpdate } = await ArticleServive.getComment(id);
+
+      if (commentToUpdate && commentToUpdate.author._id !== userId)
+        return response
+          .status(403)
+          .json({ error: "You can't delete other id" });
       const result = await ArticleServive.updateComment(id, {
         read,
         updatedComment: comment,
@@ -59,6 +66,12 @@ export default class Comment {
   static async deleteComment(request, response) {
     try {
       const { id } = request.params;
+      const { _id: userId } = request.user;
+      const { commentToDelete } = await ArticleServive.getComment(id);
+      if (commentToDelete && commentToDelete.author._id !== userId)
+        return response
+          .status(403)
+          .json({ error: "You can't delete others comment" });
       const result = await ArticleServive.deleteComment(id);
       return response
         .status(200)
@@ -91,3 +104,4 @@ export default class Comment {
     }
   }
 }
+

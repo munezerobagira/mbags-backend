@@ -40,3 +40,5 @@ export const sendGridApiKey = process.env.SENDGRID_API_KEY;
 export const verificationEmail = process.env.SEND_VERIFICATION_EMAIL;
 export const replyToEmail = process.env.REPLY_TO_EMAIL;
 export const host = process.env.HOST;
+export const ownerEmail = process.env.OWNER_EMAIL;
+

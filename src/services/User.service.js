@@ -9,6 +9,7 @@ export default class UserServive {
       username,
       email,
       password,
+      role: "guest",
     });
     await user.save();
     return {

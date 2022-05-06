@@ -32,7 +32,7 @@ const errorFormatter = (error) => {
           },
         };
       default:
-        if (error instanceof Error.CastError || Error.name === "CastError") {
+        if (error instanceof Error.CastError || error.name === "CastError") {
           return {
             status: 404,
             message: "Resource not found",
@@ -88,3 +88,4 @@ const errorFormatter = (error) => {
   }
 };
 export default errorFormatter;
+
