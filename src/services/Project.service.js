@@ -40,8 +40,14 @@ export default class ArticleServive {
 
   static async updateProject(
     id,
-    { title, summary, categories, link, featured, published }
+    { title, summary, categories, link, featured, published, image }
   ) {
+    let uploadResult;
+    if (image)
+      uploadResult = await cloudinaryUploader(
+        image,
+        cloudinaryFolders.projects
+      );
     const project = await Project.findOne({ _id: id });
     if (!project) return { success: false, error: "Project not found" };
     if (title) project.title = title;
@@ -49,6 +55,12 @@ export default class ArticleServive {
     if (link) project.link = link;
     if (published) project.published = !!published;
     if (featured) project.featured = !!featured;
+    if (uploadResult)
+      project.image = {
+        path: uploadResult.secure_url || uploadResult.url,
+        width: uploadResult.width,
+        height: uploadResult.height,
+      };
     if (categories) {
       project.categories.forEach(async (categoryId) => {
         const category = await Category.findOne({ _id: categoryId });
@@ -105,3 +117,4 @@ export default class ArticleServive {
     return { success: true, project };
   }
 }
+

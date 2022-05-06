@@ -9,10 +9,7 @@
     "title": "Sostene protofolio api"
   },
   "basePath": "/api",
-  "schemes": [
-    "http",
-    "https"
-  ],
+  "schemes": ["http", "https"],
   "tags": [
     {
       "name": "authentication",
@@ -56,11 +53,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "name",
-        "message",
-        "email"
-      ],
+      "required": ["name", "message", "email"],
       "example": {
         "name": "John Doe",
         "subject": "A sending you a wonderful email",
@@ -141,11 +134,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "name",
-        "email",
-        "password"
-      ],
+      "required": ["name", "email", "password"],
       "example": {
         "name": "John Doe",
         "email": "johndoe@example.com",
@@ -164,10 +153,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "email",
-        "password"
-      ],
+      "required": ["email", "password"],
       "example": {
         "email": "johndoe@example.com",
         "password": "password"
@@ -180,9 +166,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "comment"
-      ],
+      "required": ["comment"],
       "example": {
         "comment": "This is a comment"
       }
@@ -203,9 +187,7 @@
           }
         }
       },
-      "required": [
-        "name"
-      ],
+      "required": ["name"],
       "example": {
         "name": "Technology",
         "description": "Technology articles"
@@ -271,12 +253,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "title",
-        "content",
-        "categories",
-        "summary"
-      ],
+      "required": ["title", "content", "categories", "summary"],
       "example": {
         "title": "How to make api",
         "summary": "Every thing you need to make sure that your api is working",
@@ -396,18 +373,12 @@
   "paths": {
     "/auth/login": {
       "post": {
-        "tags": [
-          "authentication"
-        ],
+        "tags": ["authentication"],
         "summary": "Login to the system",
         "description": "Login to the system",
         "operationId": "login",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "in": "body",
@@ -437,18 +408,12 @@
     },
     "/auth/signup": {
       "post": {
-        "tags": [
-          "authentication"
-        ],
+        "tags": ["authentication"],
         "summary": "Signup to the system",
         "description": "Signup to the system",
         "operationId": "signup",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "in": "body",
@@ -478,18 +443,12 @@
     },
     "/auth/signout": {
       "patch": {
-        "tags": [
-          "authentication"
-        ],
+        "tags": ["authentication"],
         "summary": "Signout from  the system",
         "description": "Signout  from  the system",
         "operationId": "path-signup",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "security": [
           {
             "bearerToken": []
@@ -533,17 +492,13 @@
     "/messages": {
       "get": {
         "description": "Returns a list of all the messages received",
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "security": [
           {
             "bearerToken": []
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "skip",
@@ -596,12 +551,8 @@
       },
       "post": {
         "description": "Create a new message",
-        "tags": [
-          "messages"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["messages"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "in": "body",
@@ -638,17 +589,13 @@
     "/messages/{id}": {
       "get": {
         "description": "Get a single message",
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "security": [
           {
             "bearerToken": []
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "Authorization",
@@ -689,17 +636,13 @@
       },
       "patch": {
         "description": "Update a single message with given id",
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "security": [
           {
             "bearerToken": []
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "Authorization",
@@ -748,17 +691,13 @@
       },
       "delete": {
         "description": "Update a single message with given id",
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "security": [
           {
             "bearerToken": []
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "Authorization",
@@ -801,17 +740,13 @@
     "/articles": {
       "get": {
         "description": "Returns a list of all articles",
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "security": [
           {
             "bearerToken": []
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "skip",
@@ -830,12 +765,12 @@
             "format": "int32"
           },
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Add the token in the format 'Bearer token'",
-            "required": true,
+            "name": "published",
+            "in": "query",
+            "description": "Published filter",
+            "required": false,
             "type": "string",
-            "default": "Bearer "
+            "format": "int32"
           }
         ],
         "responses": {
@@ -858,12 +793,8 @@
       },
       "post": {
         "description": "Create a new post",
-        "tags": [
-          "articles"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["articles"],
+        "produces": ["application/json"],
         "security": [
           {
             "bearerToken": []
@@ -913,17 +844,13 @@
     "/articles/{id}": {
       "get": {
         "description": "Get a single message",
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "security": [
           {
             "bearerToken": []
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "Authorization",
@@ -955,17 +882,13 @@
       },
       "patch": {
         "description": "Update a single blog of given id",
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "security": [
           {
             "bearerToken": []
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "Authorization",
@@ -1014,17 +937,13 @@
       },
       "delete": {
         "description": "Delete a blog of given id",
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "security": [
           {
             "bearerToken": []
           }
         ],
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "Authorization",
@@ -1067,12 +986,8 @@
     "/articles/{id}/comment": {
       "post": {
         "description": "Create a comment for the article",
-        "tags": [
-          "articles"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["articles"],
+        "produces": ["application/json"],
         "security": [
           {
             "bearerToken": []
@@ -1120,12 +1035,8 @@
     "/articles/categories": {
       "get": {
         "description": "Get the article categories categories",
-        "tags": [
-          "categories"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["categories"],
+        "produces": ["application/json"],
         "security": [
           {
             "bearerToken": []
@@ -1154,12 +1065,8 @@
     "/articles/categories/{id}": {
       "get": {
         "description": "Get the article categories categories",
-        "tags": [
-          "categories"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["categories"],
+        "produces": ["application/json"],
         "security": [
           {
             "bearerToken": []
@@ -1196,12 +1103,8 @@
       },
       "patch": {
         "description": "Update the category of given id",
-        "tags": [
-          "categories"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["categories"],
+        "produces": ["application/json"],
         "security": [
           {
             "bearerToken": []
@@ -1240,12 +1143,8 @@
     "/articles/comments": {
       "get": {
         "description": "Get all comments",
-        "tags": [
-          "comments"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["comments"],
+        "produces": ["application/json"],
         "security": [
           {
             "bearerToken": []
@@ -1274,12 +1173,8 @@
     "/articles/comments/{id}": {
       "patch": {
         "description": "Update the comment",
-        "tags": [
-          "comments"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["comments"],
+        "produces": ["application/json"],
         "security": [
           {
             "bearerToken": []
@@ -1304,10 +1199,7 @@
                     },
                     "vote": {
                       "type": "number",
-                      "enum": [
-                        -1,
-                        1
-                      ]
+                      "enum": [-1, 1]
                     }
                   }
                 }
@@ -1344,12 +1236,8 @@
       },
       "delete": {
         "description": "Update the comment",
-        "tags": [
-          "comments"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["comments"],
+        "produces": ["application/json"],
         "security": [
           {
             "bearerToken": []
@@ -1388,12 +1276,8 @@
     "/articles/comments/${id}/reply": {
       "post": {
         "description": "Reply to a comment for the article",
-        "tags": [
-          "comments"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["comments"],
+        "produces": ["application/json"],
         "security": [
           {
             "bearerToken": []
@@ -1440,3 +1324,4 @@
     }
   }
 }
+

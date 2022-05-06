@@ -20,8 +20,7 @@ export default class Article {
       else image = request.file?.path;
 
       const { title, images, summary, content, categories } = request.body;
-      let authorId;
-      if (!authorId) authorId = request?.user?._id;
+      const author = request?.user?._id;
       const result = await ArticleServive.addArticle({
         title,
         images,
@@ -29,7 +28,7 @@ export default class Article {
         content,
         categories,
         image,
-        authorId,
+        author,
       });
       unlinkSync(image);
       return response
@@ -46,7 +45,8 @@ export default class Article {
 
   static async getArticles(request, response) {
     try {
-      const { skip = 0, count = 100, ...filter } = request.query;
+      // eslint-disable-next-line prefer-const
+      let { skip = 0, count = 100, ...filter } = request.query;
       if (filter.title) filter.title = { $regex: filter.title, $options: "i" };
       const result = await ArticleServive.getArticles({ skip, count, filter });
       return response
@@ -143,3 +143,4 @@ export default class Article {
     }
   }
 }
+

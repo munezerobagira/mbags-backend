@@ -9,7 +9,7 @@ export default class ArticleServive {
     summary,
     categories,
     content,
-    authorId,
+    author,
     image,
   }) {
     const uploadResult = await cloudinaryUploader(
@@ -21,7 +21,7 @@ export default class ArticleServive {
       title,
       summary,
       content,
-      authorId,
+      author,
       image: {
         path: uploadResult.secure_url || uploadResult.url,
         width: uploadResult.width,
@@ -46,14 +46,26 @@ export default class ArticleServive {
 
   static async updateArticle(
     id,
-    { title, summary, categories, content, featured, published }
+    { title, summary, categories, content, featured, published, image }
   ) {
+    let uploadResult = null;
+    if (image)
+      uploadResult = await cloudinaryUploader(
+        image,
+        cloudinaryFolders.articles
+      );
     const article = await Article.findOne({ _id: id });
     if (title) article.title = title;
     if (summary) article.summary = summary;
-    if (content) article.summary = summary;
+    if (content) article.content = content;
     if (published) article.published = !!published;
     if (featured) article.featured = !!featured;
+    if (uploadResult)
+      article.image = {
+        path: uploadResult.secure_url || uploadResult.url,
+        width: uploadResult.width,
+        height: uploadResult.height,
+      };
     if (categories) {
       article.categories.forEach(async (categoryId) => {
         const category = await Category.findOne({ _id: categoryId });
@@ -82,6 +94,12 @@ export default class ArticleServive {
 
   static async getArticles({ count = 100, skip = 0, filter = {} }) {
     const articles = await Article.find(filter)
+      .populate([
+        {
+          path: "categories",
+          select: "title",
+        },
+      ])
       .limit(count)
       .skip(count * skip);
     if (!articles) return { success: false, error: "Articles not found" };
@@ -89,9 +107,19 @@ export default class ArticleServive {
   }
 
   static async getArticle(id) {
-    const article = await Article.findOne({ _id: id })
-      .populate("comments")
-      .populate({ path: "categories", options: { select: "title" } });
+    const article = await Article.findOne({ _id: id }).populate([
+      {
+        path: "author",
+        select: "name",
+      },
+      {
+        path: "comments",
+      },
+      {
+        path: "categories",
+        select: "title",
+      },
+    ]);
     if (!article) return { success: false, error: "Article not found" };
     return { success: true, article };
   }
@@ -203,3 +231,4 @@ export default class ArticleServive {
     return { success: true, category };
   }
 }
+

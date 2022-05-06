@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Article, Category, Comment, Message, User } from "./models";
+import { Article, Category, Comment, Message, Project, User } from "./models";
 import { mongoUrl } from "./config";
 
 const emptyDb = async () => {
@@ -9,7 +9,9 @@ const emptyDb = async () => {
   await Comment.deleteMany();
   await Message.deleteMany();
   await User.deleteMany();
+  await Project.deleteMany();
   if (process.env.NODE_ENV !== "test") mongoose.disconnect();
 };
 export default emptyDb;
 emptyDb();
+

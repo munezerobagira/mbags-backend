@@ -33,6 +33,7 @@ export default class UserServive {
       token = null,
       star = null,
       password = null,
+      about = null,
     }
   ) {
     const user = await User.findOne({ _id: id });
@@ -48,6 +49,7 @@ export default class UserServive {
     if (summary) user.summary = summary;
     if (password) user.password = password;
     if (info) user.info = info;
+    if (about) user.about = about;
     if (profilePic) {
       const uploadResult = await cloudinaryUploader(
         profilePic,
@@ -89,7 +91,7 @@ export default class UserServive {
         success: false,
         error: "User not found or you might need to login",
       };
-    const user = { ...userData._doc, password: undefined };
+    const user = { ...userData._doc, password: undefined, tokens: undefined };
 
     return { success: true, user };
   }
@@ -115,3 +117,4 @@ export default class UserServive {
     };
   }
 }
+

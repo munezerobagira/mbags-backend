@@ -61,9 +61,7 @@
   "paths": {
     "/": {
       "get": {
-        "tags": [
-          "sample"
-        ],
+        "tags": ["sample"],
         "summary": "endpoint to test if server is up",
         "operationId": "sample-get",
         "responses": {
@@ -75,9 +73,7 @@
     },
     "/auth/login": {
       "post": {
-        "tags": [
-          "authentication"
-        ],
+        "tags": ["authentication"],
         "summary": "Login to the system",
         "description": "Login to the system",
         "operationId": "login",
@@ -117,9 +113,7 @@
     },
     "/auth/signup": {
       "post": {
-        "tags": [
-          "authentication"
-        ],
+        "tags": ["authentication"],
         "summary": "Signup to the system",
         "description": "Signup to the system",
         "operationId": "signup",
@@ -161,9 +155,7 @@
     },
     "/auth/signout": {
       "patch": {
-        "tags": [
-          "authentication"
-        ],
+        "tags": ["authentication"],
         "summary": "Signout from  the system",
         "description": "Signout  from  the system",
         "operationId": "path-signup",
@@ -202,9 +194,7 @@
     },
     "/messages": {
       "get": {
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "description": "Returns a list of all the messages received",
         "parameters": [
           {
@@ -268,9 +258,7 @@
         ]
       },
       "post": {
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "description": "Create a new message",
         "requestBody": {
           "description": "User can add the messsage",
@@ -310,9 +298,7 @@
     },
     "/messages/{id}": {
       "get": {
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "description": "Get a single message",
         "parameters": [
           {
@@ -374,9 +360,7 @@
         ]
       },
       "delete": {
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "description": "Update a single message with given id",
         "parameters": [
           {
@@ -438,9 +422,7 @@
         ]
       },
       "patch": {
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "description": "Update a single message with given id",
         "parameters": [
           {
@@ -506,9 +488,7 @@
     },
     "/articles": {
       "get": {
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "Returns a list of all articles",
         "parameters": [
           {
@@ -527,6 +507,14 @@
             "schema": {
               "type": "integer",
               "format": "int32"
+            }
+          },
+          {
+            "name": "published",
+            "in": "query",
+            "description": "published filter",
+            "schema": {
+              "type": "boolean"
             }
           }
         ],
@@ -547,9 +535,7 @@
         }
       },
       "post": {
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "Create a new post",
         "requestBody": {
           "description": "Blog post to create",
@@ -604,9 +590,7 @@
     },
     "/articles/{id}": {
       "get": {
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "Get a single message",
         "parameters": [
           {
@@ -635,9 +619,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "Delete a blog of given id",
         "parameters": [
           {
@@ -689,9 +671,7 @@
         ]
       },
       "patch": {
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "Update a single blog of given id",
         "parameters": [
           {
@@ -757,9 +737,7 @@
     },
     "/articles/{id}/comment": {
       "post": {
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "Create a comment for the article",
         "parameters": [
           {
@@ -807,9 +785,7 @@
     },
     "/articles/categories": {
       "get": {
-        "tags": [
-          "categories"
-        ],
+        "tags": ["categories"],
         "description": "Get the article categories categories",
         "responses": {
           "200": {
@@ -825,9 +801,7 @@
     },
     "/articles/categories/{id}": {
       "get": {
-        "tags": [
-          "categories"
-        ],
+        "tags": ["categories"],
         "description": "Get the article categories categories",
         "parameters": [
           {
@@ -852,9 +826,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "categories"
-        ],
+        "tags": ["categories"],
         "description": "Update the category of given id",
         "parameters": [
           {
@@ -890,9 +862,7 @@
     },
     "/articles/comments": {
       "get": {
-        "tags": [
-          "comments"
-        ],
+        "tags": ["comments"],
         "description": "Get all comments",
         "responses": {
           "200": {
@@ -908,9 +878,7 @@
     },
     "/articles/comments/{id}": {
       "delete": {
-        "tags": [
-          "comments"
-        ],
+        "tags": ["comments"],
         "description": "Update the comment",
         "parameters": [
           {
@@ -944,9 +912,7 @@
         ]
       },
       "patch": {
-        "tags": [
-          "comments"
-        ],
+        "tags": ["comments"],
         "description": "Update the comment",
         "parameters": [
           {
@@ -1009,9 +975,7 @@
     },
     "/articles/comments/${id}/reply": {
       "post": {
-        "tags": [
-          "comments"
-        ],
+        "tags": ["comments"],
         "description": "Reply to a comment for the article",
         "parameters": [
           {
@@ -1059,9 +1023,7 @@
     },
     "/user/profile": {
       "get": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "description": "Get the verification verifification email",
         "responses": {
           "200": {
@@ -1091,9 +1053,7 @@
         ]
       },
       "patch": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "description": "Get the verification verifification email",
         "requestBody": {
           "content": {
@@ -1104,17 +1064,6 @@
             }
           }
         },
-        "parameters": [
-          {
-            "name": "token",
-            "in": "query",
-            "description": "your id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Account has been verified",
@@ -1143,9 +1092,7 @@
         ]
       },
       "delete": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "description": "Get the verification verifification email",
         "responses": {
           "200": {
@@ -1177,9 +1124,7 @@
     },
     "/user/profile/verification": {
       "get": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "description": "Get the verification verifification email",
         "parameters": [
           {
@@ -1221,9 +1166,7 @@
         "x-codegen-request-body-name": "body"
       },
       "patch": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "description": "Get the verification verifification email",
         "parameters": [
           {
@@ -1269,11 +1212,7 @@
   "components": {
     "schemas": {
       "userMessage": {
-        "required": [
-          "email",
-          "message",
-          "name"
-        ],
+        "required": ["email", "message", "name"],
         "type": "object",
         "properties": {
           "email": {
@@ -1354,11 +1293,7 @@
         ]
       },
       "signup": {
-        "required": [
-          "email",
-          "name",
-          "password"
-        ],
+        "required": ["email", "name", "password"],
         "type": "object",
         "properties": {
           "name": {
@@ -1383,10 +1318,7 @@
         }
       },
       "login": {
-        "required": [
-          "email",
-          "password"
-        ],
+        "required": ["email", "password"],
         "type": "object",
         "properties": {
           "email": {
@@ -1402,9 +1334,7 @@
         }
       },
       "comment": {
-        "required": [
-          "comment"
-        ],
+        "required": ["comment"],
         "type": "object",
         "properties": {
           "comment": {
@@ -1452,6 +1382,9 @@
               },
               "info": {
                 "type": "string"
+              },
+              "name": {
+                "type": "string"
               }
             },
             "example": {
@@ -1464,12 +1397,6 @@
         ]
       },
       "userArticle": {
-        "required": [
-          "categories",
-          "content",
-          "summary",
-          "title"
-        ],
         "type": "object",
         "properties": {
           "title": {
@@ -1622,3 +1549,4 @@
     }
   }
 }
+

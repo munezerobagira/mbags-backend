@@ -40,7 +40,7 @@ export default class User {
     try {
       let profilePic;
       if (request.file) profilePic = request.file.path;
-      const { name, username, keywords, summary, info, email, verified } =
+      const { name, username, keywords, summary, info, about, email } =
         request.body;
       const { _id: id } = request.user;
       const result = await UserServive.updateUser(id, {
@@ -50,7 +50,7 @@ export default class User {
         summary,
         info,
         email,
-        verified,
+        about,
       });
       if (profilePic) unlinkSync(profilePic);
       return response
@@ -221,3 +221,4 @@ export default class User {
     }
   }
 }
+

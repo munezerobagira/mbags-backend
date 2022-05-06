@@ -16,7 +16,8 @@ export default class MessageServive {
   static async getMessages({ count = 100, skip = 0, filter = {} }) {
     const messages = await Message.find(filter)
       .limit(count)
-      .skip(count * skip);
+      .skip(count * skip)
+      .sort({ createdAt: "desc", read: -1 });
     if (!messages) return { success: false, error: "Messages not found" };
     return { success: true, messages };
   }
@@ -38,6 +39,7 @@ export default class MessageServive {
       });
       await sendEmail(template);
       message.reply.push(reply);
+      console.log(reply);
     }
     if (read) message.read = read;
     await message.save();
@@ -50,3 +52,4 @@ export default class MessageServive {
     return { success: true, message };
   }
 }
+

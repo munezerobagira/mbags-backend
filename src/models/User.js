@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema(
     keywords: { type: String },
     summary: { type: String },
     info: { type: String },
+    about: { type: String },
     profilePic: {
       path: String,
       width: String,
@@ -60,3 +61,4 @@ export async function createUser({
 }
 
 export default User;
+
