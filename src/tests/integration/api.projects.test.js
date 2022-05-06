@@ -13,6 +13,8 @@ import {
   createImageTestingFolder,
   deleteImageTestingFolder,
 } from "../../testFunctions";
+import { ownerEmail } from "../../config";
+import truncateDb from "../../truncateDb";
 
 chai.use(chaiHttp);
 const { request } = chai;
@@ -27,6 +29,7 @@ describe("/api/project", function projectTest() {
   this.timeout(30000);
   before(async () => {
     await mongoose.connection.asPromise();
+    await truncateDb();
     testingImageFolder = await createImageTestingFolder();
     expect(testingImageFolder).to.be.a("string");
     const password = faker.internet.password();
@@ -40,7 +43,7 @@ describe("/api/project", function projectTest() {
     };
     const adminUser = {
       name: faker.name.findName(),
-      email: faker.internet.email(),
+      email: ownerEmail,
       password,
       username: faker.internet.userName(),
       role: "admin",
@@ -235,3 +238,4 @@ describe("/api/project", function projectTest() {
     });
   });
 });
+

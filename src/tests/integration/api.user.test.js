@@ -11,8 +11,9 @@ import {
   deleteImageTestingFolder,
 } from "../../testFunctions";
 import { signToken } from "../../helpers/jwt";
-import { verificationSecret } from "../../config";
+import { ownerEmail, verificationSecret } from "../../config";
 import { UserServive } from "../../services";
+import truncateDb from "../../truncateDb";
 
 chai.use(chaiHttp);
 const { request } = chai;
@@ -26,12 +27,13 @@ describe("/api/user", function () {
   this.timeout(60000);
 
   before(async () => {
+    truncateDb();
     testingImageFolder = await createImageTestingFolder();
     expect(testingImageFolder).to.be.a("string");
     const password = faker.internet.password();
     guest = {
       name: faker.name.findName(),
-      email: faker.internet.email(),
+      email: ownerEmail,
       password,
       username: faker.internet.userName(),
       verified: true,
@@ -192,3 +194,4 @@ describe("/api/user", function () {
     });
   });
 });
+

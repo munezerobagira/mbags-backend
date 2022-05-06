@@ -4,6 +4,8 @@ import chai, { expect } from "chai";
 import { faker } from "@faker-js/faker";
 import { createUser } from "../../models/User";
 import server from "../..";
+import { ownerEmail } from "../../config";
+import truncateDb from "../../truncateDb";
 
 chai.use(chaiHttp);
 const { request } = chai;
@@ -15,6 +17,7 @@ describe("/api/messages", () => {
   let guestToken;
   before(async () => {
     const password = faker.internet.password();
+    await truncateDb();
     const guest = {
       name: faker.name.findName(),
       email: faker.internet.email(),
@@ -25,7 +28,7 @@ describe("/api/messages", () => {
     };
     const adminUser = {
       name: faker.name.findName(),
-      email: faker.internet.email(),
+      email: ownerEmail,
       password,
       username: faker.internet.userName(),
       role: "admin",
@@ -177,3 +180,4 @@ describe("/api/messages", () => {
     });
   });
 });
+

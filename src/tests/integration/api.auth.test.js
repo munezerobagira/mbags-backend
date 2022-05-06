@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { faker } from "@faker-js/faker";
 import server from "../..";
 import { createUser } from "../../models/User";
+import truncateDb from "../../truncateDb";
 
 chai.use(chaiHttp);
 const { request } = chai;
@@ -21,6 +22,7 @@ describe("/api/auth", () => {
   };
   before(async () => {
     await mongoose.connection.asPromise();
+    await truncateDb();
     verifiedUser = {
       name: faker.name.findName(),
       username: faker.internet.userName(),
@@ -112,3 +114,4 @@ describe("/api/auth", () => {
     });
   });
 });
+
