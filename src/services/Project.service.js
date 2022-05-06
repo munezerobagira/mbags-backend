@@ -89,6 +89,7 @@ export default class ArticleServive {
 
   static async getProjects({ count = 100, skip = 0, filter = {} }) {
     const projects = await Project.find(filter)
+      .populate([{ path: "categories", select: "title" }])
       .limit(count)
       .skip(count * skip);
     if (!projects) return { success: false, error: "projects not found" };
