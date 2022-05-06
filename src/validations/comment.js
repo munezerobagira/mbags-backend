@@ -1,4 +1,5 @@
 import Joi from "joi";
+
 const createComment = Joi.object({
   comment: Joi.string().required(),
 });

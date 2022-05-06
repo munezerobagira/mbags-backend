@@ -19,7 +19,8 @@ export default class Article {
         );
       if (request.file) image = request.file?.path;
 
-      const { title, images, summary, link, categories } = request.body;
+      const { title, images, summary, link, categories, githubLink } =
+        request.body;
       let { _id: authorId } = request.user;
       if (!authorId) authorId = request.user._id;
       const result = await ProjectServive.addProject({
@@ -30,6 +31,7 @@ export default class Article {
         categories,
         image,
         authorId,
+        githubLink,
       });
       if (image) unlinkSync(image);
       return response

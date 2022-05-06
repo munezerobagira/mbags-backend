@@ -42,7 +42,10 @@ export default class Comment {
       const { _id: userId } = request.user;
       const { commentToUpdate } = await ArticleServive.getComment(id);
 
-      if (commentToUpdate && commentToUpdate.author._id !== userId)
+      if (
+        commentToUpdate &&
+        (commentToUpdate.author._id !== userId || request.userRole !== "admin")
+      )
         return response
           .status(403)
           .json({ error: "You can't delete other id" });
@@ -68,7 +71,10 @@ export default class Comment {
       const { id } = request.params;
       const { _id: userId } = request.user;
       const { commentToDelete } = await ArticleServive.getComment(id);
-      if (commentToDelete && commentToDelete.author._id !== userId)
+      if (
+        commentToDelete &&
+        (commentToDelete.author._id !== userId || request.userRole !== "admin")
+      )
         return response
           .status(403)
           .json({ error: "You can't delete others comment" });
@@ -89,7 +95,8 @@ export default class Comment {
     try {
       const { comment } = request.body;
       const { id } = request.params;
-      const result = await ArticleServive.replyComment(id, { comment });
+      const author = request?.user?._id;
+      const result = await ArticleServive.replyComment(id, { comment, author });
       if (!result.success)
         return response.status(404).json({ status: 404, error: result.error });
       return response

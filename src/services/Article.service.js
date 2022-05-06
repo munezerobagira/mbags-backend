@@ -159,7 +159,7 @@ export default class ArticleServive {
   }
 
   static async deleteComment(id) {
-    const comment = await Comment.findOneAndDelete({ _id: id });
+    const comment = await Comment.findOneAndUpdate({ _id: id, comment: "" });
     if (!comment) return { success: false, error: "Comment not found" };
     return { success: true, comment };
   }

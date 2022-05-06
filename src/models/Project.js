@@ -6,6 +6,7 @@ const projectSchema = new mongoose.Schema(
     image: { path: String, height: Number, width: Number, info: String },
     summary: { type: String, required: true },
     link: { type: String, required: true },
+    githubLink: { type: String },
     categories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],
     published: { type: Boolean, required: true, default: false },
     featured: { type: Boolean, required: true, default: false },

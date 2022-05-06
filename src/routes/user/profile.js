@@ -11,6 +11,7 @@ router.patch(
   "/",
   multerUploader.single("profilePic"),
   isLoggedIn,
+  joiValidator(userSchema.profile),
   UserController.updateUser
 );
 router.delete("/", isLoggedIn, UserController.deleteUser);
@@ -28,3 +29,4 @@ router.get(
 router.patch("/passwordToken", UserController.getPasswordResetToken);
 
 export default router;
+

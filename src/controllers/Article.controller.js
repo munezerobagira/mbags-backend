@@ -81,8 +81,7 @@ export default class Article {
     try {
       const { articleId } = request.params;
       const { comment } = request.body;
-      let { author } = request.body;
-      if (!author) author = request?.user?._id;
+      const author = request?.user?._id;
       const result = await ArticleServive.addComment(articleId, {
         comment,
         author,

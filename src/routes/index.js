@@ -1,5 +1,5 @@
 import express from "express";
-import { SampleController } from "../controllers";
+import { SampleController, UserController } from "../controllers";
 import messageRoutes from "./message";
 import articlesRoutes from "./articles";
 import projectsRoutes from "./project";
@@ -16,5 +16,7 @@ router.use("/articles", articlesRoutes);
 router.use("/projects", projectsRoutes);
 router.use("/user", userRoutes);
 router.use("/auth", authRoutes);
+router.get("/owner", UserController.getOwnerInfo);
 router.use("*", SampleController.notFound);
 export default router;
+

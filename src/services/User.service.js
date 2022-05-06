@@ -25,7 +25,6 @@ export default class UserServive {
     id,
     {
       name = null,
-      email = null,
       username = null,
       keywords = null,
       summary = null,
@@ -44,7 +43,6 @@ export default class UserServive {
         error: "User not found, you might need to login",
       };
     if (name) user.name = name;
-    if (email) user.email = email;
     if (username) user.username = username;
     if (keywords) user.keywords = keywords;
     if (summary) user.summary = summary;
@@ -57,7 +55,7 @@ export default class UserServive {
         cloudinaryFolders.profiles
       );
       user.profilePic = {
-        path: uploadResult.path,
+        path: uploadResult.secure_url || uploadResult.url,
         width: uploadResult.width,
         height: uploadResult.height,
       };
@@ -93,7 +91,6 @@ export default class UserServive {
         error: "User not found or you might need to login",
       };
     const user = { ...userData._doc, password: undefined, tokens: undefined };
-
     return { success: true, user };
   }
 

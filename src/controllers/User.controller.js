@@ -51,6 +51,7 @@ export default class User {
         info,
         email,
         about,
+        profilePic,
       });
       if (profilePic) unlinkSync(profilePic);
       return response
@@ -87,6 +88,35 @@ export default class User {
       return response
         .status(200)
         .json({ status: 200, success: true, user: result.user });
+    } catch (error) {
+      const formattedError = errorFormatter(error);
+      Logger.error(formattedError.error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError, error: formattedError.message });
+    }
+  }
+
+  static async getOwnerInfo(request, response) {
+    try {
+      const result = await UserServive.getUser({
+        role: "admin",
+        isOwner: true,
+      });
+      if (!result.success)
+        return response.status(400).json({ status: 400, error: result.error });
+      return response.status(200).json({
+        status: 200,
+        success: true,
+        user: {
+          ...result.user,
+          isOwner: undefined,
+          role: undefined,
+          verified: undefined,
+          createdAt: undefined,
+          time: new Date().toLocaleString(),
+        },
+      });
     } catch (error) {
       const formattedError = errorFormatter(error);
       Logger.error(formattedError.error.stack);

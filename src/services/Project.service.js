@@ -4,7 +4,14 @@ import { Project, Category } from "../models";
 
 export default class ArticleServive {
   // Articles
-  static async addProject({ title, summary, categories, link, image }) {
+  static async addProject({
+    title,
+    summary,
+    categories,
+    link,
+    image,
+    githubLink,
+  }) {
     let uploadResult;
     if (image)
       uploadResult = await cloudinaryUploader(
@@ -20,6 +27,7 @@ export default class ArticleServive {
         width: uploadResult.width,
         height: uploadResult.height,
       },
+      githubLink,
     });
     await project.save();
     if (categories) {
@@ -40,7 +48,7 @@ export default class ArticleServive {
 
   static async updateProject(
     id,
-    { title, summary, categories, link, featured, published, image }
+    { title, summary, categories, link, featured, published, image, githubLink }
   ) {
     let uploadResult;
     if (image)
@@ -53,6 +61,7 @@ export default class ArticleServive {
     if (title) project.title = title;
     if (summary) project.summary = summary;
     if (link) project.link = link;
+    if (githubLink) project.githubLink = githubLink;
     if (published) project.published = !!published;
     if (featured) project.featured = !!featured;
     if (uploadResult)
