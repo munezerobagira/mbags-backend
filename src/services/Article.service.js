@@ -129,10 +129,7 @@ export default class ArticleServive {
     if (!article) return { success: false, error: "Article not found" };
     if (article.comments)
       article.comments.forEach(async (commentId) => {
-        let comment = await Comment.findOneAndDelete(commentId);
-        while (comment.reply) {
-          comment = await Comment.findOneAndDelete(comment.reply);
-        }
+        await Comment.findOneAndDelete(commentId);
       });
     if (article.categories)
       article.categories.forEach(async (categoryId) => {
@@ -159,7 +156,11 @@ export default class ArticleServive {
   }
 
   static async deleteComment(id) {
-    const comment = await Comment.findOneAndUpdate({ _id: id, comment: "" });
+    const comment = await Comment.findOneAndUpdate(
+      { _id: id },
+      { comment: "Comment was deleted" }
+    );
+    if (!comment.reply.length) await Comment.findOneAndDelete({ _id: id });
     if (!comment) return { success: false, error: "Comment not found" };
     return { success: true, comment };
   }

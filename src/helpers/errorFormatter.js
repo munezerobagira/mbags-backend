@@ -1,5 +1,4 @@
 import { JsonWebTokenError } from "jsonwebtoken";
-import { ResponseError as SendgridResponseError } from "@sendgrid/mail";
 import { Error } from "mongoose";
 import { INTERNAL_SERVER_ERROR, TOKEN_ERROR } from "./Constants";
 
@@ -54,15 +53,6 @@ const errorFormatter = (error) => {
           return {
             status: 401,
             message: TOKEN_ERROR,
-            error: {
-              stack,
-            },
-          };
-        }
-        if (error instanceof SendgridResponseError) {
-          return {
-            status: 500,
-            message: "Unkonwn error",
             error: {
               stack,
             },

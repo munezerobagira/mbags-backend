@@ -81,7 +81,7 @@ export default class Comment {
       const result = await ArticleServive.deleteComment(id);
       return response
         .status(200)
-        .json({ status: 200, success: true, comments: result.comment });
+        .json({ status: 200, success: true, comment: result.comment });
     } catch (error) {
       const formattedError = errorFormatter(error);
       Logger.error(formattedError.error.stack);

@@ -351,6 +351,7 @@ describe("/api/articles", function () {
           comment: faker.company.catchPhrase(),
         });
       validCommentId = response?.body?.comment?._id;
+      expect(validCommentId).to.be.a("string");
     });
     describe("GET /api/articles/comments/", () => {
       it("should return 200 and comments if valid  id and token are provided", async () => {
