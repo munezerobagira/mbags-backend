@@ -2,7 +2,7 @@ import Joi from "joi";
 
 const signup = Joi.object({
   name: Joi.string().required(),
-  email: Joi.string().email().required(),
+  email: Joi.string().email().lowercase().required(),
   password: Joi.string().required(),
   confirmPassword: Joi.ref("password"),
   username: Joi.string().required(),
@@ -13,13 +13,14 @@ const login = Joi.object({
 });
 const profile = Joi.object({
   name: Joi.string(),
-  email: Joi.string().email(),
+  email: Joi.string().email().lowercase(),
   password: Joi.string(),
   confirmPassword: Joi.ref("password"),
   username: Joi.string(),
   summary: Joi.string(),
   keywords: Joi.string(),
   info: Joi.string(),
+  about: Joi.string(),
 }).with("password", "confirmPassword");
 const passwordReset = Joi.object({
   password: Joi.string(),
@@ -35,3 +36,4 @@ export default {
   passwordReset,
   id,
 };
+

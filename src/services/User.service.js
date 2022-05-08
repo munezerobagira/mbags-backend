@@ -9,6 +9,7 @@ export default class UserServive {
       username,
       email,
       password,
+      role: "guest",
     });
     await user.save();
     return {
@@ -24,7 +25,6 @@ export default class UserServive {
     id,
     {
       name = null,
-      email = null,
       username = null,
       keywords = null,
       summary = null,
@@ -33,6 +33,7 @@ export default class UserServive {
       token = null,
       star = null,
       password = null,
+      about = null,
     }
   ) {
     const user = await User.findOne({ _id: id });
@@ -42,19 +43,19 @@ export default class UserServive {
         error: "User not found, you might need to login",
       };
     if (name) user.name = name;
-    if (email) user.email = email;
     if (username) user.username = username;
     if (keywords) user.keywords = keywords;
     if (summary) user.summary = summary;
     if (password) user.password = password;
     if (info) user.info = info;
+    if (about) user.about = about;
     if (profilePic) {
       const uploadResult = await cloudinaryUploader(
         profilePic,
         cloudinaryFolders.profiles
       );
       user.profilePic = {
-        path: uploadResult.path,
+        path: uploadResult.secure_url || uploadResult.url,
         width: uploadResult.width,
         height: uploadResult.height,
       };
@@ -89,8 +90,7 @@ export default class UserServive {
         success: false,
         error: "User not found or you might need to login",
       };
-    const user = { ...userData._doc, password: undefined };
-
+    const user = { ...userData._doc, password: undefined, tokens: undefined };
     return { success: true, user };
   }
 
@@ -115,3 +115,4 @@ export default class UserServive {
     };
   }
 }
+

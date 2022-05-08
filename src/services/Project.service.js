@@ -4,7 +4,14 @@ import { Project, Category } from "../models";
 
 export default class ArticleServive {
   // Articles
-  static async addProject({ title, summary, categories, link, image }) {
+  static async addProject({
+    title,
+    summary,
+    categories,
+    link,
+    image,
+    githubLink,
+  }) {
     let uploadResult;
     if (image)
       uploadResult = await cloudinaryUploader(
@@ -15,13 +22,12 @@ export default class ArticleServive {
       title,
       summary,
       link,
-      images: uploadResult && [
-        {
-          path: uploadResult.secure_url || uploadResult.url,
-          width: uploadResult.width,
-          height: uploadResult.height,
-        },
-      ],
+      image: uploadResult && {
+        path: uploadResult.secure_url || uploadResult.url,
+        width: uploadResult.width,
+        height: uploadResult.height,
+      },
+      githubLink,
     });
     await project.save();
     if (categories) {
@@ -42,15 +48,28 @@ export default class ArticleServive {
 
   static async updateProject(
     id,
-    { title, summary, categories, link, featured, published }
+    { title, summary, categories, link, featured, published, image, githubLink }
   ) {
+    let uploadResult;
+    if (image)
+      uploadResult = await cloudinaryUploader(
+        image,
+        cloudinaryFolders.projects
+      );
     const project = await Project.findOne({ _id: id });
     if (!project) return { success: false, error: "Project not found" };
     if (title) project.title = title;
     if (summary) project.summary = summary;
     if (link) project.link = link;
+    if (githubLink) project.githubLink = githubLink;
     if (published) project.published = !!published;
     if (featured) project.featured = !!featured;
+    if (uploadResult)
+      project.image = {
+        path: uploadResult.secure_url || uploadResult.url,
+        width: uploadResult.width,
+        height: uploadResult.height,
+      };
     if (categories) {
       project.categories.forEach(async (categoryId) => {
         const category = await Category.findOne({ _id: categoryId });
@@ -79,6 +98,7 @@ export default class ArticleServive {
 
   static async getProjects({ count = 100, skip = 0, filter = {} }) {
     const projects = await Project.find(filter)
+      .populate([{ path: "categories", select: "title" }])
       .limit(count)
       .skip(count * skip);
     if (!projects) return { success: false, error: "projects not found" };
@@ -107,3 +127,4 @@ export default class ArticleServive {
     return { success: true, project };
   }
 }
+

@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
+
 const articleSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, unique: false },
-    images: [{ path: String, height: Number, width: Number, info: String }],
+    image: { path: String, height: Number, width: Number, info: String },
     summary: { type: String, required: true },
     content: { type: String, required: true },
     categories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category" }],

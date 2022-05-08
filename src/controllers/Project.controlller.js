@@ -19,7 +19,8 @@ export default class Article {
         );
       if (request.file) image = request.file?.path;
 
-      const { title, images, summary, link, categories } = request.body;
+      const { title, images, summary, link, categories, githubLink } =
+        request.body;
       let { _id: authorId } = request.user;
       if (!authorId) authorId = request.user._id;
       const result = await ProjectServive.addProject({
@@ -30,6 +31,7 @@ export default class Article {
         categories,
         image,
         authorId,
+        githubLink,
       });
       if (image) unlinkSync(image);
       return response
@@ -46,8 +48,9 @@ export default class Article {
 
   static async getProjects(request, response) {
     try {
-      const { skip = 0, count = 100 } = request.query;
-      const result = await ProjectServive.getProjects({ skip, count });
+      const { skip = 0, count = 100, ...filter } = request.query;
+      if (filter.title) filter.title = { $regex: filter.title, $options: "i" };
+      const result = await ProjectServive.getProjects({ skip, count, filter });
       return response
         .status(200)
         .json({ status: 200, success: true, projects: result.projects });
@@ -120,3 +123,4 @@ export default class Article {
     }
   }
 }
+

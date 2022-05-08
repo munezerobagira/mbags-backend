@@ -7,14 +7,17 @@ const main = async () => {
   try {
     const user = await createUser({
       name: "Sostene MUnezero Bagira",
-      email: "bagira.sostenee@gmail.com",
-      username: "password123",
-      password: "password123",
+      email: "dev@dev.dev",
+      username: "iamdev",
+      password: "iamdev",
       role: "admin",
+      verified: true,
     });
-    if (user) console.log("User created successfully");
+    mongoose.disconnect();
+    if (user) console.log("User created successfully", user);
   } catch (err) {
     console.log("Admin already exists");
   }
 };
 main();
+

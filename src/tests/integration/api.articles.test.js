@@ -12,6 +12,8 @@ import {
   createImageTestingFolder,
   deleteImageTestingFolder,
 } from "../../testFunctions";
+import { ownerEmail } from "../../config";
+import truncateDb from "../../truncateDb";
 
 chai.use(chaiHttp);
 const { request } = chai;
@@ -27,6 +29,7 @@ describe("/api/articles", function () {
   before(async () => {
     // Make sure we're connected to the db
     await mongoose.connection.asPromise();
+    await truncateDb();
     testingImageFolder = await createImageTestingFolder();
     expect(testingImageFolder).to.be.a("string");
     const password = faker.internet.password();
@@ -40,7 +43,7 @@ describe("/api/articles", function () {
     };
     const adminUser = {
       name: faker.name.findName(),
-      email: faker.internet.email(),
+      email: ownerEmail,
       password,
       username: faker.internet.userName(),
       verified: true,
@@ -348,6 +351,7 @@ describe("/api/articles", function () {
           comment: faker.company.catchPhrase(),
         });
       validCommentId = response?.body?.comment?._id;
+      expect(validCommentId).to.be.a("string");
     });
     describe("GET /api/articles/comments/", () => {
       it("should return 200 and comments if valid  id and token are provided", async () => {
@@ -461,3 +465,4 @@ describe("/api/articles", function () {
     });
   });
 });
+

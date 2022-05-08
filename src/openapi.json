@@ -61,9 +61,7 @@
   "paths": {
     "/": {
       "get": {
-        "tags": [
-          "sample"
-        ],
+        "tags": ["sample"],
         "summary": "endpoint to test if server is up",
         "operationId": "sample-get",
         "responses": {
@@ -75,9 +73,7 @@
     },
     "/auth/login": {
       "post": {
-        "tags": [
-          "authentication"
-        ],
+        "tags": ["authentication"],
         "summary": "Login to the system",
         "description": "Login to the system",
         "operationId": "login",
@@ -117,9 +113,7 @@
     },
     "/auth/signup": {
       "post": {
-        "tags": [
-          "authentication"
-        ],
+        "tags": ["authentication"],
         "summary": "Signup to the system",
         "description": "Signup to the system",
         "operationId": "signup",
@@ -161,9 +155,7 @@
     },
     "/auth/signout": {
       "patch": {
-        "tags": [
-          "authentication"
-        ],
+        "tags": ["authentication"],
         "summary": "Signout from  the system",
         "description": "Signout  from  the system",
         "operationId": "path-signup",
@@ -202,9 +194,7 @@
     },
     "/messages": {
       "get": {
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "description": "Returns a list of all the messages received",
         "parameters": [
           {
@@ -268,9 +258,7 @@
         ]
       },
       "post": {
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "description": "Create a new message",
         "requestBody": {
           "description": "User can add the messsage",
@@ -310,9 +298,7 @@
     },
     "/messages/{id}": {
       "get": {
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "description": "Get a single message",
         "parameters": [
           {
@@ -374,9 +360,7 @@
         ]
       },
       "delete": {
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "description": "Update a single message with given id",
         "parameters": [
           {
@@ -438,9 +422,7 @@
         ]
       },
       "patch": {
-        "tags": [
-          "messages"
-        ],
+        "tags": ["messages"],
         "description": "Update a single message with given id",
         "parameters": [
           {
@@ -506,9 +488,7 @@
     },
     "/articles": {
       "get": {
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "Returns a list of all articles",
         "parameters": [
           {
@@ -527,6 +507,14 @@
             "schema": {
               "type": "integer",
               "format": "int32"
+            }
+          },
+          {
+            "name": "published",
+            "in": "query",
+            "description": "published filter",
+            "schema": {
+              "type": "boolean"
             }
           }
         ],
@@ -547,9 +535,7 @@
         }
       },
       "post": {
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "Create a new post",
         "requestBody": {
           "description": "Blog post to create",
@@ -604,9 +590,7 @@
     },
     "/articles/{id}": {
       "get": {
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "Get a single message",
         "parameters": [
           {
@@ -635,9 +619,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "Delete a blog of given id",
         "parameters": [
           {
@@ -689,9 +671,7 @@
         ]
       },
       "patch": {
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "Update a single blog of given id",
         "parameters": [
           {
@@ -757,9 +737,7 @@
     },
     "/articles/{id}/comment": {
       "post": {
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "Create a comment for the article",
         "parameters": [
           {
@@ -807,9 +785,7 @@
     },
     "/articles/categories": {
       "get": {
-        "tags": [
-          "categories"
-        ],
+        "tags": ["categories"],
         "description": "Get the article categories categories",
         "responses": {
           "200": {
@@ -825,9 +801,7 @@
     },
     "/articles/categories/{id}": {
       "get": {
-        "tags": [
-          "categories"
-        ],
+        "tags": ["categories"],
         "description": "Get the article categories categories",
         "parameters": [
           {
@@ -852,9 +826,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "categories"
-        ],
+        "tags": ["categories"],
         "description": "Update the category of given id",
         "parameters": [
           {
@@ -890,9 +862,7 @@
     },
     "/articles/comments": {
       "get": {
-        "tags": [
-          "comments"
-        ],
+        "tags": ["comments"],
         "description": "Get all comments",
         "responses": {
           "200": {
@@ -908,9 +878,7 @@
     },
     "/articles/comments/{id}": {
       "delete": {
-        "tags": [
-          "comments"
-        ],
+        "tags": ["comments"],
         "description": "Update the comment",
         "parameters": [
           {
@@ -944,9 +912,7 @@
         ]
       },
       "patch": {
-        "tags": [
-          "comments"
-        ],
+        "tags": ["comments"],
         "description": "Update the comment",
         "parameters": [
           {
@@ -1007,11 +973,9 @@
         "x-codegen-request-body-name": "body"
       }
     },
-    "/articles/comments/${id}/reply": {
+    "/articles/comments/{id}/reply": {
       "post": {
-        "tags": [
-          "comments"
-        ],
+        "tags": ["comments"],
         "description": "Reply to a comment for the article",
         "parameters": [
           {
@@ -1027,7 +991,7 @@
         "requestBody": {
           "description": "Add the comment",
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/comment"
               }
@@ -1057,11 +1021,258 @@
         "x-codegen-request-body-name": "body"
       }
     },
+    "/projects": {
+      "get": {
+        "tags": ["projects"],
+        "description": "Returns a list of all projects",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "published",
+            "in": "query",
+            "description": "published filter",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of blog posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/databaseProject"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["projects"],
+        "description": "Add the new project",
+        "requestBody": {
+          "description": "Blog post to create",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/userProject"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/databaseProject"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User need to login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/unauntheticatedError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User not authorized to add article",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/unauntheticatedError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/projects/{id}": {
+      "get": {
+        "tags": ["projects"],
+        "description": "Get a single project",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "specifies the id of message to get",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return a blogeof given id",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "404": {
+            "description": "Project notFound",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["projects"],
+        "description": "Delete a blog of given id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "specifies the id of message to get",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of messages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/databaseProject"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User need to login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/unauntheticatedError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project notFound",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/notFoundError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": ["projects"],
+        "description": "Update a single project of given id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "specifies the id of project to get",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Properties to update",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/updateProject"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "Return the updated project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/databaseArticle"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User need to login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/unauntheticatedError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Message notFound",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/notFoundError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "x-codegen-request-body-name": "message"
+      }
+    },
     "/user/profile": {
       "get": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "description": "Get the verification verifification email",
         "responses": {
           "200": {
@@ -1091,9 +1302,7 @@
         ]
       },
       "patch": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "description": "Get the verification verifification email",
         "requestBody": {
           "content": {
@@ -1104,17 +1313,6 @@
             }
           }
         },
-        "parameters": [
-          {
-            "name": "token",
-            "in": "query",
-            "description": "your id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Account has been verified",
@@ -1143,9 +1341,7 @@
         ]
       },
       "delete": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "description": "Get the verification verifification email",
         "responses": {
           "200": {
@@ -1177,9 +1373,7 @@
     },
     "/user/profile/verification": {
       "get": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "description": "Get the verification verifification email",
         "parameters": [
           {
@@ -1221,9 +1415,7 @@
         "x-codegen-request-body-name": "body"
       },
       "patch": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "description": "Get the verification verifification email",
         "parameters": [
           {
@@ -1264,16 +1456,61 @@
         },
         "x-codegen-request-body-name": "body"
       }
+    },
+    "/owner": {
+      "get": {
+        "tags": ["projects"],
+        "description": "Returns a list of all projects",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "published",
+            "in": "query",
+            "description": "published filter",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of blog posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/databaseProject"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
       "userMessage": {
-        "required": [
-          "email",
-          "message",
-          "name"
-        ],
+        "required": ["email", "message", "name"],
         "type": "object",
         "properties": {
           "email": {
@@ -1354,11 +1591,7 @@
         ]
       },
       "signup": {
-        "required": [
-          "email",
-          "name",
-          "password"
-        ],
+        "required": ["email", "name", "password"],
         "type": "object",
         "properties": {
           "name": {
@@ -1383,10 +1616,7 @@
         }
       },
       "login": {
-        "required": [
-          "email",
-          "password"
-        ],
+        "required": ["email", "password"],
         "type": "object",
         "properties": {
           "email": {
@@ -1402,9 +1632,7 @@
         }
       },
       "comment": {
-        "required": [
-          "comment"
-        ],
+        "required": ["comment"],
         "type": "object",
         "properties": {
           "comment": {
@@ -1452,6 +1680,16 @@
               },
               "info": {
                 "type": "string"
+              },
+              "about": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "profilePic": {
+                "type": "string",
+                "format": "binary"
               }
             },
             "example": {
@@ -1464,12 +1702,6 @@
         ]
       },
       "userArticle": {
-        "required": [
-          "categories",
-          "content",
-          "summary",
-          "title"
-        ],
         "type": "object",
         "properties": {
           "title": {
@@ -1524,6 +1756,95 @@
         "allOf": [
           {
             "$ref": "#/components/schemas/updateArticle"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "published": {
+                "type": "boolean",
+                "default": false
+              },
+              "featured": {
+                "type": "boolean",
+                "default": false
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "example": {
+              "id": "64fa44242fa44242",
+              "createdAt": "",
+              "updatedAt": "",
+              "reply": []
+            }
+          }
+        ]
+      },
+      "userProject": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "categories": {
+            "type": "string"
+          },
+          "link": {
+            "type": "string"
+          },
+          "githubLink": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string",
+            "format": "binary"
+          }
+        },
+        "example": {
+          "title": "How to make api",
+          "summary": "Every thing you need to make sure that your api is working",
+          "link": "https://example.com",
+          "githubLink": "https://github.com/munezerobagira/munezerobagira",
+          "categories": "javascript, blog"
+        }
+      },
+      "updateProject": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/userProject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "published": {
+                "type": "boolean",
+                "default": false
+              },
+              "featured": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "example": {
+              "published": true,
+              "featured": true
+            }
+          }
+        ]
+      },
+      "databaseProject": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/updateProject"
           },
           {
             "type": "object",
@@ -1622,3 +1943,4 @@
     }
   }
 }
+

@@ -20,8 +20,16 @@ const updateCategory = Joi.object({
   title: Joi.string(),
   description: Joi.string(),
 });
+const filter = Joi.object({
+  featured: Joi.boolean(),
+  published: Joi.boolean().default(true),
+  title: Joi.string(),
+  skip: Joi.number(),
+  count: Joi.number(),
+});
 export default {
   createArticle,
   updateArticle,
   updateCategory,
+  filter,
 };

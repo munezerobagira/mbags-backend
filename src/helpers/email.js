@@ -16,7 +16,7 @@ export const generateVerifyTemplate = ({
   <h1>Verify your email</h1>
   <p>Hi ${name},</p>
   <p>Please verify your email by clicking the link below:</p>
-  <a href="${host}/api/auth/verify?token=${token}">${host}/api/auth/verify?token=${token}</a>
+  <a href="${host}?token=${token}">${host}/api/auth/verify?token=${token}</a>
   <h1>Thank you!</h1>
   <p>If you haven't request the password reset please ignore this email</p>
   <h1> Copyright © ${new Date().getFullYear()} Sostene</h1>
@@ -74,3 +74,4 @@ export const sendEmail = async (template, multiple = false) =>
       }
     });
   });
+

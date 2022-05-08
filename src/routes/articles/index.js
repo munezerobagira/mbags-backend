@@ -8,7 +8,11 @@ import categoryRoutes from "./category";
 import commentsRoutes from "./comments";
 
 const router = express.Router();
-router.get("/", ArticleController.getArticles);
+router.get(
+  "/",
+  joiValidator(articleSchema.filter, "query"),
+  ArticleController.getArticles
+);
 router.post(
   "/",
   isLoggedIn,

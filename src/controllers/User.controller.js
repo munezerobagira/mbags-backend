@@ -40,7 +40,7 @@ export default class User {
     try {
       let profilePic;
       if (request.file) profilePic = request.file.path;
-      const { name, username, keywords, summary, info, email, verified } =
+      const { name, username, keywords, summary, info, about, email } =
         request.body;
       const { _id: id } = request.user;
       const result = await UserServive.updateUser(id, {
@@ -50,7 +50,8 @@ export default class User {
         summary,
         info,
         email,
-        verified,
+        about,
+        profilePic,
       });
       if (profilePic) unlinkSync(profilePic);
       return response
@@ -81,12 +82,41 @@ export default class User {
   static async getUser(request, response) {
     try {
       const { _id: id } = request.user;
-      const result = await UserServive.getUser({ id });
+      const result = await UserServive.getUser({ _id: id });
       if (!result.success)
         return response.status(400).json({ status: 400, error: result.error });
       return response
         .status(200)
         .json({ status: 200, success: true, user: result.user });
+    } catch (error) {
+      const formattedError = errorFormatter(error);
+      Logger.error(formattedError.error.stack);
+      return response
+        .status(formattedError.status)
+        .json({ status: formattedError, error: formattedError.message });
+    }
+  }
+
+  static async getOwnerInfo(request, response) {
+    try {
+      const result = await UserServive.getUser({
+        role: "admin",
+        isOwner: true,
+      });
+      if (!result.success)
+        return response.status(400).json({ status: 400, error: result.error });
+      return response.status(200).json({
+        status: 200,
+        success: true,
+        user: {
+          ...result.user,
+          isOwner: undefined,
+          role: undefined,
+          verified: undefined,
+          createdAt: undefined,
+          time: new Date().toLocaleString(),
+        },
+      });
     } catch (error) {
       const formattedError = errorFormatter(error);
       Logger.error(formattedError.error.stack);
@@ -221,3 +251,4 @@ export default class User {
     }
   }
 }
+

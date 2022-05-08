@@ -6,7 +6,11 @@ import { checkRole, isLoggedIn } from "../middlewares/auth";
 import { projectSchema } from "../validations";
 
 const router = express.Router();
-router.get("/", ProjectController.getProjects);
+router.get(
+  "/",
+  joiValidator(projectSchema.filter),
+  ProjectController.getProjects
+);
 
 router.post(
   "/",

@@ -1,5 +1,4 @@
 import { JsonWebTokenError } from "jsonwebtoken";
-import { ResponseError as SendgridResponseError } from "@sendgrid/mail";
 import { Error } from "mongoose";
 import { INTERNAL_SERVER_ERROR, TOKEN_ERROR } from "./Constants";
 
@@ -32,7 +31,7 @@ const errorFormatter = (error) => {
           },
         };
       default:
-        if (error instanceof Error.CastError || Error.name === "CastError") {
+        if (error instanceof Error.CastError || error.name === "CastError") {
           return {
             status: 404,
             message: "Resource not found",
@@ -59,15 +58,6 @@ const errorFormatter = (error) => {
             },
           };
         }
-        if (error instanceof SendgridResponseError) {
-          return {
-            status: 500,
-            message: "Unkonwn error",
-            error: {
-              stack,
-            },
-          };
-        }
         return {
           status: 500,
           message: error.name,
@@ -88,3 +78,4 @@ const errorFormatter = (error) => {
   }
 };
 export default errorFormatter;
+

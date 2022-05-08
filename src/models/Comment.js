@@ -15,4 +15,13 @@ const commentSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+// eslint-disable-next-line func-names
+const populateComment = function (next) {
+  this.populate("reply");
+  this.populate({ path: "author", select: "name" });
+  next();
+};
+
+commentSchema.pre("findOne", populateComment).pre("find", populateComment);
 export default mongoose.model("Comment", commentSchema);
+

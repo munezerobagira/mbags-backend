@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { hash, compare } from "bcrypt";
+import { ownerEmail } from "../config";
 
 const userSchema = new mongoose.Schema(
   {
@@ -11,6 +12,7 @@ const userSchema = new mongoose.Schema(
     keywords: { type: String },
     summary: { type: String },
     info: { type: String },
+    about: { type: String },
     profilePic: {
       path: String,
       width: String,
@@ -20,17 +22,24 @@ const userSchema = new mongoose.Schema(
     tokens: [{ type: String }],
     role: {
       type: String,
-      required: true,
-      default: "guest",
       enum: ["guest", "admin"],
+      default: "guest",
+    },
+    isOwner: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   { timestamps: true }
 );
 userSchema.pre("save", async function presave(next) {
+  if (ownerEmail === this.email) {
+    this.role = "admin";
+    this.isOwner = true;
+  } else this.role = "guest";
   if (!this.isModified("password")) return next();
   this.password = await hash(this.password, 10);
-  if (!this.role) this.role = "guest";
   return next();
 });
 
@@ -41,11 +50,11 @@ userSchema.methods.comparePassword = async function comparePassword(password) {
 const User = mongoose.model("User", userSchema);
 
 export async function createUser({
-  name = "Super User",
-  email = "admin@sosteneprotofolio@gmail.com",
-  username = "admin",
-  password = "admin",
-  role = "admin",
+  name,
+  email,
+  username,
+  password,
+  role,
   verified = false,
 }) {
   const createdUser = await User.create({
@@ -60,3 +69,4 @@ export async function createUser({
 }
 
 export default User;
+

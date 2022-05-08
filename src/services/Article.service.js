@@ -9,7 +9,7 @@ export default class ArticleServive {
     summary,
     categories,
     content,
-    authorId,
+    author,
     image,
   }) {
     const uploadResult = await cloudinaryUploader(
@@ -21,14 +21,12 @@ export default class ArticleServive {
       title,
       summary,
       content,
-      authorId,
-      images: [
-        {
-          path: uploadResult.secure_url || uploadResult.url,
-          width: uploadResult.width,
-          height: uploadResult.height,
-        },
-      ],
+      author,
+      image: {
+        path: uploadResult.secure_url || uploadResult.url,
+        width: uploadResult.width,
+        height: uploadResult.height,
+      },
     });
     await article.save();
     if (categories) {
@@ -48,14 +46,26 @@ export default class ArticleServive {
 
   static async updateArticle(
     id,
-    { title, summary, categories, content, featured, published }
+    { title, summary, categories, content, featured, published, image }
   ) {
+    let uploadResult = null;
+    if (image)
+      uploadResult = await cloudinaryUploader(
+        image,
+        cloudinaryFolders.articles
+      );
     const article = await Article.findOne({ _id: id });
     if (title) article.title = title;
     if (summary) article.summary = summary;
-    if (content) article.summary = summary;
+    if (content) article.content = content;
     if (published) article.published = !!published;
     if (featured) article.featured = !!featured;
+    if (uploadResult)
+      article.image = {
+        path: uploadResult.secure_url || uploadResult.url,
+        width: uploadResult.width,
+        height: uploadResult.height,
+      };
     if (categories) {
       article.categories.forEach(async (categoryId) => {
         const category = await Category.findOne({ _id: categoryId });
@@ -84,6 +94,12 @@ export default class ArticleServive {
 
   static async getArticles({ count = 100, skip = 0, filter = {} }) {
     const articles = await Article.find(filter)
+      .populate([
+        {
+          path: "categories",
+          select: "title",
+        },
+      ])
       .limit(count)
       .skip(count * skip);
     if (!articles) return { success: false, error: "Articles not found" };
@@ -91,9 +107,19 @@ export default class ArticleServive {
   }
 
   static async getArticle(id) {
-    const article = await Article.findOne({ _id: id })
-      .populate("comments")
-      .populate({ path: "categories", options: { select: "title" } });
+    const article = await Article.findOne({ _id: id }).populate([
+      {
+        path: "author",
+        select: "name",
+      },
+      {
+        path: "comments",
+      },
+      {
+        path: "categories",
+        select: "title",
+      },
+    ]);
     if (!article) return { success: false, error: "Article not found" };
     return { success: true, article };
   }
@@ -103,10 +129,7 @@ export default class ArticleServive {
     if (!article) return { success: false, error: "Article not found" };
     if (article.comments)
       article.comments.forEach(async (commentId) => {
-        let comment = await Comment.findOneAndDelete(commentId);
-        while (comment.reply) {
-          comment = await Comment.findOneAndDelete(comment.reply);
-        }
+        await Comment.findOneAndDelete(commentId);
       });
     if (article.categories)
       article.categories.forEach(async (categoryId) => {
@@ -133,7 +156,11 @@ export default class ArticleServive {
   }
 
   static async deleteComment(id) {
-    const comment = await Comment.findOneAndDelete({ _id: id });
+    const comment = await Comment.findOneAndUpdate(
+      { _id: id },
+      { comment: "Comment was deleted" }
+    );
+    if (!comment.reply.length) await Comment.findOneAndDelete({ _id: id });
     if (!comment) return { success: false, error: "Comment not found" };
     return { success: true, comment };
   }
@@ -205,3 +232,4 @@ export default class ArticleServive {
     return { success: true, category };
   }
 }
+

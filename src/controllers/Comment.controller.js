@@ -39,6 +39,16 @@ export default class Comment {
     try {
       const { comment, read, vote } = request.body;
       const { id } = request.params;
+      const { _id: userId } = request.user;
+      const { commentToUpdate } = await ArticleServive.getComment(id);
+
+      if (
+        commentToUpdate &&
+        (commentToUpdate.author._id !== userId || request.userRole !== "admin")
+      )
+        return response
+          .status(403)
+          .json({ error: "You can't delete other id" });
       const result = await ArticleServive.updateComment(id, {
         read,
         updatedComment: comment,
@@ -59,10 +69,19 @@ export default class Comment {
   static async deleteComment(request, response) {
     try {
       const { id } = request.params;
+      const { _id: userId } = request.user;
+      const { commentToDelete } = await ArticleServive.getComment(id);
+      if (
+        commentToDelete &&
+        (commentToDelete.author._id !== userId || request.userRole !== "admin")
+      )
+        return response
+          .status(403)
+          .json({ error: "You can't delete others comment" });
       const result = await ArticleServive.deleteComment(id);
       return response
         .status(200)
-        .json({ status: 200, success: true, comments: result.comment });
+        .json({ status: 200, success: true, comment: result.comment });
     } catch (error) {
       const formattedError = errorFormatter(error);
       Logger.error(formattedError.error.stack);
@@ -76,7 +95,8 @@ export default class Comment {
     try {
       const { comment } = request.body;
       const { id } = request.params;
-      const result = await ArticleServive.replyComment(id, { comment });
+      const author = request?.user?._id;
+      const result = await ArticleServive.replyComment(id, { comment, author });
       if (!result.success)
         return response.status(404).json({ status: 404, error: result.error });
       return response
@@ -91,3 +111,4 @@ export default class Comment {
     }
   }
 }
+

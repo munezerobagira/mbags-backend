@@ -1,3 +1,6 @@
+/* eslint-disable prefer-template */
+/* eslint-disable arrow-body-style */
+/* eslint-disable radix */
 import fs from "fs";
 import { createCanvas } from "canvas";
 
@@ -5,7 +8,7 @@ export const createBanner = async (
   title,
   { width = 1200, height = 630, inputPath = "temp" }
 ) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const canvas = createCanvas(width, height);
     const context = canvas.getContext("2d");
     context.fillStyle = "#555";
@@ -26,10 +29,12 @@ export const createBanner = async (
     context.fillText("sostene.dev", 600, 530);
 
     const buffer = canvas.toBuffer("image/png");
-    let imagePath = inputPath + ".png";
+    const imagePath = inputPath + ".png";
     fs.writeFile(imagePath, buffer, (error) => {
       if (error) resolve(error);
       if (fs.existsSync(imagePath)) resolve(imagePath);
     });
   });
 };
+export default {};
+
