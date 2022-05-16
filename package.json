@@ -35,7 +35,7 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "swagger-jsdoc": "^6.2.1",
-    "swagger-ui-express": "^4.3.0",
+    "swagger-ui-express": "^4.4.0",
     "winston": "^3.7.2"
   },
   "devDependencies": {
