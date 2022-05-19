@@ -1,5 +1,5 @@
 import { unlinkSync } from "fs";
-import { UserServive } from "../services";
+import { UserService } from "../services";
 import {
   generatePasswordResetTemplate,
   generateVerifyTemplate,
@@ -18,7 +18,7 @@ export default class User {
   static async signup(request, response) {
     try {
       const { name, username, password, email } = request.body;
-      const result = await UserServive.signup({
+      const result = await UserService.signup({
         name,
         username,
         password,
@@ -43,7 +43,7 @@ export default class User {
       const { name, username, keywords, summary, info, about, email } =
         request.body;
       const { _id: id } = request.user;
-      const result = await UserServive.updateUser(id, {
+      const result = await UserService.updateUser(id, {
         name,
         username,
         keywords,
@@ -66,7 +66,7 @@ export default class User {
   static async deleteUser(request, response) {
     try {
       const { _id: id } = request.user;
-      const result = await UserServive.deleteUser(id);
+      const result = await UserService.deleteUser(id);
       return response
         .status(200)
         .json({ status: 200, success: true, user: result.user });
@@ -82,7 +82,7 @@ export default class User {
   static async getUser(request, response) {
     try {
       const { _id: id } = request.user;
-      const result = await UserServive.getUser({ _id: id });
+      const result = await UserService.getUser({ _id: id });
       if (!result.success)
         return response.status(400).json({ status: 400, error: result.error });
       return response
@@ -99,7 +99,7 @@ export default class User {
 
   static async getOwnerInfo(request, response) {
     try {
-      const result = await UserServive.getUser({
+      const result = await UserService.getUser({
         role: "admin",
         isOwner: true,
       });
@@ -132,7 +132,7 @@ export default class User {
         return request.status(401).json({ status: 401, error: "Unauthorized" });
       const { skip, count } = request.query;
 
-      const result = await UserServive.getUsers({ skip, count });
+      const result = await UserService.getUsers({ skip, count });
       return response
         .status(200)
         .json({ status: 200, success: true, users: result.users });
@@ -150,7 +150,7 @@ export default class User {
       const { password } = request.body;
       const { token } = request.query;
       const user = verifyPasswordResetToken(token);
-      const result = await UserServive.updateUser(user._id, {
+      const result = await UserService.updateUser(user._id, {
         password,
         token: { action: "remove", value: token },
       });
@@ -169,7 +169,7 @@ export default class User {
   static async getPasswordResetToken(request, response) {
     try {
       const { id } = request.body;
-      const result = await UserServive.getUser({ _id: id });
+      const result = await UserService.getUser({ _id: id });
       const token = await signToken(
         { user: { _id: result.user._id } },
         resetSecret,
@@ -203,8 +203,8 @@ export default class User {
           .status(400)
           .json({ status: 400, error: "Token is required" });
       const user = await verifyUserProfileToken(token);
-      const result = await UserServive.verifyProfile(user.id);
-      await UserServive.updateUser(result.user._id, {
+      const result = await UserService.verifyProfile(user.id);
+      await UserService.updateUser(result.user._id, {
         token: { action: "remove", value: token },
       });
       return response
@@ -222,7 +222,7 @@ export default class User {
   static async getVerifyToken(request, response) {
     try {
       const { id } = request.query;
-      const result = await UserServive.getUser({ _id: id, verified: false });
+      const result = await UserService.getUser({ _id: id, verified: false });
       if (!result.user)
         return response.status(400).json({ status: 400, error: result.error });
       const token = await signToken(
@@ -232,7 +232,7 @@ export default class User {
           expiresIn: "12h",
         }
       );
-      await UserServive.updateUser(result.user._id, {
+      await UserService.updateUser(result.user._id, {
         token: { action: "add", value: token },
       });
       const template = generateVerifyTemplate({

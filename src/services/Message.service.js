@@ -1,7 +1,7 @@
 import { generateReplyMessageTemplate, sendEmail } from "../helpers/email";
 import Message from "../models/Message";
 
-export default class MessageServive {
+export default class MessageService {
   static async addMessage({ name, subject, email, message: userMessage }) {
     const message = new Message({
       name,

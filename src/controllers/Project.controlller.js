@@ -1,6 +1,6 @@
 import { unlinkSync } from "fs";
 
-import { ProjectServive } from "../services";
+import { ProjectService } from "../services";
 import { createBanner } from "../helpers/bannerCreator";
 import { uploadFolder } from "../config";
 import Logger from "../helpers/Logger";
@@ -23,7 +23,7 @@ export default class Article {
         request.body;
       let { _id: authorId } = request.user;
       if (!authorId) authorId = request.user._id;
-      const result = await ProjectServive.addProject({
+      const result = await ProjectService.addProject({
         title,
         images,
         summary,
@@ -50,7 +50,7 @@ export default class Article {
     try {
       const { skip = 0, count = 100, ...filter } = request.query;
       if (filter.title) filter.title = { $regex: filter.title, $options: "i" };
-      const result = await ProjectServive.getProjects({ skip, count, filter });
+      const result = await ProjectService.getProjects({ skip, count, filter });
       return response
         .status(200)
         .json({ status: 200, success: true, projects: result.projects });
@@ -66,7 +66,7 @@ export default class Article {
   static async getProject(request, response) {
     try {
       const { id } = request.params;
-      const result = await ProjectServive.getProject(id);
+      const result = await ProjectService.getProject(id);
       return response
         .status(200)
         .json({ status: 200, success: true, project: result.project });
@@ -82,7 +82,7 @@ export default class Article {
   static async deleteProject(request, response) {
     try {
       const { id } = request.params;
-      const result = await ProjectServive.deleteProject(id);
+      const result = await ProjectService.deleteProject(id);
       return response
         .status(200)
         .json({ status: 200, success: true, project: result.project });
@@ -102,7 +102,7 @@ export default class Article {
       const { id } = request.params;
       const { title, summary, link, categories, published, featured } =
         request.body;
-      const result = await ProjectServive.updateProject(id, {
+      const result = await ProjectService.updateProject(id, {
         title,
         summary,
         link,

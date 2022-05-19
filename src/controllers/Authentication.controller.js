@@ -3,7 +3,7 @@ import errorFormatter from "../helpers/errorFormatter";
 import { signToken } from "../helpers/jwt";
 import Logger from "../helpers/Logger";
 import { User } from "../models";
-import { UserServive } from "../services";
+import { UserService } from "../services";
 
 export default class Authentication {
   static async login(request, response) {
@@ -28,7 +28,7 @@ export default class Authentication {
         tokenSecret,
         { expiresIn: "12h" }
       );
-      await UserServive.updateUser(user._id, {
+      await UserService.updateUser(user._id, {
         token: { action: "add", value: token },
       });
       return response.status(200).json({ status: 200, success: true, token });
@@ -45,7 +45,7 @@ export default class Authentication {
     try {
       const { user } = request;
       const { token } = request;
-      const result = await UserServive.updateUser(user._id, {
+      const result = await UserService.updateUser(user._id, {
         token: { action: "remove", value: token },
       });
       return response
@@ -60,3 +60,4 @@ export default class Authentication {
     }
   }
 }
+

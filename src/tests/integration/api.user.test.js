@@ -12,7 +12,7 @@ import {
 } from "../../testFunctions";
 import { signToken } from "../../helpers/jwt";
 import { ownerEmail, verificationSecret } from "../../config";
-import { UserServive } from "../../services";
+import { UserService } from "../../services";
 import truncateDb from "../../truncateDb";
 
 chai.use(chaiHttp);
@@ -172,7 +172,7 @@ describe("/api/user", function () {
           expiresIn: "2h",
         }
       );
-      await UserServive.updateUser(unverifiedUser._id, {
+      await UserService.updateUser(unverifiedUser._id, {
         token: { action: "add", value: verifyToken },
       });
       const response = await request(server).patch(

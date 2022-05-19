@@ -1,12 +1,12 @@
 import errorFormatter from "../helpers/errorFormatter";
 import Logger from "../helpers/Logger";
-import { ArticleServive } from "../services";
+import { ArticleService } from "../services";
 
 export default class ArticleCategory {
   static async getCategories(request, response) {
     try {
       const { skip = 0, count = 100, filter = {} } = request.query;
-      const result = await ArticleServive.getCategories({
+      const result = await ArticleService.getCategories({
         skip,
         count,
         filter,
@@ -27,7 +27,7 @@ export default class ArticleCategory {
     try {
       const { id } = request.params;
       const { articles, skip, count } = request.query;
-      const result = await ArticleServive.getCategory(id, {
+      const result = await ArticleService.getCategory(id, {
         articles,
         skip,
         count,
@@ -48,7 +48,7 @@ export default class ArticleCategory {
     try {
       const { id } = request.params;
       const { title, description } = request.body;
-      const result = await ArticleServive.updateCategory(id, {
+      const result = await ArticleService.updateCategory(id, {
         title,
         description,
       });
@@ -64,3 +64,4 @@ export default class ArticleCategory {
     }
   }
 }
+
