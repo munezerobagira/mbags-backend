@@ -2,7 +2,7 @@ import { cloudinaryFolders } from "../config";
 import { cloudinaryUploader } from "../helpers/uploader";
 import { User } from "../models";
 
-export default class UserServive {
+export default class UserService {
   static async signup({ name, username, email, password }) {
     const user = new User({
       name,

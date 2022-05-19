@@ -1,4 +1,5 @@
-export { default as MessageServive } from "./Message.service";
-export { default as ArticleServive } from "./Article.service";
-export { default as UserServive } from "./User.service";
-export { default as ProjectServive } from "./Project.service";
+export { default as MessageService } from "./Message.service";
+export { default as ArticleService } from "./Article.service";
+export { default as UserService } from "./User.service";
+export { default as ProjectService } from "./Project.service";
+

@@ -1,6 +1,6 @@
 import { unlinkSync } from "fs";
 
-import { ArticleServive } from "../services";
+import { ArticleService } from "../services";
 import { createBanner } from "../helpers/bannerCreator";
 import { uploadFolder } from "../config";
 import Logger from "../helpers/Logger";
@@ -21,7 +21,7 @@ export default class Article {
 
       const { title, images, summary, content, categories } = request.body;
       const author = request?.user?._id;
-      const result = await ArticleServive.addArticle({
+      const result = await ArticleService.addArticle({
         title,
         images,
         summary,
@@ -48,7 +48,7 @@ export default class Article {
       // eslint-disable-next-line prefer-const
       let { skip = 0, count = 100, ...filter } = request.query;
       if (filter.title) filter.title = { $regex: filter.title, $options: "i" };
-      const result = await ArticleServive.getArticles({ skip, count, filter });
+      const result = await ArticleService.getArticles({ skip, count, filter });
       return response
         .status(200)
         .json({ status: 200, success: true, articles: result.articles });
@@ -64,7 +64,7 @@ export default class Article {
   static async getArticle(request, response) {
     try {
       const { id } = request.params;
-      const result = await ArticleServive.getArticle(id);
+      const result = await ArticleService.getArticle(id);
       return response
         .status(200)
         .json({ status: 200, success: true, article: result.article });
@@ -82,7 +82,7 @@ export default class Article {
       const { articleId } = request.params;
       const { comment } = request.body;
       const author = request?.user?._id;
-      const result = await ArticleServive.addComment(articleId, {
+      const result = await ArticleService.addComment(articleId, {
         comment,
         author,
       });
@@ -101,7 +101,7 @@ export default class Article {
   static async deleteArticle(request, response) {
     try {
       const { id } = request.params;
-      const result = await ArticleServive.deleteArticle(id);
+      const result = await ArticleService.deleteArticle(id);
       return response
         .status(200)
         .json({ status: 200, success: true, comment: result.comment });
@@ -121,7 +121,7 @@ export default class Article {
       const { id } = request.params;
       const { title, summary, content, categories, published, featured } =
         request.body;
-      const result = await ArticleServive.updateArticle(id, {
+      const result = await ArticleService.updateArticle(id, {
         title,
         summary,
         content,

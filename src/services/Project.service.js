@@ -2,7 +2,7 @@ import { cloudinaryFolders } from "../config";
 import { cloudinaryUploader } from "../helpers/uploader";
 import { Project, Category } from "../models";
 
-export default class ArticleServive {
+export default class ProjectService {
   // Articles
   static async addProject({
     title,

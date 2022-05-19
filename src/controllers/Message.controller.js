@@ -1,12 +1,12 @@
 import errorFormatter from "../helpers/errorFormatter";
 import Logger from "../helpers/Logger";
-import { MessageServive } from "../services";
+import { MessageService } from "../services";
 
 export default class Message {
   static async addMessage(request, response) {
     try {
       const { name, subject, email, message } = request.body;
-      const result = await MessageServive.addMessage({
+      const result = await MessageService.addMessage({
         name,
         subject,
         email,
@@ -27,7 +27,7 @@ export default class Message {
   static async fetchMessages(request, response) {
     try {
       const { count = 100, skip = 0, filter = {} } = request.query;
-      const result = await MessageServive.getMessages({
+      const result = await MessageService.getMessages({
         count,
         skip,
         filter,
@@ -47,7 +47,7 @@ export default class Message {
   static async fetchMessage(request, response) {
     try {
       const { id } = request.params;
-      const result = await MessageServive.getAMessage(id);
+      const result = await MessageService.getAMessage(id);
       return response
         .status(200)
         .json({ status: 200, success: true, message: result.message });
@@ -63,7 +63,7 @@ export default class Message {
   static async deleteMessage(request, response) {
     try {
       const { id } = request.params;
-      const result = await MessageServive.deleteMessage(id);
+      const result = await MessageService.deleteMessage(id);
       return response
         .status(200)
         .json({ status: 200, success: true, message: result.message });
@@ -80,7 +80,7 @@ export default class Message {
     try {
       const { id } = request.params;
       const { read, reply } = request.body;
-      const result = await MessageServive.updateMessage(id, { read, reply });
+      const result = await MessageService.updateMessage(id, { read, reply });
       return response
         .status(200)
         .json({ status: 200, success: true, message: result.message });
@@ -93,3 +93,4 @@ export default class Message {
     }
   }
 }
+
