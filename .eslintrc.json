@@ -1,7 +1,6 @@
 {
   "env": {
     "browser": false,
-    "es2021": true,
     "node": true,
     "mocha": true
   },
@@ -17,3 +16,4 @@
     "guard-for-in": "off"
   }
 }
+
