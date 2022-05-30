@@ -40,6 +40,7 @@ describe("/api/articles", function () {
       username: faker.internet.userName(),
       role: "guest",
       verified: true,
+      slug: faker.company.catchPhrase(),
     };
     const adminUser = {
       name: faker.name.findName(),
@@ -73,6 +74,7 @@ describe("/api/articles", function () {
       .field("title", faker.company.catchPhrase())
       .field("summary", faker.company.catchPhraseDescriptor())
       .field("content", faker.lorem.paragraphs(3))
+      .field("slug", faker.company.catchPhrase())
       .field("categories", faker.fake("{{random.word}}, {{random.word}}"))
       .attach("image", image)
       .set("Authorization", `Bearer ${token}`);
@@ -111,6 +113,7 @@ describe("/api/articles", function () {
         .field("title", faker.company.catchPhrase())
         .field("summary", faker.company.catchPhraseDescriptor())
         .field("content", faker.lorem.paragraphs(3))
+        .field("slug", faker.company.catchPhrase())
         .field("categories", faker.fake("{{random.word}}, {{random.word}}"))
         .set("Authorization", `Bearer ${guestToken}`);
       expect(response).to.have.status(403);
@@ -122,6 +125,7 @@ describe("/api/articles", function () {
         .field("title", faker.company.catchPhrase())
         .field("summary", faker.company.catchPhraseDescriptor())
         .field("content", faker.lorem.paragraphs(3))
+        .field("slug", faker.company.catchPhrase())
         .field("categories", faker.fake("{{random.word}}, {{random.word}}"))
         .set("Authorization", `Bearer ${token}`);
       expect(response).to.have.status(201);
@@ -138,6 +142,7 @@ describe("/api/articles", function () {
         .field("summary", faker.company.catchPhraseDescriptor())
         .field("content", faker.lorem.paragraphs(3))
         .field("categories", faker.lorem.words(3))
+        .field("slug", faker.company.catchPhrase())
         .attach("image", image, "test.png")
         .set("Authorization", `Bearer ${token}`);
 
@@ -168,7 +173,6 @@ describe("/api/articles", function () {
         .set("Authorization", `Bearer ${guestToken}`)
         .send({
           featured: true,
-          published: true,
         });
 
       expect(response).to.have.status(403);
@@ -181,7 +185,6 @@ describe("/api/articles", function () {
           summary: "changed",
           content: "changed",
           categories: "changed",
-          published: true,
           featured: true,
         })
         .set("Authorization", `Bearer ${token}`);
@@ -195,7 +198,7 @@ describe("/api/articles", function () {
           summary: "changed",
           content: "changed",
           categories: "changed",
-          published: true,
+          slug: "changed",
           featured: true,
         })
         .set("Authorization", `Bearer ${token}`);

@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 import mongoose from "mongoose";
 
 const commentSchema = new mongoose.Schema(
@@ -15,13 +16,17 @@ const commentSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-// eslint-disable-next-line func-names
 const populateComment = function (next) {
   this.populate("reply");
   this.populate({ path: "author", select: "name" });
   next();
 };
-
 commentSchema.pre("findOne", populateComment).pre("find", populateComment);
+commentSchema.pre("remove", function (next) {
+  this.reply.forEach(async (commentId) => {
+    await this.model.findByIdAndDelete(commentId);
+  });
+  next();
+});
 export default mongoose.model("Comment", commentSchema);
 

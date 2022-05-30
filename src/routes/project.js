@@ -8,7 +8,7 @@ import { projectSchema } from "../validations";
 const router = express.Router();
 router.get(
   "/",
-  joiValidator(projectSchema.filter),
+  joiValidator(projectSchema.filter, "query"),
   ProjectController.getProjects
 );
 
@@ -36,3 +36,4 @@ router.delete(
   ProjectController.deleteProject
 );
 export default router;
+

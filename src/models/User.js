@@ -30,6 +30,9 @@ const userSchema = new mongoose.Schema(
       required: true,
       default: false,
     },
+    apiKey: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
@@ -37,7 +40,10 @@ userSchema.pre("save", async function presave(next) {
   if (ownerEmail === this.email) {
     this.role = "admin";
     this.isOwner = true;
-  } else this.role = "guest";
+  } else {
+    this.role = "guest";
+    this.apiKey = "";
+  }
   if (!this.isModified("password")) return next();
   this.password = await hash(this.password, 10);
   return next();

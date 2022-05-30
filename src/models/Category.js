@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+
 const categorySchema = new Schema(
   {
     title: { type: String, required: true },
@@ -8,7 +9,8 @@ const categorySchema = new Schema(
   },
   { timestamps: true }
 );
-categorySchema.pre("validate", function () {
+categorySchema.pre("validate", function validate() {
   this.title = this.title[0].toLowerCase() + this.title.slice(1).toLowerCase();
 });
 export default model("Category", categorySchema);
+

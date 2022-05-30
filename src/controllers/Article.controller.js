@@ -1,5 +1,5 @@
 import { unlinkSync } from "fs";
-
+import slugify from "slugify";
 import { ArticleService } from "../services";
 import { createBanner } from "../helpers/bannerCreator";
 import { uploadFolder } from "../config";
@@ -20,6 +20,8 @@ export default class Article {
       else image = request.file?.path;
 
       const { title, images, summary, content, categories } = request.body;
+      let { slug } = request.body;
+      if (slug) slug = slugify(slug);
       const author = request?.user?._id;
       const result = await ArticleService.addArticle({
         title,
@@ -29,6 +31,7 @@ export default class Article {
         categories,
         image,
         author,
+        slug,
       });
       unlinkSync(image);
       return response
@@ -101,7 +104,8 @@ export default class Article {
   static async deleteArticle(request, response) {
     try {
       const { id } = request.params;
-      const result = await ArticleService.deleteArticle(id);
+      const { slug } = request.query;
+      const result = await ArticleService.deleteArticle({ id, slug });
       return response
         .status(200)
         .json({ status: 200, success: true, comment: result.comment });
@@ -121,6 +125,8 @@ export default class Article {
       const { id } = request.params;
       const { title, summary, content, categories, published, featured } =
         request.body;
+      let { slug } = request.body;
+      if (slug) slug = slugify(slug);
       const result = await ArticleService.updateArticle(id, {
         title,
         summary,
@@ -129,6 +135,7 @@ export default class Article {
         published,
         featured,
         image,
+        slug,
       });
       return response
         .status(200)

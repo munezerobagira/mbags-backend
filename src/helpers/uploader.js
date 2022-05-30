@@ -1,13 +1,14 @@
-import path, { resolve } from "path";
+import path from "path";
 import multer from "multer";
+import { v2 as cloudinary } from "cloudinary";
+
 import {
   uploadFolder,
   cloudName,
   cloudinaryApiKey,
   cloudinaryApiSecret,
 } from "../config";
-
-import { v2 as cloudinary } from "cloudinary";
+import Logger from "./Logger";
 
 cloudinary.config({
   cloud_name: cloudName,
@@ -17,24 +18,24 @@ cloudinary.config({
 });
 
 const storage = multer.diskStorage({
-  destination: function (request, file, cb) {
+  destination: (request, file, cb) => {
     cb(null, uploadFolder);
   },
-  filename: function (request, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+  filename: (request, file, cb) => {
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
     cb(
       null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+      `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`
     );
   },
 });
 
-export const cloudinaryUploader = (file, folder) => {
-  return new Promise((resolve) => {
-    cloudinary.uploader.upload(file, { folder }, function (error, result) {
-      if (error) console.warn(error);
+export const cloudinaryUploader = (file, folder) =>
+  new Promise((resolve) => {
+    cloudinary.uploader.upload(file, { folder }, (error, result) => {
+      if (error) Logger.warn(error);
       resolve(result);
     });
   });
-};
 export const multerUploader = multer({ storage });
+
