@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 import mongoose from "mongoose";
 
 const projectSchema = new mongoose.Schema(
@@ -13,5 +14,19 @@ const projectSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+projectSchema.post("init", function (doc) {
+  this._object = doc;
+});
+
+projectSchema.pre("updateOne", (next) => {
+  if (this.isModified("categories")) {
+    this._doc.categories.forEach(async (categoryId) => {
+      await this.model.findByIdAndUpdate(categoryId, {
+        $pull: { projects: this._id },
+      });
+    });
+  }
+  next();
+});
 export default mongoose.model("Project", projectSchema);
 

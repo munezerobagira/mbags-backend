@@ -11,6 +11,7 @@ export default class ArticleService {
     content,
     author,
     image,
+    slug,
   }) {
     const uploadResult = await cloudinaryUploader(
       image,
@@ -22,6 +23,7 @@ export default class ArticleService {
       summary,
       content,
       author,
+      slug,
       image: {
         path: uploadResult.secure_url || uploadResult.url,
         width: uploadResult.width,
@@ -46,7 +48,7 @@ export default class ArticleService {
 
   static async updateArticle(
     id,
-    { title, summary, categories, content, featured, published, image }
+    { title, summary, categories, content, featured, image, slug }
   ) {
     let uploadResult = null;
     if (image)
@@ -56,9 +58,9 @@ export default class ArticleService {
       );
     const article = await Article.findOne({ _id: id });
     if (title) article.title = title;
+    if (slug) article.slug = slug;
     if (summary) article.summary = summary;
     if (content) article.content = content;
-    if (published) article.published = !!published;
     if (featured) article.featured = !!featured;
     if (uploadResult)
       article.image = {
@@ -124,20 +126,20 @@ export default class ArticleService {
     return { success: true, article };
   }
 
-  static async deleteArticle(id) {
-    const article = await Article.findOneAndDelete({ _id: id });
+  static async deleteArticle({ id, slug }) {
+    const article = await Article.findOneAndDelete({
+      $or: [{ _id: id }, { slug }],
+    });
     if (!article) return { success: false, error: "Article not found" };
     if (article.comments)
       article.comments.forEach(async (commentId) => {
         await Comment.findOneAndDelete(commentId);
       });
-    if (article.categories)
-      article.categories.forEach(async (categoryId) => {
-        const category = await Category.findOne({ _id: categoryId });
-        if (!category) return;
-        category.articles.pull(id);
-        await category.save();
-      });
+    return { success: true, article };
+  }
+
+  static async deleteArticles(searchQuery) {
+    const article = await Article.deleteMany(searchQuery);
     return { success: true, article };
   }
   // comments

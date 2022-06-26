@@ -16,7 +16,6 @@ describe("/api/auth", () => {
   let user;
   before(async () => {
     password = faker.internet.password();
-    console.log(password);
     await mongoose.connection.asPromise();
     await truncateDb();
     verifiedUser = {

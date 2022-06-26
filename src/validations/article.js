@@ -6,14 +6,15 @@ const createArticle = Joi.object({
   content: Joi.string().required(),
   categories: Joi.string().default("blog"),
   image: Joi.any(),
+  slug: Joi.string(),
 });
 const updateArticle = Joi.object({
   title: Joi.string(),
   summary: Joi.string(),
   content: Joi.string(),
   categories: Joi.string(),
-  published: Joi.boolean(),
   featured: Joi.boolean(),
+  slug: Joi.string(),
   star: Joi.number().min(-1).max(1),
 });
 const updateCategory = Joi.object({
@@ -22,7 +23,6 @@ const updateCategory = Joi.object({
 });
 const filter = Joi.object({
   featured: Joi.boolean(),
-  published: Joi.boolean().default(true),
   title: Joi.string(),
   skip: Joi.number(),
   count: Joi.number(),
@@ -33,3 +33,4 @@ export default {
   updateCategory,
   filter,
 };
+
