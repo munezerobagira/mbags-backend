@@ -6,7 +6,7 @@ orbs:
 jobs:
   build-and-test:
     docker:
-      - image: cimg/node:16.10
+      - image: cimg/node:19.3
       - image: circleci/mongo:4.4.12
     steps:
       - checkout
