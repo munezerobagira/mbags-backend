@@ -1,0 +1,10 @@
+{
+  "appService.zipIgnorePattern": [
+    "node_modules{,/**}",
+    ".vscode{,/**},",
+    ".yarn/cache{,/**},"
+  ],
+  "appService.defaultWebAppToDeploy": "/subscriptions/b076d4ab-ac6c-42db-8553-4bf0abfa527a/resourceGroups/mbags_group/providers/Microsoft.Web/sites/mbags",
+  "appService.deploySubpath": "."
+}
+
