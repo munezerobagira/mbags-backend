@@ -6,3 +6,5 @@ uploads/
 coverage/
 .idea/
 *.log
+.yarn/*
+!.yarn/releases

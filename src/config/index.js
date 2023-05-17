@@ -31,7 +31,7 @@ const { PORT = 5000 } = process.env;
 export const port = PORT;
 export const cloudinaryApiKey = process.env.CLOUDINARY_API_KEY;
 export const cloudinaryApiSecret = process.env.CLOUDINARY_API_SECRET;
-export const cloudName = process.env.CLOUD_NAME;
+export const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
 export const mongoUrl = baseMongoUrl;
 export const tokenSecret = process.env.TOKEN_SECRET;
 export const verificationSecret = process.env.VERIFICATION_SECRET;

@@ -55,5 +55,6 @@
     "mocha": "^10.2.0",
     "nodemon": "^2.0.16",
     "nyc": "^15.1.0"
-  }
+  },
+  "packageManager": "yarn@3.5.1"
 }
