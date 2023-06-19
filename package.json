@@ -45,7 +45,7 @@
     "@babel/node": "^7.20.7",
     "@babel/preset-env": "^7.20.2",
     "@babel/register": "^7.18.9",
-    "@faker-js/faker": "^7.6.0",
+    "@faker-js/faker": "^8.0.0",
     "chai": "^4.3.7",
     "chai-http": "^4.3.0",
     "eslint": "^8.31.0",
